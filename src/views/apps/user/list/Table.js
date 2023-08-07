@@ -198,7 +198,7 @@ const UsersList = () => {
         currentPlan: currentPlan.value
       })
     )
-  }, [dispatch, store.data.length, sort, sortColumn, currentPage])
+  }, [dispatch, store?.data?.length, sort, sortColumn, currentPage])
 
   // ** User filter options
   const roleOptions = [
@@ -310,15 +310,15 @@ const UsersList = () => {
     }
 
     const isFiltered = Object.keys(filters).some(function (k) {
-      return filters[k].length > 0
+      return filters[k]?.length > 0
     })
 
-    if (store.data.length > 0) {
-      return store.data
-    } else if (store.data.length === 0 && isFiltered) {
+    if (store?.data?.length > 0) {
+      return store?.data
+    } else if (store?.data?.length === 0 && isFiltered) {
       return []
     } else {
-      return store.allData.slice(0, rowsPerPage)
+      return store?.allData?.slice(0, rowsPerPage)
     }
   }
 
