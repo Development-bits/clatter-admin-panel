@@ -26,7 +26,7 @@ const getLayout = {
 const TemplateTitle = '%s - Clatter Admin'
 
 // ** Default Route
-const DefaultRoute = '/dashboard'
+const DefaultRoute = '/admin/dashboard'
 
 // ** Import lazy route
 const DashboardAnalytics = lazy(() => import('../../views/dashboard/analytics'))
