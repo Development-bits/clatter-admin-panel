@@ -45,44 +45,44 @@ const Routes = [
   },
   {
     index: true,
-    path: '/admin//dashboard',
+    path: '/admin/dashboard',
     element: <DashboardAnalytics />,
   },
   {
     index: true,
     element: <UsersList />,
-    path: '/admin//apps/user/list',
+    path: '/admin/apps/user/list',
     protected: true,
   },
   {
     index: true,
-    path: '/admin//billings',
+    path: '/admin/billings',
     element: <UserBillings />,
     protected: true,
   },
 
   {
     index: true,
-    path: '/admin//apps/user/view',
-    element: <Navigate to='/admin//apps/user/view/1' />,
+    path: '/admin/apps/user/view',
+    element: <Navigate to='/admin/apps/user/view/1' />,
     protected: true,
   },
   {
     index: true,
     element: <UserView />,
-    path: '/admin//apps/user/view/:id',
+    path: '/admin/apps/user/view/:id',
     protected: true,
   },
   {
     index: true,
     element: <Roles />,
-    path: '/admin//apps/roles',
+    path: '/admin/apps/roles',
     protected: true,
   },
   {
     index: true,
     element: <Permissions />,
-    path: '/admin//apps/permissions',
+    path: '/admin/apps/permissions',
     protected: true,
   }
 ]
