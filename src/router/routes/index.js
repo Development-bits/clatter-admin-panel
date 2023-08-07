@@ -51,7 +51,7 @@ const Routes = [
   {
     index: true,
     element: <UsersList />,
-    path: '/admin/apps/user/list',
+    path: '/admin/user',
     protected: true,
   },
   {

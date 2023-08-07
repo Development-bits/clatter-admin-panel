@@ -12,7 +12,7 @@ export default [
         id: 'apps',
         title: 'Apps',
         icon: <Box />,
-        navLink: '/admin/apps/user/list'
+        navLink: '/admin/user'
     },
     {
         id: 'billings',

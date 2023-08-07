@@ -20,6 +20,6 @@ export default [
         id: 'users',
         title: 'User',
         icon: <User size={20} />,
-        navLink: '/admin/apps/user/list'
+        navLink: '/admin/user'
     }
 ]
