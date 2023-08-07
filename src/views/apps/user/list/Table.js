@@ -430,7 +430,7 @@ const UsersList = () => {
       </Card>
 
       <Card className='overflow-hidden'>
-        <div className='react-dataTable'>
+        {/* <div className='react-dataTable'>
           <DataTable
             noHeader
             subHeader
@@ -455,7 +455,7 @@ const UsersList = () => {
               />
             }
           />
-        </div>
+        </div> */}
       </Card>
 
       <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
