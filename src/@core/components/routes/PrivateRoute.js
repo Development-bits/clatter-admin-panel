@@ -17,16 +17,16 @@ const PrivateRoute = ({ children, route }) => {
       restrictedRoute = route.meta.restricted
     }
     if (!user) {
-      return <Navigate to='/login' />
+      return <Navigate to='/admin/login' />
     }
     if (user && user.role === 'superAdmin') {
-      return <Navigate to='/' />
+      return <Navigate to='/admin/' />
     }
     if (user && restrictedRoute && user.role === 'admin') {
-      return <Navigate to='/access-control' />
+      return <Navigate to='/admin//access-control' />
     }
     if (user && restrictedRoute && user.role === 'client') {
-      return <Navigate to='/misc/not-authorized' replace />
+      return <Navigate to='/admin//misc/not-authorized' replace />
     }
   }
 

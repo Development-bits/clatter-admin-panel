@@ -40,49 +40,49 @@ const UserView = lazy(() => import('../../views/apps/user/view'))
 const Routes = [
   {
     index: true,
-    path: '/',
+    path: '/admin/',
     element: <Navigate to={DefaultRoute} />
   },
   {
     index: true,
-    path: '/dashboard',
+    path: '/admin//dashboard',
     element: <DashboardAnalytics />,
   },
   {
     index: true,
     element: <UsersList />,
-    path: '/apps/user/list',
+    path: '/admin//apps/user/list',
     protected: true,
   },
   {
     index: true,
-    path: '/billings',
+    path: '/admin//billings',
     element: <UserBillings />,
     protected: true,
   },
 
   {
     index: true,
-    path: '/apps/user/view',
-    element: <Navigate to='/apps/user/view/1' />,
+    path: '/admin//apps/user/view',
+    element: <Navigate to='/admin//apps/user/view/1' />,
     protected: true,
   },
   {
     index: true,
     element: <UserView />,
-    path: '/apps/user/view/:id',
+    path: '/admin//apps/user/view/:id',
     protected: true,
   },
   {
     index: true,
     element: <Roles />,
-    path: '/apps/roles',
+    path: '/admin//apps/roles',
     protected: true,
   },
   {
     index: true,
     element: <Permissions />,
-    path: '/apps/permissions',
+    path: '/admin//apps/permissions',
     protected: true,
   }
 ]
