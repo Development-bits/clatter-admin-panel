@@ -39,7 +39,7 @@
       width: 1rem;
     }
   }
-  [class*='avatar-status-'] {
+  [class*="avatar-status-"] {
     border-radius: 50%;
     width: $avatar-status-size;
     height: $avatar-status-size;
@@ -104,7 +104,7 @@
         font-size: 3rem;
       }
     }
-    [class*='avatar-status-'] {
+    [class*="avatar-status-"] {
       right: 3px;
       bottom: 0;
     }
@@ -127,7 +127,7 @@
         font-size: 2rem;
       }
     }
-    [class*='avatar-status-'] {
+    [class*="avatar-status-"] {
       right: 3px;
       bottom: 1px;
     }
@@ -149,7 +149,7 @@
       width: $avatar-size-sm;
       height: $avatar-size-sm;
     }
-    [class*='avatar-status-'] {
+    [class*="avatar-status-"] {
       right: -3px;
       bottom: -2px;
     }
@@ -164,7 +164,8 @@
     transition: all 0.25s ease;
     img,
     .avatar-content {
-      box-shadow: 0 0 0 2px $avatar-group-border, inset 0 0 0 1px rgba($black, 0.07);
+      box-shadow: 0 0 0 2px $avatar-group-border,
+        inset 0 0 0 1px rgba($black, 0.07);
     }
     .avatar-content {
       background-color: tint-color($secondary, 20%) !important;

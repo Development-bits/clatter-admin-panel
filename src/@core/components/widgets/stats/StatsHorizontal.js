@@ -7,8 +7,8 @@ import { Card, CardBody } from 'reactstrap'
 
 const StatsHorizontal = ({ icon, color, stats, renderStats, statTitle, className, statsMargin }) => {
   return (
-    <Card>
-      <CardBody className={className}>
+    <Card >
+      <CardBody className={className} >
         <div className='d-flex justify-content-between align-items-center'>
           <div>
             {renderStats ? (

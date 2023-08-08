@@ -31,28 +31,28 @@ const Router = () => {
     if (user) {
       return getHomeRouteForLoggedInUser(user.role)
     } else {
-      return '/admin/login'
+      return '/login'
     }
   }
 
   const routes = useRoutes([
     {
-      path: '/admin/',
+      path: '/',
       index: true,
       element: <Navigate replace to={getHomeRoute()} />
     },
     {
-      path: '/admin/login',
+      path: '/login',
       element: <BlankLayout />,
       children: [{
-        path: '/admin/login', element: <Login />
+        path: '/login', element: <Login />
       }]
     },
     {
-      path: '/admin/auth/not-auth',
+      path: '/auth/not-auth',
       element: <BlankLayout />,
       children: [{
-        path: '/admin/auth/not-auth', element: <NotAuthorized />
+        path: '/auth/not-auth', element: <NotAuthorized />
       }]
     },
     {

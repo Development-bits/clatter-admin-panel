@@ -6,18 +6,18 @@ export default [
         id: 'dashboards',
         title: 'Dashboard',
         icon: <Home />,
-        navLink: '/admin/dashboard'
+        navLink: '/dashboard'
     },
     {
         id: 'apps',
         title: 'Apps',
         icon: <Box />,
-        navLink: '/admin/user'
+        navLink: '/user'
     },
     {
         id: 'billings',
         title: 'Billing',
         icon: <DollarSign size={20} />,
-        navLink: '/admin/billings'
+        navLink: '/billings'
     }
 ]

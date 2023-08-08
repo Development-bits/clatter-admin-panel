@@ -8,18 +8,18 @@ export default [
         title: 'Dashboard',
         icon: <Home size={20} />,
         badge: 'light-warning',
-        navLink: '/admin/dashboard'
-    },
-    {
-        id: 'billings',
-        title: 'Billing',
-        icon: <DollarSign size={20} />,
-        navLink: '/admin/billings'
+        navLink: '/dashboard'
     },
     {
         id: 'users',
         title: 'User',
         icon: <User size={20} />,
-        navLink: '/admin/user'
-    }
+        navLink: '/user'
+    },
+    {
+        id: 'billings',
+        title: 'Billing',
+        icon: <DollarSign size={20} />,
+        navLink: '/billings'
+    },
 ]

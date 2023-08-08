@@ -26,65 +26,51 @@ const getLayout = {
 const TemplateTitle = '%s - Clatter Admin'
 
 // ** Default Route
-const DefaultRoute = '/admin/dashboard'
+const DefaultRoute = '/dashboard'
 
 // ** Import lazy route
 const DashboardAnalytics = lazy(() => import('../../views/dashboard/analytics'))
 const UserBillings = lazy(() => import('../../views/billings'))
-const UsersList = lazy(() => import('../../views/apps/user/list'))
-const Permissions = lazy(() => import('../../views/apps/roles-permissions/permissions'))
-const Roles = lazy(() => import('../../views/apps/roles-permissions/roles'))
-const UserView = lazy(() => import('../../views/apps/user/view'))
+const UsersList = lazy(() => import('../../views/apps/user'))
+const UserView = lazy(() => import('../../views/apps/user'))
 
 // ** Merge Routes
 const Routes = [
   {
     index: true,
-    path: '/admin/',
+    path: '/',
     element: <Navigate to={DefaultRoute} />
   },
   {
     index: true,
-    path: '/admin/dashboard',
+    path: '/dashboard',
     element: <DashboardAnalytics />,
   },
   {
     index: true,
     element: <UsersList />,
-    path: '/admin/user',
+    path: '/user',
     protected: true,
   },
   {
     index: true,
-    path: '/admin/billings',
+    path: '/billings',
     element: <UserBillings />,
     protected: true,
   },
 
   {
     index: true,
-    path: '/admin/apps/user/view',
-    element: <Navigate to='/admin/apps/user/view/1' />,
+    path: '/apps/user/view',
+    element: <Navigate to='/apps/user/view/1' />,
     protected: true,
   },
   {
     index: true,
     element: <UserView />,
-    path: '/admin/apps/user/view/:id',
+    path: '/apps/user/view/:id',
     protected: true,
   },
-  {
-    index: true,
-    element: <Roles />,
-    path: '/admin/apps/roles',
-    protected: true,
-  },
-  {
-    index: true,
-    element: <Permissions />,
-    path: '/admin/apps/permissions',
-    protected: true,
-  }
 ]
 
 const getRouteMeta = route => {

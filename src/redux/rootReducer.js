@@ -2,17 +2,15 @@
 import navbar from './navbar'
 import layout from './layout'
 import auth from './auth/authSlice'
-import users from '@src/views/apps/user/store'
-import dataTables from '@src/views/tables/data-tables/store'
-import permissions from '@src/views/apps/roles-permissions/store'
+import dashboard from "./dashboard/dashboardSlice"
+import user from "./user/userSlice"
 
 const rootReducer = {
   auth,
-  users,
   navbar,
   layout,
-  dataTables,
-  permissions
+  dashboard,
+  user
 }
 
 export default rootReducer
