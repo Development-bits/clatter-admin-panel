@@ -13,7 +13,6 @@ export const authAction = createAsyncThunk('users/auth', async (arg, { rejectWit
             }
         }
         const response = await axios.post(`${Domain}/admin-login`, arg.body, config)
-        debugger
         arg.navigate(getHomeRouteForLoggedInUser(response.data.role))
         return response.data
     } catch (error) {

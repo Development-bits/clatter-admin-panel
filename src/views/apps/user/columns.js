@@ -10,10 +10,11 @@ import { Slack, User, Settings, Database, Edit2, MoreVertical, FileText, Trash2,
 
 // ** Reactstrap Imports
 import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
+import moment from 'moment/moment'
 
 // ** Renders Client Columns
 const renderClient = row => {
-  if (row.avatar.length) {
+  if (row?.avatar?.length) {
     return <Avatar className='me-1' img={row.avatar} width='32' height='32' />
   } else {
     return (
@@ -52,11 +53,11 @@ const renderRole = row => {
     }
   }
 
-  const Icon = roleObj[row.role] ? roleObj[row.role].icon : Edit2
+  // const Icon = roleObj[row.role] ? roleObj[row.role].icon : Edit2
 
   return (
     <span className='text-truncate text-capitalize align-middle'>
-      <Icon size={18} className={`${roleObj[row.role] ? roleObj[row.role].class : ''} me-50`} />
+      {/* <Icon size={18} className={`${roleObj[row.role] ? roleObj[row.role].class : ''} me-50`} /> */}
       {row.role}
     </span>
   )
@@ -74,7 +75,7 @@ export const columns = [
     sortable: true,
     minWidth: '300px',
     sortField: 'fullName',
-    selector: row => row.fullName,
+    selector: row => (row.firstName + row.lastName),
     cell: row => (
       <div className='d-flex justify-content-left align-items-center'>
         {renderClient(row)}
@@ -82,9 +83,9 @@ export const columns = [
           <Link
             to={`/apps/user/view/${row.id}`}
             className='user_name text-truncate text-body'
-            onClick={() => store.dispatch(getUser(row.id))}
+          // onClick={() => store.dispatch(getUser(row.id))}
           >
-            <span className='fw-bolder'>{row.fullName}</span>
+            <span className='fw-bolder'>{row.firstName} {row.lastName}</span>
           </Link>
           <small className='text-truncate text-muted mb-0'>{row.email}</small>
         </div>
@@ -92,39 +93,52 @@ export const columns = [
     )
   },
   {
-    name: 'Role',
+    name: 'User Status',
     sortable: true,
-    minWidth: '172px',
-    sortField: 'role',
-    selector: row => row.role,
-    cell: row => renderRole(row)
+    minWidth: '130px',
+    sortField: 'userStatus',
+    selector: row => row.userStatus,
+    // cell: row => renderRole(row)
+    cell: row => (
+      <Badge className='text-capitalize d-flex flex-column' color={statusObj[row.createdAt]} pill>
+        <span className='text-capitalize'>{row.userStatus}</span>
+      </Badge>
+    )
+
   },
   {
     name: 'Plan',
-    minWidth: '138px',
+    minWidth: '135px',
     sortable: true,
     sortField: 'currentPlan',
-    selector: row => row.currentPlan,
-    cell: row => <span className='text-capitalize'>{row.currentPlan}</span>
+    selector: row => row.plan,
+    cell: row => <span className='text-capitalize'>{row.plan}</span>
   },
   {
-    name: 'Billing',
-    minWidth: '230px',
+    name: 'Subscription Status',
+    minWidth: '140px',
     sortable: true,
-    sortField: 'billing',
-    selector: row => row.billing,
-    cell: row => <span className='text-capitalize'>{row.billing}</span>
-  },
-  {
-    name: 'Status',
-    minWidth: '138px',
-    sortable: true,
-    sortField: 'status',
-    selector: row => row.status,
+    sortField: 'subscription',
+    selector: row => row.subscriptionStatus,
     cell: row => (
-      <Badge className='text-capitalize' color={statusObj[row.status]} pill>
-        {row.status}
+      <Badge className='text-capitalize d-flex flex-column' color={statusObj[row.createdAt]} pill>
+        <span className='text-capitalize'>{row.subscriptionStatus}</span>
       </Badge>
+    )
+  },
+  {
+    name: 'Created At',
+    minWidth: '140px',
+    sortable: true,
+    sortField: 'createdAt',
+    selector: row => row.createdAt,
+    cell: row => (
+      <div className='text-capitalize d-flex flex-column'>
+        <span>
+          {moment(row.createdAt).format("MM/DD/YY")}
+        </span>
+        <smal>{moment(row.createdAt).format("hh:mm A")}</smal>
+      </div>
     )
   },
   {
@@ -141,7 +155,7 @@ export const columns = [
               tag={Link}
               className='w-100'
               to={`/apps/user/view/${row.id}`}
-              onClick={() => store.dispatch(getUser(row.id))}
+            // onClick={() => store.dispatch(getUser(row.id))}
             >
               <FileText size={14} className='me-50' />
               <span className='align-middle'>Details</span>
@@ -156,7 +170,7 @@ export const columns = [
               className='w-100'
               onClick={e => {
                 e.preventDefault()
-                store.dispatch(deleteUser(row.id))
+                // store.dispatch(deleteUser(row.id))
               }}
             >
               <Trash2 size={14} className='me-50' />

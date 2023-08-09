@@ -22,24 +22,24 @@ const AnalyticsDashboard = () => {
 
   return (
     <div id='dashboard-analytics'>
-      <Card style={{ background: "transparent" }}>
+      <Card style={{ background: "#f8f8f8db" }}>
         <CardHeader>
-          Daily Stats
+          <h5>Daily Stats</h5>
         </CardHeader>
 
         <CardBody>
           <Row className='match-height'>
             {dashboardData ?
-              dashboardData?.stats?.map((item) => {
+              dashboardData?.dailyStats?.map((item) => {
                 let icon = null;
                 let iconColor = ''
-                if (item.title === "Daily Subscribers") {
+                if (item.title === "Subscribers") {
                   icon = <User size={15} />
                   iconColor = 'primary'
-                } else if (item.title === "Daily Signup") {
+                } else if (item.title === "Signup") {
                   icon = <UserPlus size={15} />
                   iconColor = 'success'
-                } else if (item.title === "Daily Sales") {
+                } else if (item.title === "Sales") {
                   icon = <UserCheck size={15} />
                   iconColor = 'danger'
                 } else {
@@ -62,9 +62,49 @@ const AnalyticsDashboard = () => {
           </Row>
         </CardBody>
       </Card>
-      <Card style={{ background: "transparent" }}>
+      <Card style={{ background: "#f8f8f8db" }}>
         <CardHeader>
-          Plans
+          <h5>Monthly Stats</h5>
+        </CardHeader>
+
+        <CardBody>
+          <Row className='match-height'>
+            {dashboardData ?
+              dashboardData?.monthlyStats?.map((item) => {
+                let icon = null;
+                let iconColor = ''
+                if (item.title === "Subscribers") {
+                  icon = <User size={15} />
+                  iconColor = 'primary'
+                } else if (item.title === "Signup") {
+                  icon = <UserPlus size={15} />
+                  iconColor = 'success'
+                } else if (item.title === "Sales") {
+                  icon = <UserCheck size={15} />
+                  iconColor = 'danger'
+                } else {
+                  icon = <User size={15} />
+                  iconColor = 'info'
+                }
+                return (
+                  <Col lg='3' sm='6' key={item.title}>
+                    <StatsHorizontal
+                      className="shadow-sm"
+                      color={iconColor}
+                      statTitle={item?.title}
+                      icon={icon}
+                      renderStats={<h3 className='fw-bolder mb-75'>{item?.count}</h3>}
+                    />
+                  </Col>
+                )
+              }) : null}
+
+          </Row>
+        </CardBody>
+      </Card>
+      <Card style={{ background: "#f8f8f8db" }}>
+        <CardHeader>
+          <h5>Plans</h5>
         </CardHeader>
         <CardBody>
           <Row className='match-height'>
@@ -78,7 +118,12 @@ const AnalyticsDashboard = () => {
                         color='success'
                         statTitle={item.name}
                         icon={<UserCheck size={15} />}
-                        renderStats={<h3 className='fw-bolder mb-75'>${item.totalAmount}</h3>}
+                        renderStats={
+                          <h3 className='fw-bolder mb-75 d-flex flex-column'>
+                            <span>{item.totalPlanSold}</span>
+                            <span>${item.totalAmount}</span>
+                          </h3>
+                        }
                       />
                     </Col>
                   )}

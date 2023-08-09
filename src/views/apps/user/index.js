@@ -19,49 +19,36 @@ import { allUserAction, userAction } from '../../../redux/user/userAction'
 const UsersList = () => {
   const dispatch = useDispatch()
   const { allUserData, allUserDataLoading, allUserDataError } = useSelector(state => state.user)
-
   useEffect(() => {
     dispatch(allUserAction())
   }, [])
 
   return (
     <div className='app-user-list'>
-      <Card style={{ background: "transparent" }}>
-        <CardHeader>User Count</CardHeader>
+      <Card style={{ background: "#f8f8f8db" }}>
+        <CardHeader>
+          <h5>User Count</h5>
+        </CardHeader>
         <CardBody>
           <Row>
-            <Col lg='4' sm='6'>
-              <StatsHorizontal
-                className="shadow-sm"
-                color='primary'
-                statTitle='Total Users'
-                icon={<User size={25} />}
-                renderStats={<h3 className='fw-bolder mb-75'>{allUserData?.stats[0]?.totalUsers}</h3>}
-              />
-            </Col>
-            <Col lg='4' sm='6'>
-              <StatsHorizontal
-                className="shadow-sm"
-                color='warning'
-                statTitle='Active Users'
-                icon={<UserPlus size={25} />}
-                renderStats={<h3 className='fw-bolder mb-75'>{allUserData?.stats[0]?.activeUsers}</h3>}
-              />
-            </Col>
-            <Col lg='4' sm='6'>
-              <StatsHorizontal
-                className="shadow-sm"
-                color='success'
-                statTitle='Paid Users'
-                icon={<UserCheck size={25} />}
-                renderStats={<h3 className='fw-bolder mb-75'>{allUserData?.stats[0]?.paidUsers}</h3>}
-              />
-            </Col>
+            {allUserData?.stats?.map((item) => {
+              return (
+                <Col lg='4' sm='6'>
+                  <StatsHorizontal
+                    className="shadow-sm"
+                    color='primary'
+                    statTitle={item?.title}
+                    icon={<User size={25} />}
+                    renderStats={<h3 className='fw-bolder mb-75'>{item?.count}</h3>}
+                  />
+                </Col>
+              )
+            })}
           </Row>
         </CardBody>
       </Card>
 
-      <Table allUserData={allUserData?.data} />
+      <Table allUserData={allUserData?.data} total={allUserData?.total} />
 
     </div>
   )

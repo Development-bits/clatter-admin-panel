@@ -35,16 +35,18 @@ import {
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
+import { allUserAction } from '../../../redux/user/userAction'
+import { columns } from './columns'
 
 // ** Table Header
-const CustomHeader = ({ store, toggleSidebar, handlePerPage, rowsPerPage, handleFilter, searchTerm }) => {
+const CustomHeader = ({ store, handlePerPage, rowsPerPage, handleFilter, searchTerm }) => {
   // ** Converts table to CSV
   function convertArrayOfObjectsToCSV(array) {
     let result
 
     const columnDelimiter = ','
     const lineDelimiter = '\n'
-    const keys = Object.keys(store.data[0])
+    const keys = Object.keys(store[0])
 
     result = ''
     result += keys.join(columnDelimiter)
@@ -126,15 +128,15 @@ const CustomHeader = ({ store, toggleSidebar, handlePerPage, rowsPerPage, handle
                 <span className='align-middle'>Export</span>
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem className='w-100'>
+                {/* <DropdownItem className='w-100'>
                   <Printer className='font-small-4 me-50' />
                   <span className='align-middle'>Print</span>
-                </DropdownItem>
-                <DropdownItem className='w-100' onClick={() => downloadCSV(store.data)}>
+                </DropdownItem> */}
+                <DropdownItem className='w-100' onClick={() => downloadCSV(store)}>
                   <FileText className='font-small-4 me-50' />
                   <span className='align-middle'>CSV</span>
                 </DropdownItem>
-                <DropdownItem className='w-100'>
+                {/* <DropdownItem className='w-100'>
                   <Grid className='font-small-4 me-50' />
                   <span className='align-middle'>Excel</span>
                 </DropdownItem>
@@ -145,13 +147,9 @@ const CustomHeader = ({ store, toggleSidebar, handlePerPage, rowsPerPage, handle
                 <DropdownItem className='w-100'>
                   <Copy className='font-small-4 me-50' />
                   <span className='align-middle'>Copy</span>
-                </DropdownItem>
+                </DropdownItem> */}
               </DropdownMenu>
             </UncontrolledDropdown>
-
-            <Button className='add-new-user' color='primary' onClick={toggleSidebar}>
-              Add New User
-            </Button>
           </div>
         </Col>
       </Row>
@@ -159,129 +157,156 @@ const CustomHeader = ({ store, toggleSidebar, handlePerPage, rowsPerPage, handle
   )
 }
 
-const UsersList = ({ allUserData }) => {
+const UsersList = ({ allUserData, total }) => {
+  const dispatch = useDispatch()
 
   // ** States
   const [sort, setSort] = useState('desc')
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
-  const [sortColumn, setSortColumn] = useState('id')
+  // const [sortColumn, setSortColumn] = useState('id')
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [currentRole, setCurrentRole] = useState({ value: '', label: 'Select Role' })
+  const [currentRole, setCurrentRole] = useState({ value: '', label: 'Select Status' })
   const [currentPlan, setCurrentPlan] = useState({ value: '', label: 'Select Plan' })
   const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'Select Status', number: 0 })
-  const [currentOption, setCurrentOption] = useState({ value: '', label: 'Search...', })
 
-  // ** Function to toggle sidebar
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
 
   // ** Get data on mount
-  // useEffect(() => {
-  //   dispatch(getAllData())
-  //   dispatch(
-  //     getData({
-  //       sort,
-  //       sortColumn,
-  //       q: searchTerm,
-  //       page: currentPage,
-  //       perPage: rowsPerPage,
-  //       role: currentRole.value,
-  //       status: currentStatus.value,
-  //       currentPlan: currentPlan.value
-  //     })
-  //   )
-  // }, [dispatch, store?.data?.length, sort, sortColumn, currentPage])
+  useEffect(() => {
+    let obj = {
+      page: currentPage,
+      plan: currentPlan.value,
+      subStatus: currentRole.value,
+      status: currentStatus.value,
+      limit: rowsPerPage,
+      keyword: searchTerm
+    }
+    dispatch(allUserAction(obj))
+  }, [dispatch, currentPage, currentPlan, currentRole, rowsPerPage, searchTerm, currentStatus])
 
   // ** User filter options
   const roleOptions = [
-    { value: '', label: 'Select Role' },
-    { value: 'admin', label: 'Admin' },
-    { value: 'user', label: 'User' },
+    { value: '', label: 'Select Status' },
+    { value: 'Active', label: 'Active' },
+    { value: 'Cancelled', label: 'Cancelled' },
   ]
 
   const planOptions = [
     { value: '', label: 'Select Plan' },
-    { value: 'creator', label: 'Creator' },
-    { value: 'agency', label: 'Agency' },
-    { value: 'company', label: 'Company' },
-    { value: 'freeTrail', label: 'Free Trail' }
+    { value: 'Creator Monthly Plan', label: 'Creator Monthly Plan' },
+    { value: 'Agency Monthly Plan', label: 'Agency Monthly Plan' },
+    { value: 'Company Monthly Plan', label: 'Company Monthly Plan' },
+    { value: 'Free Trial', label: 'Free Trial' }
   ]
 
   const statusOptions = [
     { value: '', label: 'Select Status', number: 0 },
-    { value: 'pending', label: 'Pending', number: 1 },
-    { value: 'active', label: 'Active', number: 2 },
-    { value: 'inactive', label: 'Inactive', number: 3 }
+    { value: 'Pending', label: 'Pending', number: 1 },
+    { value: 'Active', label: 'Active', number: 2 },
+    { value: 'Inactive', label: 'Inactive', number: 3 },
+    { value: 'Deactivated', label: 'Deactivated', number: 4 }
   ]
 
-  const searchOption = []
-
   // ** Function in get data on page change
-  // const handlePagination = page => {
-  //   setCurrentPage(page.selected + 1)
-  // }
+  const handlePagination = page => {
+    setCurrentPage(page.selected + 1)
+  }
 
   // ** Function in get data on rows per page
-  // const handlePerPage = e => {
-  //   const value = parseInt(e.currentTarget.value)
-  //   setRowsPerPage(value)
-  // }
+  const handlePerPage = e => {
+    const value = parseInt(e.currentTarget.value)
+    setRowsPerPage(value)
+  }
 
   // ** Function in get data on search query change
-  // const handleFilter = val => {
-  //   setSearchTerm(val)
-  // }
+  const handleFilter = val => {
+    setSearchTerm(val)
+  }
 
   // ** Custom Pagination
-  // const CustomPagination = () => {
-  //   const count = Number(Math.ceil(store.total / rowsPerPage))
+  const CustomPagination = () => {
+    const count = Number(Math.ceil(total / rowsPerPage))
 
-  //   return (
-  //     <ReactPaginate
-  //       previousLabel={''}
-  //       nextLabel={''}
-  //       pageCount={count || 1}
-  //       activeClassName='active'
-  //       forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-  //       onPageChange={page => handlePagination(page)}
-  //       pageClassName={'page-item'}
-  //       nextLinkClassName={'page-link'}
-  //       nextClassName={'page-item next'}
-  //       previousClassName={'page-item prev'}
-  //       previousLinkClassName={'page-link'}
-  //       pageLinkClassName={'page-link'}
-  //       containerClassName={'pagination react-paginate justify-content-end my-2 pe-1'}
-  //     />
-  //   )
-  // }
+    return (
+      <ReactPaginate
+        previousLabel={''}
+        nextLabel={''}
+        pageCount={count || 1}
+        activeClassName='active'
+        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
+        onPageChange={page => handlePagination(page)}
+        pageClassName={'page-item'}
+        nextLinkClassName={'page-link'}
+        nextClassName={'page-item next'}
+        previousClassName={'page-item prev'}
+        previousLinkClassName={'page-link'}
+        pageLinkClassName={'page-link'}
+        containerClassName={'pagination react-paginate justify-content-end my-2 pe-1'}
+      />
+    )
+  }
 
   // ** Table data to render
-  // const dataToRender = () => {
-  //   const filters = {
-  //     role: currentRole.value,
-  //     currentPlan: currentPlan.value,
-  //     status: currentStatus.value,
-  //     q: searchTerm
-  //   }
+  const dataToRender = () => {
+    const filters = {
+      role: currentRole.value,
+      currentPlan: currentPlan.value,
+      status: currentStatus.value,
+      q: searchTerm
+    }
 
-  //   const isFiltered = Object.keys(filters).some(function (k) {
-  //     return filters[k]?.length > 0
-  //   })
+    const isFiltered = Object.keys(filters).some(function (k) {
+      return filters[k]?.length > 0
+    })
 
-  //   if (store?.data?.length > 0) {
-  //     return store?.data
-  //   } else if (store?.data?.length === 0 && isFiltered) {
-  //     return []
-  //   } else {
-  //     return store?.allData?.slice(0, rowsPerPage)
-  //   }
-  // }
+    if (allUserData?.length > 0 && !isFiltered) {
+      return allUserData
+    } else if (allUserData?.length === 0 && isFiltered) {
+      return []
+    } else {
+      return allUserData?.slice(0, rowsPerPage)
+    }
+  }
 
-  // const handleSort = (column, sortDirection) => {
-  //   setSort(sortDirection)
-  //   setSortColumn(column.sortField)
-  // }
+  const handleSort = (column, sortDirection) => {
+    setSort(sortDirection)
+    // setSortColumn(column.sortField)
+  }
+
+  const handleCurrentRole = (value) => {
+    if (!value) {
+      return
+    }
+    if (!value.value && value.label) {
+      setCurrentRole({ label: value.label, value: value.value })
+    } else {
+      setCurrentRole({ label: value.value, value: value.value })
+    }
+  }
+
+  const handleCurrentPlan = (value) => {
+    if (!value) {
+      return
+    }
+    if (!value.value && value.label) {
+      setCurrentPlan({ label: value.label, value: value.value })
+    } else {
+      setCurrentPlan({ label: value.value, value: value.value })
+    }
+
+  }
+
+  const handleCurrentStatus = (value) => {
+    if (!value) {
+      return
+    }
+    if (!value.value && value.label) {
+      setCurrentStatus({ label: value.label, value: value.value })
+    } else {
+      setCurrentStatus({ label: value.value, value: value.value })
+    }
+
+  }
 
   return (
     <Fragment>
@@ -292,15 +317,15 @@ const UsersList = ({ allUserData }) => {
         <CardBody>
           <Row>
             <Col md='4'>
-              <Label for='role-select'>Role</Label>
+              <Label for='role-select'>Subscription Status</Label>
               <Select
                 isClearable={false}
-                value={currentRole}
+                value={currentRole || ''}
                 options={roleOptions}
                 className='react-select'
                 classNamePrefix='select'
                 theme={selectThemeColors}
-              // onChange={ }
+                onChange={handleCurrentRole}
               />
             </Col>
             <Col className='my-md-0 my-1' md='4'>
@@ -311,42 +336,27 @@ const UsersList = ({ allUserData }) => {
                 className='react-select'
                 classNamePrefix='select'
                 options={planOptions}
-                value={currentPlan}
-              // onChange={}
+                value={currentPlan || ''}
+                onChange={handleCurrentPlan}
               />
             </Col>
             <Col md='4'>
-              <Label for='status-select'>Status</Label>
+              <Label for='status-select'>User Status</Label>
               <Select
                 theme={selectThemeColors}
                 isClearable={false}
                 className='react-select'
                 classNamePrefix='select'
                 options={statusOptions}
-                value={currentStatus}
-              // onChange={}
-              />
-            </Col>
-          </Row>
-          <Row className='mt-2'>
-            <Col>
-              <Label for='status-select'>Search</Label>
-              <Select
-                isSearchable
-                theme={selectThemeColors}
-                isClearable={true}
-                className='react-select'
-                classNamePrefix='Search'
-                options={searchOption}
-                value={currentOption}
-              // onChange={}
+                value={currentStatus || ''}
+                onChange={handleCurrentStatus}
               />
             </Col>
           </Row>
         </CardBody>
       </Card>
 
-      {/* <Card className='overflow-hidden'>
+      <Card className='overflow-hidden'>
         <div className='react-dataTable'>
           <DataTable
             noHeader
@@ -363,19 +373,16 @@ const UsersList = ({ allUserData }) => {
             data={dataToRender()}
             subHeaderComponent={
               <CustomHeader
-                store={store}
+                store={allUserData}
                 searchTerm={searchTerm}
                 rowsPerPage={rowsPerPage}
                 handleFilter={handleFilter}
                 handlePerPage={handlePerPage}
-                toggleSidebar={toggleSidebar}
               />
             }
           />
         </div>
-      </Card> */}
-
-      <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
+      </Card>
     </Fragment>
   )
 }

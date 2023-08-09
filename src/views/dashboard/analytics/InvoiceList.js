@@ -10,7 +10,9 @@ const InvoiceList = ({ tableData }) => {
     if (tableData) {
         return (
             <Card>
-                <CardHeader>Recent User Activity</CardHeader>
+                <CardHeader>
+                    <h5>Last Ten Transaction Data</h5>
+                </CardHeader>
                 <div style={{
                     overflow: "hidden", width: "100%"
                 }}>
@@ -31,7 +33,7 @@ const InvoiceList = ({ tableData }) => {
                                         <tr>
                                             <td>{index + 1}</td>
                                             <td className='d-flex flex-column'>
-                                                <span className='text-capitalize'>{item.firstName} {item.lastName}</span>
+                                                <span className='text-capitalize'>{item?.firstName} {item?.lastName}</span>
                                                 <small>{item?.email}</small>
                                             </td>
                                             <td className='text-break'>{item?.planName}</td>
