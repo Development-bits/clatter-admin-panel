@@ -19,7 +19,6 @@ const UserTabs = ({ active, toggleTab }) => {
         <TabPane tabId='1'>
           <UserProjectsList />
           <UserTimeline />
-          <InvoiceList />
         </TabPane>
       </TabContent>
     </Fragment>

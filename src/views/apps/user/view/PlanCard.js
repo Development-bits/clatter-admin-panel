@@ -17,14 +17,14 @@ import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/base/plugins/extensions/ext-component-sweet-alerts.scss'
 
 const planOptions = [
-  { value: 'standard', label: 'Standard - $99/month' },
-  { value: 'exclusive', label: 'Exclusive - $249/month' },
-  { value: 'enterprise', label: 'Enterprise - $499/month' }
+  { value: 'Creator Monthly Plan', label: 'Creator Monthly Plan - $47/month' },
+  { value: 'Agency Monthly Plan', label: 'Agency Monthly Plan - $197/month' },
+  { value: 'Company Monthly Plan', label: 'Company Monthly Plan - $497/month' }
 ]
 
 const MySwal = withReactContent(Swal)
 
-const PlanCard = () => {
+const PlanCard = ({ selectedUser }) => {
   // ** State
   const [show, setShow] = useState(false)
 
@@ -68,10 +68,10 @@ const PlanCard = () => {
       <Card className='plan-card border-primary'>
         <CardBody>
           <div className='d-flex justify-content-between align-items-start'>
-            <Badge color='light-primary'>Standard</Badge>
+            <Badge color='light-primary'>{selectedUser?.planName}</Badge>
             <div className='d-flex justify-content-center'>
               <sup className='h5 pricing-currency text-primary mt-1 mb-0'>$</sup>
-              <span className='fw-bolder display-5 mb-0 text-primary'>99</span>
+              <span className='fw-bolder display-5 mb-0 text-primary'>{selectedUser?.planAmount}</span>
               <sub className='pricing-duration font-small-4 ms-25 mt-auto mb-2'>/month</sub>
             </div>
           </div>
@@ -82,10 +82,10 @@ const PlanCard = () => {
           </ul>
           <div className='d-flex justify-content-between align-items-center fw-bolder mb-50'>
             <span>Days</span>
-            <span>4 of 30 Days</span>
+            <span>{selectedUser?.remainingDays} of 29 Days</span>
           </div>
           <Progress className='mb-50' value={85} style={{ height: '8px' }} />
-          <span>4 days remaining</span>
+          <span>{selectedUser?.remainingDays} days remaining</span>
           <div className='d-grid w-100 mt-2'>
             <Button color='primary' onClick={() => setShow(true)}>
               Upgrade Plan
@@ -120,11 +120,11 @@ const PlanCard = () => {
         </ModalBody>
         <hr />
         <ModalBody className='px-5 pb-3'>
-          <h6>User current plan is standard plan</h6>
+          <h6>User current plan is {selectedUser?.planName} plan</h6>
           <div className='d-flex justify-content-between align-items-center flex-wrap'>
             <div className='d-flex justify-content-center me-1 mb-1'>
               <sup className='h5 pricing-currency pt-1 text-primary'>$</sup>
-              <h1 className='fw-bolder display-4 mb-0 text-primary me-25'>99</h1>
+              <h1 className='fw-bolder display-4 mb-0 text-primary me-25'>{selectedUser?.planAmount}</h1>
               <sub className='pricing-duration font-small-4 mt-auto mb-2'>/month</sub>
             </div>
             <Button outline color='danger' className='mb-1' onClick={handleConfirmCancel}>

@@ -186,13 +186,13 @@ const UsersList = ({ allUserData, total }) => {
 
   // ** User filter options
   const roleOptions = [
-    { value: '', label: 'Select Status' },
+    { value: '', label: 'All' },
     { value: 'active', label: 'Active' },
-    { value: 'canceled', label: 'Cancelled' },
+    { value: 'canceled', label: 'Canceled' },
   ]
 
   const planOptions = [
-    { value: '', label: 'Select Plan' },
+    { value: '', label: 'All' },
     { value: 'Creator Monthly Plan', label: 'Creator Monthly Plan' },
     { value: 'Agency Monthly Plan', label: 'Agency Monthly Plan' },
     { value: 'Company Monthly Plan', label: 'Company Monthly Plan' },
@@ -200,8 +200,8 @@ const UsersList = ({ allUserData, total }) => {
   ]
 
   const statusOptions = [
-    { value: '', label: 'Select Status', number: 0 },
-    { value: 'pending', label: 'Pending', number: 1 },
+    { value: '', label: 'All', number: 0 },
+    { value: 'banned', label: 'Banned', number: 1 },
     { value: 'active', label: 'Active', number: 2 },
     { value: 'inactive', label: 'Inactive', number: 3 },
     { value: 'deactivated', label: 'Deactivated', number: 4 }

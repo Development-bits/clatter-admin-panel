@@ -37,7 +37,7 @@ const statusColors = {
 const statusOptions = [
   { value: 'active', label: 'Active' },
   { value: 'inactive', label: 'Inactive' },
-  { value: 'suspended', label: 'Suspended' }
+  { value: 'banned', label: 'Banned' }
 ]
 
 const countryOptions = [
@@ -71,21 +71,23 @@ const UserInfoCard = ({ selectedUser }) => {
     formState: { errors }
   } = useForm({
     defaultValues: {
-      username: selectedUser?.username,
-      lastName: selectedUser?.firstName.split(' ')[1],
-      firstName: selectedUser?.firstName.split(' ')[0]
+      firstName: selectedUser?.firstName,
+      lastName: selectedUser?.lastName,
+      userName: selectedUser?.userName,
+      email: selectedUser?.email,
+      status: selectedUser?.userStatus
     }
   })
 
   // ** render user img
   const renderUserImg = () => {
-    if (selectedUser !== null && selectedUser?.avatar?.length) {
+    if (selectedUser && selectedUser?.profileImage?.length) {
       return (
         <img
           height='110'
           width='110'
           alt='user-avatar'
-          src={selectedUser?.avatar}
+          src={selectedUser?.profileImage}
           className='img-fluid rounded mt-3 mb-2'
         />
       )
@@ -127,19 +129,21 @@ const UserInfoCard = ({ selectedUser }) => {
 
   const handleReset = () => {
     reset({
-      username: selectedUser?.username,
-      lastName: selectedUser?.lastName.split(' ')[1],
-      firstName: selectedUser?.firstName.split(' ')[0]
+      firstName: selectedUser?.firstName,
+      lastName: selectedUser?.lastName,
+      userName: selectedUser?.userName,
+      email: selectedUser?.email,
+      status: selectedUser?.userStatus
     })
   }
 
   const handleSuspendedClick = async () => {
     return await MySwal.fire({
       title: 'Are you sure?',
-      text: "You won't be able to revert user!",
+      text: "You will be able to revert user ban!",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, Suspend user!',
+      confirmButtonText: 'Yes, Ban user!',
       customClass: {
         confirmButton: 'btn btn-primary',
         cancelButton: 'btn btn-outline-danger ms-1'
@@ -149,8 +153,8 @@ const UserInfoCard = ({ selectedUser }) => {
       if (result.value) {
         MySwal.fire({
           icon: 'success',
-          title: 'Suspended!',
-          text: 'User has been suspended.',
+          title: 'Banned!',
+          text: 'User has been Banned.',
           customClass: {
             confirmButton: 'btn btn-success'
           }
@@ -158,7 +162,7 @@ const UserInfoCard = ({ selectedUser }) => {
       } else if (result.dismiss === MySwal.DismissReason.cancel) {
         MySwal.fire({
           title: 'Cancelled',
-          text: 'Cancelled Suspension :)',
+          text: 'Cancelled Ban :)',
           icon: 'error',
           customClass: {
             confirmButton: 'btn btn-success'
@@ -177,8 +181,8 @@ const UserInfoCard = ({ selectedUser }) => {
               {renderUserImg()}
               <div className='d-flex flex-column align-items-center text-center'>
                 <div className='user-info'>
-                  <h4>{selectedUser !== null ? selectedUser?.firstName : 'Eleanor Aguilar'}</h4>
-                  {selectedUser !== null ? (
+                  <h4>{selectedUser ? selectedUser?.firstName : 'Eleanor Aguilar'}</h4>
+                  {selectedUser ? (
                     <Badge color={roleColors[selectedUser?.role]} className='text-capitalize'>
                       {selectedUser?.role}
                     </Badge>
@@ -193,8 +197,8 @@ const UserInfoCard = ({ selectedUser }) => {
                 <Check className='font-medium-2' />
               </Badge>
               <div className='ms-75'>
-                <h4 className='mb-0'>1.23k</h4>
-                <small>Tasks Done</small>
+                <h4 className='mb-0'>{selectedUser?.documentsCreated}</h4>
+                <small>Total Document Created</small>
               </div>
             </div>
             <div className='d-flex align-items-start'>
@@ -202,48 +206,32 @@ const UserInfoCard = ({ selectedUser }) => {
                 <Briefcase className='font-medium-2' />
               </Badge>
               <div className='ms-75'>
-                <h4 className='mb-0'>568</h4>
-                <small>Projects Done</small>
+                <h4 className='mb-0'>{selectedUser?.videosCreated}</h4>
+                <small>Total Video Created</small>
               </div>
             </div>
           </div>
           <h4 className='fw-bolder border-bottom pb-50 mb-1'>Details</h4>
           <div className='info-container'>
-            {selectedUser !== null ? (
+            {selectedUser ? (
               <ul className='list-unstyled'>
                 <li className='mb-75'>
                   <span className='fw-bolder me-25'>Username:</span>
-                  <span>{selectedUser?.username}</span>
+                  <span>{selectedUser ? selectedUser?.userName : ''}</span>
                 </li>
                 <li className='mb-75'>
                   <span className='fw-bolder me-25'>Billing Email:</span>
-                  <span>{selectedUser?.email}</span>
+                  <span> {selectedUser ? selectedUser?.email : ''}</span>
                 </li>
                 <li className='mb-75'>
                   <span className='fw-bolder me-25'>Status:</span>
-                  <Badge className='text-capitalize' color={statusColors[selectedUser?.status]}>
-                    {selectedUser?.status}
+                  <Badge className='text-capitalize' color={statusColors[selectedUser?.userStatus]}>
+                    {selectedUser?.userStatus}
                   </Badge>
                 </li>
                 <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Role:</span>
-                  <span className='text-capitalize'>{selectedUser?.role}</span>
-                </li>
-                <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Tax ID:</span>
-                  <span>Tax-{selectedUser?.contact?.substr(selectedUser?.contact?.length - 4)}</span>
-                </li>
-                <li className='mb-75'>
                   <span className='fw-bolder me-25'>Contact:</span>
-                  <span>{selectedUser?.contact}</span>
-                </li>
-                <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Language:</span>
-                  <span>English</span>
-                </li>
-                <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Country:</span>
-                  <span>England</span>
+                  <span>{selectedUser?.phoneNumber}</span>
                 </li>
               </ul>
             ) : null}
@@ -253,7 +241,7 @@ const UserInfoCard = ({ selectedUser }) => {
               Edit
             </Button>
             <Button className='ms-1' color='danger' outline onClick={handleSuspendedClick}>
-              Deactivate
+              Ban
             </Button>
           </div>
         </CardBody>
@@ -296,16 +284,21 @@ const UserInfoCard = ({ selectedUser }) => {
                 />
               </Col>
               <Col xs={12}>
-                <Label className='form-label' for='username'>
+                <Label className='form-label' for='userName'>
                   Username
                 </Label>
                 <Controller
                   defaultValue=''
                   control={control}
-                  id='username'
-                  name='username'
+                  id='userName'
+                  name='userName'
                   render={({ field }) => (
-                    <Input {...field} id='username' placeholder='john.doe.007' invalid={errors.username && true} />
+                    <Input
+                      {...field}
+                      id='userName'
+                      placeholder='john.doe.007'
+                      invalid={errors.userName && true}
+                    />
                   )}
                 />
               </Col>
@@ -316,7 +309,7 @@ const UserInfoCard = ({ selectedUser }) => {
                 <Input
                   type='email'
                   id='billing-email'
-                  defaultValue={selectedUser?.email}
+                  defaultValue={selectedUser?.email ?? ''}
                   placeholder='example@domain.com'
                 />
               </Col>
@@ -331,24 +324,14 @@ const UserInfoCard = ({ selectedUser }) => {
                   classNamePrefix='select'
                   options={statusOptions}
                   theme={selectThemeColors}
-                  defaultValue={statusOptions[statusOptions?.findIndex(i => i.value === selectedUser?.status)]}
-                />
-              </Col>
-              <Col md={6} xs={12}>
-                <Label className='form-label' for='tax-id'>
-                  Tax ID
-                </Label>
-                <Input
-                  id='tax-id'
-                  placeholder='Tax-1234'
-                  defaultValue={selectedUser?.contact?.substr(selectedUser?.contact?.length - 4)}
+                  defaultValue={selectedUser ? statusOptions[statusOptions?.findIndex(i => i.value === selectedUser?.status)] : null}
                 />
               </Col>
               <Col md={6} xs={12}>
                 <Label className='form-label' for='contact'>
                   Contact
                 </Label>
-                <Input id='contact' defaultValue={selectedUser?.contact} placeholder='+1 609 933 4422' />
+                <Input id='contact' defaultValue={selectedUser ? selectedUser?.phoneNumber : null} placeholder='+1 609 933 4422' />
               </Col>
               <Col md={6} xs={12}>
                 <Label className='form-label' for='language'>
