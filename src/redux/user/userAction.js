@@ -43,3 +43,23 @@ export const singleUserAction = createAsyncThunk('users/single-user', async (arg
         }
     }
 })
+
+export const updateProfileAction = createAsyncThunk('users/update-user-profile', async (arg, { rejectWithValue }) => {
+    try {
+        let accessToken = JSON.parse(localStorage.getItem("accessToken"))
+        let config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `Bearer ${accessToken}`
+            }
+        }
+        const response = await axios.put(`${Domain}/update-user-details/${arg.id}`, arg.data, config)
+        return response.data
+    } catch (error) {
+        if (error.message && error.response.data.message) {
+            return rejectWithValue(error.response.data.message)
+        } else {
+            return rejectWithValue(error.message)
+        }
+    }
+})

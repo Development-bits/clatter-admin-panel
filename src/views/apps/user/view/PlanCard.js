@@ -15,18 +15,22 @@ import { selectThemeColors } from '@utils'
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/base/plugins/extensions/ext-component-sweet-alerts.scss'
+import { useDispatch } from 'react-redux'
+import { subAction } from '../../../../redux/subscription/subscriptionAction'
 
 const planOptions = [
-  { value: 'Creator Monthly Plan', label: 'Creator Monthly Plan - $47/month' },
-  { value: 'Agency Monthly Plan', label: 'Agency Monthly Plan - $197/month' },
-  { value: 'Company Monthly Plan', label: 'Company Monthly Plan - $497/month' }
+  { value: 'creator_monthly_plan', label: 'Creator Monthly Plan - $47/month' },
+  { value: 'agency_monthly_plan', label: 'Agency Monthly Plan - $197/month' },
+  { value: 'company_monthly_plan', label: 'Company Monthly Plan - $497/month' }
 ]
 
 const MySwal = withReactContent(Swal)
 
 const PlanCard = ({ selectedUser }) => {
   // ** State
+  const dispatch = useDispatch()
   const [show, setShow] = useState(false)
+  const [currentPlan, setCurrentPlan] = useState({ value: 'creator_monthly_plan', label: 'Creator Monthly Plan - $47/month' })
 
   const handleConfirmCancel = () => {
     return MySwal.fire({
@@ -63,6 +67,14 @@ const PlanCard = ({ selectedUser }) => {
     })
   }
 
+  const handleUpgrade = () => {
+    let body = {
+      email: selectedUser.email,
+      plan: currentPlan.value
+    }
+    dispatch(subAction(body))
+  }
+
   return (
     <Fragment>
       <Card className='plan-card border-primary'>
@@ -84,7 +96,7 @@ const PlanCard = ({ selectedUser }) => {
             <span>Days</span>
             <span>{selectedUser?.remainingDays} of 29 Days</span>
           </div>
-          <Progress className='mb-50' value={85} style={{ height: '8px' }} />
+          <Progress className='mb-50' value={selectedUser?.planName === "Free Trial" ? ((28 / 29) * 100) : ((selectedUser?.remainingDays / 29) * 100)} style={{ height: '8px' }} />
           <span>{selectedUser?.remainingDays} days remaining</span>
           <div className='d-grid w-100 mt-2'>
             <Button color='primary' onClick={() => setShow(true)}>
@@ -114,7 +126,7 @@ const PlanCard = ({ selectedUser }) => {
               />
             </Col>
             <Col sm={4} className='text-sm-end mt-2'>
-              <Button color='primary'>Upgrade</Button>
+              <Button color='primary' onClick={() => handleUpgrade()}>Upgrade</Button>
             </Col>
           </Row>
         </ModalBody>

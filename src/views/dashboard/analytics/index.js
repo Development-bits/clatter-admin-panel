@@ -155,7 +155,6 @@ const AnalyticsDashboard = () => {
           {currentFilter.value === "packagesSoldAll" && (
             <Row className='match-height'>
               {dashboardData?.packagesSoldAll?.map((item) => {
-                debugger
                 let icon = null;
                 if (item.name === "Creator Monthly Plan") {
                   icon = <CreatorPlan size={15} />
@@ -189,7 +188,6 @@ const AnalyticsDashboard = () => {
           {currentFilter.value === "packagesSoldToday" && (
             <Row className='match-height'>
               {dashboardData?.packagesSoldToday?.map((item) => {
-                debugger
                 let icon = null;
                 if (item.name === "Creator Monthly Plan") {
                   icon = <CreatorPlan size={15} />

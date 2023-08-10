@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, Fragment } from 'react'
+import { useState, Fragment, useEffect } from 'react'
 
 // ** Reactstrap Imports
 import { Row, Col, Card, Form, CardBody, Button, Badge, Modal, Input, Label, ModalBody, ModalHeader } from 'reactstrap'
@@ -19,6 +19,9 @@ import { selectThemeColors } from '@utils'
 
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
+import { useDispatch } from 'react-redux'
+import { updateProfileAction } from '../../../../redux/user/userAction'
+import { useParams } from 'react-router-dom'
 
 const roleColors = {
   editor: 'light-info',
@@ -59,6 +62,8 @@ const languageOptions = [
 const MySwal = withReactContent(Swal)
 
 const UserInfoCard = ({ selectedUser }) => {
+  const { id } = useParams()
+  const dispatch = useDispatch()
   // ** State
   const [show, setShow] = useState(false)
 
@@ -67,6 +72,7 @@ const UserInfoCard = ({ selectedUser }) => {
     reset,
     control,
     setError,
+    setValue,
     handleSubmit,
     formState: { errors }
   } = useForm({
@@ -75,7 +81,11 @@ const UserInfoCard = ({ selectedUser }) => {
       lastName: selectedUser?.lastName,
       userName: selectedUser?.userName,
       email: selectedUser?.email,
-      status: selectedUser?.userStatus
+      zipCode: selectedUser?.zipCode,
+      address: selectedUser?.address,
+      status: [{ value: selectedUser?.userStatus, label: selectedUser?.userStatus }],
+      country: [{ value: selectedUser?.country, label: selectedUser?.country }],
+      language: [{ value: selectedUser?.language, label: selectedUser?.language }]
     }
   })
 
@@ -114,8 +124,26 @@ const UserInfoCard = ({ selectedUser }) => {
   }
 
   const onSubmit = data => {
-    if (Object.values(data).every(field => field.length > 0)) {
+    debugger
+    if (Object.values(data).every(field =>
+      field !== undefined || field.length > 0
+    )) {
+      let body = {
+        id: id,
+        data: {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          userName: data.userName,
+          email: data.email,
+          zipCode: data.zipCode,
+          address: data.address,
+          status: data.status[0].value,
+          country: data.country[0].value,
+          language: data.language[0].value
+        }
+      }
       setShow(false)
+      dispatch(updateProfileAction(body))
     } else {
       for (const key in data) {
         if (data[key].length === 0) {
@@ -132,8 +160,13 @@ const UserInfoCard = ({ selectedUser }) => {
       firstName: selectedUser?.firstName,
       lastName: selectedUser?.lastName,
       userName: selectedUser?.userName,
+      phoneNumber: selectedUser?.phoneNumber,
       email: selectedUser?.email,
-      status: selectedUser?.userStatus
+      zipCode: selectedUser?.zipCode,
+      address: selectedUser?.address,
+      status: [{ value: selectedUser?.userStatus, label: selectedUser?.userStatus }],
+      language: [{ value: selectedUser?.language, label: selectedUser?.language }],
+      country: [{ value: selectedUser?.country, label: selectedUser?.country }]
     })
   }
 
@@ -172,6 +205,54 @@ const UserInfoCard = ({ selectedUser }) => {
     })
   }
 
+  useEffect(() => {
+    if (selectedUser) {
+      debugger
+      setValue("firstName", selectedUser?.firstName)
+      setValue("lastName", selectedUser?.lastName)
+      setValue("userName", selectedUser?.userName)
+      setValue("email", selectedUser?.email)
+      setValue("zipCode", selectedUser?.zipCode)
+      setValue('address', selectedUser?.address)
+      setValue("status", [{ value: selectedUser?.userStatus, label: selectedUser?.userStatus }])
+      setValue("language", [{ value: selectedUser?.language, label: selectedUser?.language }])
+      setValue("country", [{ value: selectedUser?.country, label: selectedUser?.country }])
+    }
+  }, [selectedUser])
+
+  const handleLanguage = (value) => {
+    if (!value) {
+      return
+    }
+    if (!value.value && value.label) {
+      setValue("language", [{ value: value.value, label: value.label }])
+    } else {
+      setValue("language", [{ value: value.value, label: value.value }])
+    }
+  }
+
+  const handleCountry = (value) => {
+    if (!value) {
+      return
+    }
+    if (!value.value && value.label) {
+      setValue("country", [{ value: value.value, label: value.label }])
+    } else {
+      setValue("country", [{ value: value.value, label: value.value }])
+    }
+  }
+
+  const handleStatus = (value) => {
+    if (!value) {
+      return
+    }
+    if (!value.value && value.label) {
+      setValue("status", [{ value: value.value, label: value.label }])
+    } else {
+      setValue("status", [{ value: value.value, label: value.value }])
+    }
+  }
+
   return (
     <Fragment>
       <Card>
@@ -181,12 +262,7 @@ const UserInfoCard = ({ selectedUser }) => {
               {renderUserImg()}
               <div className='d-flex flex-column align-items-center text-center'>
                 <div className='user-info'>
-                  <h4>{selectedUser ? selectedUser?.firstName : 'Eleanor Aguilar'}</h4>
-                  {selectedUser ? (
-                    <Badge color={roleColors[selectedUser?.role]} className='text-capitalize'>
-                      {selectedUser?.role}
-                    </Badge>
-                  ) : null}
+                  <h4>{selectedUser?.firstName ?? ''}</h4>
                 </div>
               </div>
             </div>
@@ -197,7 +273,7 @@ const UserInfoCard = ({ selectedUser }) => {
                 <Check className='font-medium-2' />
               </Badge>
               <div className='ms-75'>
-                <h4 className='mb-0'>{selectedUser?.documentsCreated}</h4>
+                <h4 className='mb-0'>{selectedUser?.documentsCreated ?? ''}</h4>
                 <small>Total Document Created</small>
               </div>
             </div>
@@ -206,7 +282,7 @@ const UserInfoCard = ({ selectedUser }) => {
                 <Briefcase className='font-medium-2' />
               </Badge>
               <div className='ms-75'>
-                <h4 className='mb-0'>{selectedUser?.videosCreated}</h4>
+                <h4 className='mb-0'>{selectedUser?.videosCreated ?? ''}</h4>
                 <small>Total Video Created</small>
               </div>
             </div>
@@ -217,21 +293,21 @@ const UserInfoCard = ({ selectedUser }) => {
               <ul className='list-unstyled'>
                 <li className='mb-75'>
                   <span className='fw-bolder me-25'>Username:</span>
-                  <span>{selectedUser ? selectedUser?.userName : ''}</span>
+                  <span>{selectedUser?.userName ?? ''}</span>
                 </li>
                 <li className='mb-75'>
                   <span className='fw-bolder me-25'>Billing Email:</span>
-                  <span> {selectedUser ? selectedUser?.email : ''}</span>
+                  <span> {selectedUser?.email ?? ''}</span>
                 </li>
                 <li className='mb-75'>
                   <span className='fw-bolder me-25'>Status:</span>
                   <Badge className='text-capitalize' color={statusColors[selectedUser?.userStatus]}>
-                    {selectedUser?.userStatus}
+                    {selectedUser?.userStatus ?? ''}
                   </Badge>
                 </li>
                 <li className='mb-75'>
                   <span className='fw-bolder me-25'>Contact:</span>
-                  <span>{selectedUser?.phoneNumber}</span>
+                  <span>{selectedUser?.phoneNumber ?? ''}</span>
                 </li>
               </ul>
             ) : null}
@@ -260,12 +336,18 @@ const UserInfoCard = ({ selectedUser }) => {
                   First Name
                 </Label>
                 <Controller
-                  defaultValue=''
                   control={control}
                   id='firstName'
                   name='firstName'
                   render={({ field }) => (
-                    <Input {...field} id='firstName' placeholder='John' invalid={errors.firstName && true} />
+                    <Input
+                      {...field}
+                      id='firstName'
+                      name='firstName'
+                      type='text'
+                      placeholder='John'
+                      invalid={errors.firstName && true}
+                    />
                   )}
                 />
               </Col>
@@ -274,21 +356,25 @@ const UserInfoCard = ({ selectedUser }) => {
                   Last Name
                 </Label>
                 <Controller
-                  defaultValue=''
                   control={control}
                   id='lastName'
                   name='lastName'
                   render={({ field }) => (
-                    <Input {...field} id='lastName' placeholder='Doe' invalid={errors.lastName && true} />
+                    <Input
+                      {...field}
+                      type="text"
+                      id='lastName'
+                      name='lastName'
+                      placeholder='Doe'
+                      invalid={errors.lastName && true} />
                   )}
                 />
               </Col>
-              <Col xs={12}>
+              <Col md={6} xs={12}>
                 <Label className='form-label' for='userName'>
                   Username
                 </Label>
                 <Controller
-                  defaultValue=''
                   control={control}
                   id='userName'
                   name='userName'
@@ -296,6 +382,8 @@ const UserInfoCard = ({ selectedUser }) => {
                     <Input
                       {...field}
                       id='userName'
+                      name='userName'
+                      type="text"
                       placeholder='john.doe.007'
                       invalid={errors.userName && true}
                     />
@@ -303,7 +391,47 @@ const UserInfoCard = ({ selectedUser }) => {
                 />
               </Col>
               <Col md={6} xs={12}>
-                <Label className='form-label' for='billing-email'>
+                <Label className='form-label' for='address'>
+                  Address
+                </Label>
+                <Controller
+                  control={control}
+                  id='address'
+                  name='address'
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id='address'
+                      name='address'
+                      type="text"
+                      placeholder='North Finchley'
+                      invalid={errors.address && true}
+                    />
+                  )}
+                />
+              </Col>
+              <Col md={6} xs={12}>
+                <Label className='form-label' for='zipCode'>
+                  Zip Code
+                </Label>
+                <Controller
+                  control={control}
+                  id='zipCode'
+                  name='zipCode'
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id='zipCode'
+                      name='zipCode'
+                      type="text"
+                      placeholder='ABC123'
+                      invalid={errors.zipCode && true}
+                    />
+                  )}
+                />
+              </Col>
+              <Col md={6} xs={12}>
+                <Label className='form-label' for='zipCode'>
                   Billing Email
                 </Label>
                 <Input
@@ -323,15 +451,16 @@ const UserInfoCard = ({ selectedUser }) => {
                   className='react-select'
                   classNamePrefix='select'
                   options={statusOptions}
+                  onChange={handleStatus}
                   theme={selectThemeColors}
-                  defaultValue={selectedUser ? statusOptions[statusOptions?.findIndex(i => i.value === selectedUser?.status)] : null}
+                  defaultValue={selectedUser ? statusOptions[statusOptions?.findIndex(i => i.value === selectedUser?.userStatus)] : null}
                 />
               </Col>
               <Col md={6} xs={12}>
-                <Label className='form-label' for='contact'>
+                <Label className='form-label' for='phoneNumber'>
                   Contact
                 </Label>
-                <Input id='contact' defaultValue={selectedUser ? selectedUser?.phoneNumber : null} placeholder='+1 609 933 4422' />
+                <Input id='phoneNumber' defaultValue={selectedUser ? selectedUser?.phoneNumber : null} placeholder='+1 609 933 4422' />
               </Col>
               <Col md={6} xs={12}>
                 <Label className='form-label' for='language'>
@@ -343,8 +472,9 @@ const UserInfoCard = ({ selectedUser }) => {
                   className='react-select'
                   classNamePrefix='select'
                   options={languageOptions}
+                  onChange={handleLanguage}
                   theme={selectThemeColors}
-                  defaultValue={languageOptions[0]}
+                  defaultValue={languageOptions[languageOptions?.findIndex(i => i.value === selectedUser?.language)] ?? null}
                 />
               </Col>
               <Col md={6} xs={12}>
@@ -357,8 +487,9 @@ const UserInfoCard = ({ selectedUser }) => {
                   className='react-select'
                   classNamePrefix='select'
                   options={countryOptions}
+                  onChange={handleCountry}
                   theme={selectThemeColors}
-                  defaultValue={countryOptions[0]}
+                  defaultValue={countryOptions[countryOptions?.findIndex(i => i.value === selectedUser?.country)] ?? null}
                 />
               </Col>
               <Col xs={12}>

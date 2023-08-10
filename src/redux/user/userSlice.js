@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { allUserAction, singleUserAction } from './userAction'
+import { allUserAction, singleUserAction, updateProfileAction } from './userAction'
 
 
 const initialState = {
@@ -10,6 +10,10 @@ const initialState = {
     singleUserData: null,
     singleUserLoading: 'idle',
     singleUserError: null,
+
+    updateUserData: null,
+    updateUserLoading: 'idle',
+    updateUserError: null,
 }
 
 export const userSlice = createSlice({
@@ -48,6 +52,23 @@ export const userSlice = createSlice({
             if (state.singleUserLoading === 'pending') {
                 state.singleUserLoading = 'idle'
                 state.singleUserError = action.payload
+            }
+        })
+        builder.addCase(updateProfileAction.pending, (state, action) => {
+            if (state.updateUserLoading === 'idle') {
+                state.updateUserLoading = 'pending'
+            }
+        })
+        builder.addCase(updateProfileAction.fulfilled, (state, action) => {
+            if (state.updateUserLoading === 'pending') {
+                state.updateUserData = action.payload
+                state.updateUserLoading = 'idle'
+            }
+        })
+        builder.addCase(updateProfileAction.rejected, (state, action) => {
+            if (state.updateUserLoading === 'pending') {
+                state.updateUserLoading = 'idle'
+                state.updateUserError = action.payload
             }
         })
     }
