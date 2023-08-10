@@ -24,7 +24,7 @@ export const allUserAction = createAsyncThunk('users/all-users', async (arg, { r
     }
 })
 
-export const userAction = createAsyncThunk('users/single-user', async (arg, { rejectWithValue }) => {
+export const singleUserAction = createAsyncThunk('users/single-user', async (arg, { rejectWithValue }) => {
     try {
         let accessToken = JSON.parse(localStorage.getItem("accessToken"))
         let config = {
@@ -33,7 +33,7 @@ export const userAction = createAsyncThunk('users/single-user', async (arg, { re
                 'authorization': `Bearer ${accessToken}`
             }
         }
-        const response = await axios.get(`${Domain}/get-users?plan=Free Trial&status=active&page=${arg.page}&limit=${arg.limit}`, config)
+        const response = await axios.get(`${Domain}/user-details/${arg}`, config)
         return response.data
     } catch (error) {
         if (error.message && error.response.data.message) {

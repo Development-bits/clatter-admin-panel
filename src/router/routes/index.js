@@ -32,7 +32,7 @@ const DefaultRoute = '/dashboard'
 const DashboardAnalytics = lazy(() => import('../../views/dashboard/analytics'))
 const UserBillings = lazy(() => import('../../views/billings'))
 const UsersList = lazy(() => import('../../views/apps/user'))
-const UserView = lazy(() => import('../../views/apps/user'))
+const UserView = lazy(() => import('../../views/apps/user/view'))
 
 // ** Merge Routes
 const Routes = [
@@ -61,14 +61,14 @@ const Routes = [
 
   {
     index: true,
-    path: '/apps/user/view',
-    element: <Navigate to='/apps/user/view/1' />,
+    path: '/user/view',
+    element: <Navigate to='/user/view/1' />,
     protected: true,
   },
   {
     index: true,
     element: <UserView />,
-    path: '/apps/user/view/:id',
+    path: '/user/view/:id',
     protected: true,
   },
 ]

@@ -154,7 +154,7 @@ export const columns = [
             <DropdownItem
               tag={Link}
               className='w-100'
-              to={`/apps/user/view/${row.id}`}
+              to={`/user/view/${row.id}`}
             // onClick={() => store.dispatch(getUser(row.id))}
             >
               <FileText size={14} className='me-50' />

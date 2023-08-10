@@ -14,7 +14,7 @@ import { User, UserPlus, UserCheck, UserX } from 'react-feather'
 import '@styles/react/apps/app-users.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import { allUserAction, userAction } from '../../../redux/user/userAction'
+import { allUserAction } from '../../../redux/user/userAction'
 
 const UsersList = () => {
   const dispatch = useDispatch()

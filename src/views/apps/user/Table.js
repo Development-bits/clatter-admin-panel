@@ -187,8 +187,8 @@ const UsersList = ({ allUserData, total }) => {
   // ** User filter options
   const roleOptions = [
     { value: '', label: 'Select Status' },
-    { value: 'Active', label: 'Active' },
-    { value: 'Cancelled', label: 'Cancelled' },
+    { value: 'active', label: 'Active' },
+    { value: 'canceled', label: 'Cancelled' },
   ]
 
   const planOptions = [
@@ -201,10 +201,10 @@ const UsersList = ({ allUserData, total }) => {
 
   const statusOptions = [
     { value: '', label: 'Select Status', number: 0 },
-    { value: 'Pending', label: 'Pending', number: 1 },
-    { value: 'Active', label: 'Active', number: 2 },
-    { value: 'Inactive', label: 'Inactive', number: 3 },
-    { value: 'Deactivated', label: 'Deactivated', number: 4 }
+    { value: 'pending', label: 'Pending', number: 1 },
+    { value: 'active', label: 'Active', number: 2 },
+    { value: 'inactive', label: 'Inactive', number: 3 },
+    { value: 'deactivated', label: 'Deactivated', number: 4 }
   ]
 
   // ** Function in get data on page change
