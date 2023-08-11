@@ -9,7 +9,6 @@ export const allUserAction = createAsyncThunk('users/all-users', async (arg, { r
         let accessToken = JSON.parse(localStorage.getItem("accessToken"))
         let config = {
             headers: {
-                'Content-Type': 'application/json',
                 'authorization': `Bearer ${accessToken}`
             }
         }
@@ -29,7 +28,6 @@ export const singleUserAction = createAsyncThunk('users/single-user', async (arg
         let accessToken = JSON.parse(localStorage.getItem("accessToken"))
         let config = {
             headers: {
-                'Content-Type': 'application/json',
                 'authorization': `Bearer ${accessToken}`
             }
         }
@@ -44,16 +42,15 @@ export const singleUserAction = createAsyncThunk('users/single-user', async (arg
     }
 })
 
-export const updateProfileAction = createAsyncThunk('users/update-user-profile', async (arg, { rejectWithValue }) => {
+export const updateProfileAction = createAsyncThunk('users/update-user-profile', async ({ id, formData }, { rejectWithValue }) => {
     try {
         let accessToken = JSON.parse(localStorage.getItem("accessToken"))
         let config = {
             headers: {
-                'Content-Type': 'application/json',
                 'authorization': `Bearer ${accessToken}`
             }
         }
-        const response = await axios.put(`${Domain}/update-user-details/${arg.id}`, arg.data, config)
+        const response = await axios.put(`${Domain}/update-user-details/${id}`, formData, config)
         return response.data
     } catch (error) {
         if (error.message && error.response.data.message) {
@@ -63,3 +60,42 @@ export const updateProfileAction = createAsyncThunk('users/update-user-profile',
         }
     }
 })
+
+export const userSubscriptionDetailAction = createAsyncThunk('users/user-subscriptions/:id?page=1&limit=2', async ({ id, page, limit }, { rejectWithValue }) => {
+    try {
+        let accessToken = JSON.parse(localStorage.getItem("accessToken"))
+        let config = {
+            headers: {
+                'authorization': `Bearer ${accessToken}`
+            }
+        }
+        const response = await axios.get(`${Domain}/user-subscriptions/${id}?page=${page}&limit=${limit}`, config)
+        return response.data
+    } catch (error) {
+        if (error.message && error.response.data.message) {
+            return rejectWithValue(error.response.data.message)
+        } else {
+            return rejectWithValue(error.message)
+        }
+    }
+})
+
+export const userActivityDetailAction = createAsyncThunk('users/user-activity/:id?page=1&limit=2', async ({ id, page, limit }, { rejectWithValue }) => {
+    try {
+        let accessToken = JSON.parse(localStorage.getItem("accessToken"))
+        let config = {
+            headers: {
+                'authorization': `Bearer ${accessToken}`
+            }
+        }
+        const response = await axios.get(`${Domain}/user-activity/${id}?page=${page}&limit=${limit}`, config)
+        return response.data
+    } catch (error) {
+        if (error.message && error.response.data.message) {
+            return rejectWithValue(error.response.data.message)
+        } else {
+            return rejectWithValue(error.message)
+        }
+    }
+})
+

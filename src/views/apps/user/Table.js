@@ -188,7 +188,7 @@ const UsersList = ({ allUserData, total }) => {
   const roleOptions = [
     { value: '', label: 'All' },
     { value: 'active', label: 'Active' },
-    { value: 'canceled', label: 'Canceled' },
+    { value: 'cancel', label: 'Cancelled' },
   ]
 
   const planOptions = [
@@ -277,7 +277,7 @@ const UsersList = ({ allUserData, total }) => {
     if (!value) {
       return
     }
-    if (!value.value && value.label) {
+    if (value.value !== '' && value.label) {
       setCurrentRole({ label: value.label, value: value.value })
     } else {
       setCurrentRole({ label: value.value, value: value.value })
@@ -288,7 +288,7 @@ const UsersList = ({ allUserData, total }) => {
     if (!value) {
       return
     }
-    if (!value.value && value.label) {
+    if (value.value !== '' && value.label) {
       setCurrentPlan({ label: value.label, value: value.value })
     } else {
       setCurrentPlan({ label: value.value, value: value.value })
@@ -300,7 +300,7 @@ const UsersList = ({ allUserData, total }) => {
     if (!value) {
       return
     }
-    if (!value.value && value.label) {
+    if (value.value !== '' && value.label) {
       setCurrentStatus({ label: value.label, value: value.value })
     } else {
       setCurrentStatus({ label: value.value, value: value.value })

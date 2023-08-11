@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { allUserAction, singleUserAction, updateProfileAction } from './userAction'
+import { allUserAction, singleUserAction, updateProfileAction, userActivityDetailAction, userSubscriptionDetailAction } from './userAction'
 
 
 const initialState = {
@@ -14,6 +14,14 @@ const initialState = {
     updateUserData: null,
     updateUserLoading: 'idle',
     updateUserError: null,
+
+    userSubDetailsData: null,
+    userSubDetailsLoading: 'idle',
+    userSubDetailsError: null,
+
+    userActDetailsData: null,
+    userActDetailsLoading: 'idle',
+    userActDetailsError: null,
 }
 
 export const userSlice = createSlice({
@@ -69,6 +77,40 @@ export const userSlice = createSlice({
             if (state.updateUserLoading === 'pending') {
                 state.updateUserLoading = 'idle'
                 state.updateUserError = action.payload
+            }
+        })
+        builder.addCase(userSubscriptionDetailAction.pending, (state, action) => {
+            if (state.userSubDetailsLoading === 'idle') {
+                state.userSubDetailsLoading = 'pending'
+            }
+        })
+        builder.addCase(userSubscriptionDetailAction.fulfilled, (state, action) => {
+            if (state.userSubDetailsLoading === 'pending') {
+                state.userSubDetailsData = action.payload
+                state.userSubDetailsLoading = 'idle'
+            }
+        })
+        builder.addCase(userSubscriptionDetailAction.rejected, (state, action) => {
+            if (state.userSubDetailsLoading === 'pending') {
+                state.userSubDetailsLoading = 'idle'
+                state.userSubDetailsError = action.payload
+            }
+        })
+        builder.addCase(userActivityDetailAction.pending, (state, action) => {
+            if (state.userActDetailsLoading === 'idle') {
+                state.userActDetailsLoading = 'pending'
+            }
+        })
+        builder.addCase(userActivityDetailAction.fulfilled, (state, action) => {
+            if (state.userActDetailsLoading === 'pending') {
+                state.userActDetailsData = action.payload
+                state.userActDetailsLoading = 'idle'
+            }
+        })
+        builder.addCase(userActivityDetailAction.rejected, (state, action) => {
+            if (state.userActDetailsLoading === 'pending') {
+                state.userActDetailsLoading = 'idle'
+                state.userActDetailsError = action.payload
             }
         })
     }

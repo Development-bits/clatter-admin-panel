@@ -46,7 +46,7 @@ const AnalyticsDashboard = () => {
     if (!value) {
       return
     }
-    if (!value.value && value.label) {
+    if (value.value !== '' && value.label) {
       setCurrentFilter({ value: value.value, label: value.label })
     } else {
       setCurrentFilter({ value: value.value, label: value.value })

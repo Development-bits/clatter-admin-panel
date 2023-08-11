@@ -25,14 +25,13 @@ const UserView = () => {
   // ** Hooks
   const { id } = useParams()
 
-
-
   // ** Get suer on mount
   useEffect(() => {
     if (id) {
       dispatch(singleUserAction(id))
     }
   }, [dispatch, id])
+
 
   const [active, setActive] = useState('1')
 
@@ -55,7 +54,7 @@ const UserView = () => {
       </Card>
       <Row>
         <Col xl='4' lg='5' xs={{ order: 1 }} md={{ order: 0, size: 5 }}>
-          <UserInfoCard selectedUser={singleUserData?.data} />
+          <UserInfoCard selectedUser={singleUserData?.data} loading={singleUserLoading} error={singleUserError} />
           <PlanCard selectedUser={singleUserData?.data} />
         </Col>
         <Col xl='8' lg='7' xs={{ order: 0 }} md={{ order: 1, size: 7 }}>

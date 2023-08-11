@@ -61,11 +61,12 @@ const languageOptions = [
 
 const MySwal = withReactContent(Swal)
 
-const UserInfoCard = ({ selectedUser }) => {
+const UserInfoCard = ({ selectedUser, loading, error }) => {
   const { id } = useParams()
   const dispatch = useDispatch()
   // ** State
   const [show, setShow] = useState(false)
+  const [profileImageObj, setProfileImageObj] = useState('')
 
   // ** Hook
   const {
@@ -83,6 +84,8 @@ const UserInfoCard = ({ selectedUser }) => {
       email: selectedUser?.email,
       zipCode: selectedUser?.zipCode,
       address: selectedUser?.address,
+      profileImage: selectedUser?.profileImage,
+      phoneNumber: selectedUser?.phoneNumber,
       status: [{ value: selectedUser?.userStatus, label: selectedUser?.userStatus }],
       country: [{ value: selectedUser?.country, label: selectedUser?.country }],
       language: [{ value: selectedUser?.language, label: selectedUser?.language }]
@@ -91,13 +94,13 @@ const UserInfoCard = ({ selectedUser }) => {
 
   // ** render user img
   const renderUserImg = () => {
-    if (selectedUser && selectedUser?.profileImage?.length) {
+    if (profileImageObj !== '') {
       return (
         <img
           height='110'
           width='110'
           alt='user-avatar'
-          src={selectedUser?.profileImage}
+          src={profileImageObj.link}
           className='img-fluid rounded mt-3 mb-2'
         />
       )
@@ -124,26 +127,23 @@ const UserInfoCard = ({ selectedUser }) => {
   }
 
   const onSubmit = data => {
-    debugger
     if (Object.values(data).every(field =>
       field !== undefined || field.length > 0
     )) {
-      let body = {
-        id: id,
-        data: {
-          firstName: data.firstName,
-          lastName: data.lastName,
-          userName: data.userName,
-          email: data.email,
-          zipCode: data.zipCode,
-          address: data.address,
-          status: data.status[0].value,
-          country: data.country[0].value,
-          language: data.language[0].value
-        }
+      const formData = new FormData()
+      if ((typeof profileImageObj.obj) === 'object') {
+        formData.append("profileImage", profileImageObj.obj)
       }
+      formData.append("firstName", data.firstName);
+      formData.append("lastName", data.lastName)
+      formData.append("address", data.address)
+      formData.append("zipCode", data.zipCode)
+      formData.append("phoneNumber", data.phoneNumber)
+      formData.append("status", data.status[0].value)
+      formData.append("country", data.country[0].value)
+      formData.append("language", data.language[0].value)
       setShow(false)
-      dispatch(updateProfileAction(body))
+      dispatch(updateProfileAction({ id, formData }))
     } else {
       for (const key in data) {
         if (data[key].length === 0) {
@@ -162,6 +162,7 @@ const UserInfoCard = ({ selectedUser }) => {
       userName: selectedUser?.userName,
       phoneNumber: selectedUser?.phoneNumber,
       email: selectedUser?.email,
+      profileImage: selectedUser?.profileImage,
       zipCode: selectedUser?.zipCode,
       address: selectedUser?.address,
       status: [{ value: selectedUser?.userStatus, label: selectedUser?.userStatus }],
@@ -207,16 +208,18 @@ const UserInfoCard = ({ selectedUser }) => {
 
   useEffect(() => {
     if (selectedUser) {
-      debugger
       setValue("firstName", selectedUser?.firstName)
       setValue("lastName", selectedUser?.lastName)
       setValue("userName", selectedUser?.userName)
       setValue("email", selectedUser?.email)
       setValue("zipCode", selectedUser?.zipCode)
       setValue('address', selectedUser?.address)
+      setValue("phoneNumber", selectedUser?.phoneNumber)
+      setValue("profileImage", selectedUser?.profileImage)
       setValue("status", [{ value: selectedUser?.userStatus, label: selectedUser?.userStatus }])
       setValue("language", [{ value: selectedUser?.language, label: selectedUser?.language }])
       setValue("country", [{ value: selectedUser?.country, label: selectedUser?.country }])
+      setProfileImageObj({ link: selectedUser?.profileImage, obj: '' })
     }
   }, [selectedUser])
 
@@ -224,7 +227,7 @@ const UserInfoCard = ({ selectedUser }) => {
     if (!value) {
       return
     }
-    if (!value.value && value.label) {
+    if (value.value !== '' && value.label) {
       setValue("language", [{ value: value.value, label: value.label }])
     } else {
       setValue("language", [{ value: value.value, label: value.value }])
@@ -235,7 +238,7 @@ const UserInfoCard = ({ selectedUser }) => {
     if (!value) {
       return
     }
-    if (!value.value && value.label) {
+    if (value.value !== '' && value.label) {
       setValue("country", [{ value: value.value, label: value.label }])
     } else {
       setValue("country", [{ value: value.value, label: value.value }])
@@ -246,10 +249,36 @@ const UserInfoCard = ({ selectedUser }) => {
     if (!value) {
       return
     }
-    if (!value.value && value.label) {
+    if (value.value !== '' && value.label) {
       setValue("status", [{ value: value.value, label: value.label }])
     } else {
       setValue("status", [{ value: value.value, label: value.value }])
+    }
+  }
+
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file)
+      fileReader.onload = () => {
+        resolve(fileReader.result)
+      }
+      fileReader.onerror = (error) => {
+        reject(error)
+      }
+    })
+  }
+
+  const onChange = async (e) => {
+    const base64 = await convertToBase64(e.target.files[0])
+    setProfileImageObj({ link: base64, obj: e.target.files[0] })
+  };
+
+  const resetProfileImage = () => {
+    if (selectedUser?.profileImage) {
+      setProfileImageObj({ link: selectedUser?.profileImage, obj: null })
+    } else {
+      setProfileImageObj("")
     }
   }
 
@@ -330,6 +359,25 @@ const UserInfoCard = ({ selectedUser }) => {
             <p>Updating user details will receive a privacy audit.</p>
           </div>
           <Form onSubmit={handleSubmit(onSubmit)}>
+            <div className='d-flex align-items-center flex-column'>
+              {renderUserImg()}
+              <div>
+                <div className="d-flex justify-content-around gap-1">
+                  <div htmlFor="inputFile">
+                    <Label style={{ backgroundColor: "#7367f0", padding: "10px 20px", borderColor: "#7367f0", borderRadius: "5px", fontWeight: "bold", color: "white", cursor: "pointer" }} for="myFile">
+                      Upload
+                    </Label>
+                    <input hidden onChange={onChange} type="file" id="myFile" name="filename" />
+
+                  </div>
+                  <div>
+                    <Button onClick={() => resetProfileImage()} type="button" color="secondary">
+                      Reset
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
             <Row className='gy-1 pt-75'>
               <Col md={6} xs={12}>
                 <Label className='form-label' for='firstName'>
@@ -381,6 +429,7 @@ const UserInfoCard = ({ selectedUser }) => {
                   render={({ field }) => (
                     <Input
                       {...field}
+                      disabled
                       id='userName'
                       name='userName'
                       type="text"
@@ -431,10 +480,11 @@ const UserInfoCard = ({ selectedUser }) => {
                 />
               </Col>
               <Col md={6} xs={12}>
-                <Label className='form-label' for='zipCode'>
+                <Label className='form-label' for='email'>
                   Billing Email
                 </Label>
                 <Input
+                  disabled
                   type='email'
                   id='billing-email'
                   defaultValue={selectedUser?.email ?? ''}
@@ -530,7 +580,7 @@ const UserInfoCard = ({ selectedUser }) => {
           </Form>
         </ModalBody>
       </Modal>
-    </Fragment>
+    </Fragment >
   )
 }
 

@@ -6,16 +6,16 @@ import { TabContent, TabPane } from 'reactstrap'
 
 
 // ** User Components
-import UserTimeline from './UserTimeline'
-import UserProjectsList from './UserProjectsList'
+import UserActivityDetails from './UserActivityDetails'
+import UserSubscriptionDetails from './UserSubscriptionDetails'
 
 const UserTabs = ({ active, toggleTab }) => {
   return (
     <Fragment>
       <TabContent activeTab={active}>
         <TabPane tabId='1'>
-          <UserProjectsList />
-          <UserTimeline />
+          <UserSubscriptionDetails />
+          <UserActivityDetails />
         </TabPane>
       </TabContent>
     </Fragment>

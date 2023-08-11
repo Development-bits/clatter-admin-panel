@@ -14,7 +14,7 @@ export const authSlice = createSlice({
     reducers: {
         handleLogout: state => {
             state.userData = null
-            // ** Remove user, accessToken & refreshToken from localStorage
+            // ** Remove user, accessToken from localStorage
             localStorage.removeItem('userData')
             localStorage.removeItem("accessToken")
         }
