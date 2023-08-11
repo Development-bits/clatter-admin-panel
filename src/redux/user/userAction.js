@@ -99,3 +99,23 @@ export const userActivityDetailAction = createAsyncThunk('users/user-activity/:i
     }
 })
 
+export const addNewUserAction = createAsyncThunk('users/add-user', async (arg, { rejectWithValue }) => {
+    try {
+        let accessToken = JSON.parse(localStorage.getItem("accessToken"))
+        let config = {
+            headers: {
+                'authorization': `Bearer ${accessToken}`
+            }
+        }
+        debugger
+        const response = await axios.post(`${Domain}/add-user`, arg, config)
+        return response.data
+    } catch (error) {
+        if (error.message && error.response.data.message) {
+            return rejectWithValue(error.response.data.message)
+        } else {
+            return rejectWithValue(error.message)
+        }
+    }
+})
+

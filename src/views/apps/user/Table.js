@@ -39,7 +39,7 @@ import { allUserAction } from '../../../redux/user/userAction'
 import { columns } from './columns'
 
 // ** Table Header
-const CustomHeader = ({ store, handlePerPage, rowsPerPage, handleFilter, searchTerm }) => {
+const CustomHeader = ({ store, toggleSidebar, handlePerPage, rowsPerPage, handleFilter, searchTerm }) => {
   // ** Converts table to CSV
   function convertArrayOfObjectsToCSV(array) {
     let result
@@ -150,6 +150,9 @@ const CustomHeader = ({ store, handlePerPage, rowsPerPage, handleFilter, searchT
                 </DropdownItem> */}
               </DropdownMenu>
             </UncontrolledDropdown>
+            <Button className='add-new-user' color='primary' onClick={toggleSidebar}>
+              Add New User
+            </Button>
           </div>
         </Col>
       </Row>
@@ -159,16 +162,18 @@ const CustomHeader = ({ store, handlePerPage, rowsPerPage, handleFilter, searchT
 
 const UsersList = ({ allUserData, total }) => {
   const dispatch = useDispatch()
-
   // ** States
   const [sort, setSort] = useState('desc')
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   // const [sortColumn, setSortColumn] = useState('id')
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [currentRole, setCurrentRole] = useState({ value: '', label: 'Select Status' })
   const [currentPlan, setCurrentPlan] = useState({ value: '', label: 'Select Plan' })
   const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'Select Status', number: 0 })
+
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
 
 
   // ** Get data on mount
@@ -378,11 +383,13 @@ const UsersList = ({ allUserData, total }) => {
                 rowsPerPage={rowsPerPage}
                 handleFilter={handleFilter}
                 handlePerPage={handlePerPage}
+                toggleSidebar={toggleSidebar}
               />
             }
           />
         </div>
       </Card>
+      <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
     </Fragment>
   )
 }
