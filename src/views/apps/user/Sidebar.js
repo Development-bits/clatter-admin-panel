@@ -95,7 +95,7 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
             name='userName'
             control={control}
             render={({ field }) => (
-              <Input id='userName' placeholder='johnDoe99' invalid={errors.username && true} {...field} />
+              <Input id='userName' placeholder='johnDoe99' invalid={errors.userName && true} {...field} />
             )}
           />
         </div>
@@ -141,7 +141,6 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
               />
             )}
           />
-          <FormText color='muted'>You can use letters, numbers & periods</FormText>
         </div>
         <div className='mb-1'>
           <Label className='form-label' for='password'>
@@ -176,7 +175,7 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
           />
         </div>
         <Button type='submit' className='me-1' color='primary'>
-          Submit
+          ADD
         </Button>
         <Button type='reset' color='secondary' outline onClick={toggleSidebar}>
           Cancel

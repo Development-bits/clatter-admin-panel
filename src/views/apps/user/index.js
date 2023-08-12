@@ -31,7 +31,7 @@ const UsersList = () => {
     <div className='app-user-list'>
       <Card >
         <CardHeader>
-          <h5>User Count</h5>
+          <h5>User Stats</h5>
         </CardHeader>
         <CardBody>
           <Row>

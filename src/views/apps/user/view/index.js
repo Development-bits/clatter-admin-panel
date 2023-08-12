@@ -21,6 +21,7 @@ const UserView = () => {
   // ** Store Vars
   const { singleUserData, singleUserLoading, singleUserError } = useSelector(state => state.user)
   const dispatch = useDispatch()
+  const [toggleStateOfModal, setToggleStateOfModal] = useState(false)
 
   // ** Hooks
   const { id } = useParams()
@@ -28,7 +29,15 @@ const UserView = () => {
   // ** Get suer on mount
   useEffect(() => {
     if (id) {
-      dispatch(singleUserAction(id))
+      if (id.includes('&edit=true')) {
+        const parts = id.split('&');
+        let userID = parts[0];
+        setToggleStateOfModal(true)
+        dispatch(singleUserAction(userID))
+      } else {
+        dispatch(singleUserAction(id))
+      }
+
     }
   }, [dispatch, id])
 
@@ -48,13 +57,13 @@ const UserView = () => {
         <CardBody>
           <Breadcrumb >
             <BreadcrumbItem><a href="/user">User</a></BreadcrumbItem>
-            <BreadcrumbItem active>Profile</BreadcrumbItem>
+            <BreadcrumbItem active className='fw-bold'>Profile</BreadcrumbItem>
           </Breadcrumb>
         </CardBody>
       </Card>
       <Row>
         <Col xl='4' lg='5' xs={{ order: 1 }} md={{ order: 0, size: 5 }}>
-          <UserInfoCard selectedUser={singleUserData?.data} loading={singleUserLoading} error={singleUserError} />
+          <UserInfoCard toggleStateOfModal={toggleStateOfModal} setToggleStateOfModal={setToggleStateOfModal} selectedUser={singleUserData?.data} loading={singleUserLoading} error={singleUserError} />
           <PlanCard selectedUser={singleUserData?.data} />
         </Col>
         <Col xl='8' lg='7' xs={{ order: 0 }} md={{ order: 1, size: 7 }}>

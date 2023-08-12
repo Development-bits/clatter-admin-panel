@@ -61,12 +61,18 @@ const languageOptions = [
 
 const MySwal = withReactContent(Swal)
 
-const UserInfoCard = ({ selectedUser, loading, error }) => {
+const UserInfoCard = ({ selectedUser, loading, error, toggleStateOfModal, setToggleStateOfModal }) => {
   const { id } = useParams()
   const dispatch = useDispatch()
   // ** State
   const [show, setShow] = useState(false)
-  const [profileImageObj, setProfileImageObj] = useState('')
+  const [profileImageObj, setProfileImageObj] = useState({ link: null, obj: '' })
+
+  useEffect(() => {
+    if (toggleStateOfModal === true) {
+      setShow(!show);
+    }
+  }, [toggleStateOfModal])
 
   // ** Hook
   const {
@@ -94,7 +100,7 @@ const UserInfoCard = ({ selectedUser, loading, error }) => {
 
   // ** render user img
   const renderUserImg = () => {
-    if (profileImageObj !== '') {
+    if (profileImageObj.link !== null) {
       return (
         <img
           height='110'

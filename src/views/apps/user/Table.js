@@ -285,7 +285,7 @@ const UsersList = ({ allUserData, total }) => {
     if (value.value !== '' && value.label) {
       setCurrentRole({ label: value.label, value: value.value })
     } else {
-      setCurrentRole({ label: value.value, value: value.value })
+      setCurrentRole({ label: value.label, value: value.value })
     }
   }
 
@@ -296,7 +296,7 @@ const UsersList = ({ allUserData, total }) => {
     if (value.value !== '' && value.label) {
       setCurrentPlan({ label: value.label, value: value.value })
     } else {
-      setCurrentPlan({ label: value.value, value: value.value })
+      setCurrentPlan({ label: value.label, value: value.value })
     }
 
   }
@@ -308,7 +308,7 @@ const UsersList = ({ allUserData, total }) => {
     if (value.value !== '' && value.label) {
       setCurrentStatus({ label: value.label, value: value.value })
     } else {
-      setCurrentStatus({ label: value.value, value: value.value })
+      setCurrentStatus({ label: value.label, value: value.value })
     }
 
   }
