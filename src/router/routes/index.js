@@ -18,6 +18,7 @@ import { lazy } from 'react'
 import Admin from '../../views/admin/Admin'
 import Subscription from '../../views/billings/subscription/Subscription'
 import Transaction from '../../views/billings/transaction/Transaction'
+import { getUserData } from '../../utility/Utils'
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -48,41 +49,48 @@ const Routes = [
     index: true,
     path: '/dashboard',
     element: <DashboardAnalytics />,
+    access: 'admin'
   },
   {
     index: true,
     element: <UsersList />,
     path: '/user',
     protected: true,
+    access: 'admin'
   },
   {
     index: true,
     path: '/billing/transaction',
     element: <Transaction />,
     protected: true,
+    access: 'admin'
   },
   {
     index: true,
     path: '/billing/subscription',
     element: <Subscription />,
     protected: true,
+    access: 'admin'
   },
   {
     index: true,
     path: '/user/view',
     element: <Navigate to='/user/view/1' />,
     protected: true,
+    access: 'admin'
   },
   {
     index: true,
     element: <UserView />,
     path: '/user/view/:id',
     protected: true,
+    access: 'admin'
   },
   {
     index: true,
     path: '/admin',
     element: <Admin />,
+    protected: true,
     access: 'superAdmin'
   },
 ]
@@ -99,10 +107,9 @@ const getRouteMeta = route => {
 
 // ** Return Filtered Array of Routes & Paths
 const MergeLayoutRoutes = (layout, defaultLayout) => {
+  const user = getUserData()
   const LayoutRoutes = []
-
-
-  if (Routes) {
+  if (user?.role === "superAdmin") {
     Routes.filter(route => {
       let isBlank = false
       // ** Checks if Route layout or Default layout matches current layout
@@ -145,11 +152,57 @@ const MergeLayoutRoutes = (layout, defaultLayout) => {
       }
       return LayoutRoutes
     })
+
+  } else {
+    const otherRoutes = Routes.filter(item => item.access !== 'superAdmin');
+    otherRoutes.filter(route => {
+      let isBlank = false
+      // ** Checks if Route layout or Default layout matches current layout
+      if (
+        (route.meta && route.meta.layout && route.meta.layout === layout) ||
+        ((route.meta === undefined || route.meta.layout === undefined) && defaultLayout === layout)
+      ) {
+        let RouteTag = PublicRoute
+
+        // ** Check for public or private route
+        if (route.meta) {
+          route.meta.layout === 'blank' ? (isBlank = true) : (isBlank = false)
+          RouteTag = route.meta.publicRoute ? PublicRoute : PrivateRoute
+        }
+        if (route.element) {
+          const Wrapper =
+            // eslint-disable-next-line multiline-ternary
+            isObjEmpty(route.element.props) && isBlank === false
+              ? // eslint-disable-next-line multiline-ternary
+              LayoutWrapper
+              : Fragment;
+
+          if (route.protected) {
+            route.element = (
+              <Wrapper {...(isBlank === false ? getRouteMeta(route) : {})}>
+                <RouteTag route={route}>{route.element}</RouteTag>
+              </Wrapper>
+            );
+          } else {
+            route.element = (
+              <Wrapper {...(isBlank === false ? getRouteMeta(route) : {})}>
+                {route.element}
+              </Wrapper>
+            );
+          }
+        }
+
+        // Push route to LayoutRoutes
+        LayoutRoutes.push(route)
+      }
+      return LayoutRoutes
+    })
   }
+
   return LayoutRoutes
 }
 
-const getRoutes = layout => {
+const getRoutes = (layout) => {
   const defaultLayout = layout || 'vertical'
   const layouts = ['vertical', 'horizontal', 'blank']
 

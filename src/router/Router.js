@@ -24,10 +24,9 @@ const NotAuthorized = lazy(() => import('../views/pages/misc/NotAuthorized'))
 const Router = () => {
   // ** Hooks
   const { layout } = useLayout()
-
+  const user = getUserData()
   const allRoutes = getRoutes(layout)
   const getHomeRoute = () => {
-    const user = getUserData()
     if (user) {
       return getHomeRouteForLoggedInUser(user.role)
     } else {

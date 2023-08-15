@@ -8,13 +8,15 @@ export default [
         title: 'Dashboard',
         icon: <Home size={20} />,
         badge: 'light-warning',
-        navLink: '/dashboard'
+        navLink: '/dashboard',
+        access: 'admin'
     },
     {
         id: 'users',
         title: 'User',
         icon: <User size={20} />,
-        navLink: '/user'
+        navLink: '/user',
+        access: 'admin'
     },
     {
         id: 'billings',
@@ -25,13 +27,15 @@ export default [
                 id: 'transaction',
                 title: 'Transaction',
                 icon: <Circle size={12} />,
-                navLink: '/billing/transaction'
+                navLink: '/billing/transaction',
+                access: 'admin'
             },
             {
                 id: 'subscription',
                 title: 'Subscription',
                 icon: <Circle size={12} />,
-                navLink: '/billing/subscription'
+                navLink: '/billing/subscription',
+                access: 'admin'
             }
         ]
 

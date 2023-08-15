@@ -57,6 +57,7 @@ export const updateProfileAction = createAsyncThunk('users/update-user-profile',
             }
         }
         const response = await axios.put(`${Domain}/update-user-details/${id}`, formData, config)
+        Toasts({ message: response.data.message })
         return response.data
     } catch (error) {
         if (error.message && error.response.data.message) {
@@ -78,6 +79,7 @@ export const userSubscriptionDetailAction = createAsyncThunk('users/user-subscri
             }
         }
         const response = await axios.get(`${Domain}/user-subscriptions/${id}?page=${page}&limit=${limit}`, config)
+        Toasts({ message: response.data.message })
         return response.data
     } catch (error) {
         if (error.message && error.response.data.message) {
@@ -120,6 +122,7 @@ export const addNewUserAction = createAsyncThunk('users/add-user', async (arg, {
             }
         }
         const response = await axios.post(`${Domain}/add-user`, arg, config)
+        Toasts({ message: response.data.message })
         return response.data
     } catch (error) {
         if (error.message && error.response.data.message) {

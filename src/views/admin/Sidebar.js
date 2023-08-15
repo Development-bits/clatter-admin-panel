@@ -122,7 +122,6 @@ const SidebarNewAdmin = ({ open, toggleSidebar }) => {
                         control={control}
                         render={({ field }) => (
                             <Input
-                                type='email'
                                 id='email'
                                 placeholder='john.doe@clatter.com'
                                 invalid={errors.email && true}
