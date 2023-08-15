@@ -15,6 +15,9 @@ import PrivateRoute from '@components/routes/PrivateRoute'
 import { isObjEmpty } from '@utils'
 import { Navigate } from 'react-router-dom'
 import { lazy } from 'react'
+import Admin from '../../views/admin/Admin'
+import Subscription from '../../views/billings/subscription/Subscription'
+import Transaction from '../../views/billings/transaction/Transaction'
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -54,11 +57,16 @@ const Routes = [
   },
   {
     index: true,
-    path: '/billings',
-    element: <UserBillings />,
+    path: '/billing/transaction',
+    element: <Transaction />,
     protected: true,
   },
-
+  {
+    index: true,
+    path: '/billing/subscription',
+    element: <Subscription />,
+    protected: true,
+  },
   {
     index: true,
     path: '/user/view',
@@ -70,6 +78,12 @@ const Routes = [
     element: <UserView />,
     path: '/user/view/:id',
     protected: true,
+  },
+  {
+    index: true,
+    path: '/admin',
+    element: <Admin />,
+    access: 'superAdmin'
   },
 ]
 

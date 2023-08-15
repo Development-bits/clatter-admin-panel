@@ -166,18 +166,20 @@ const UsersList = ({ allUserData, total }) => {
   const [sort, setSort] = useState('desc')
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
-  // const [sortColumn, setSortColumn] = useState('id')
+  const [sortColumn, setSortColumn] = useState('id')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [currentRole, setCurrentRole] = useState({ value: '', label: 'Select Status' })
-  const [currentPlan, setCurrentPlan] = useState({ value: '', label: 'Select Plan' })
-  const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'Select Status', number: 0 })
+  const [currentRole, setCurrentRole] = useState({ value: '', label: 'All' })
+  const [currentPlan, setCurrentPlan] = useState({ value: '', label: 'All' })
+  const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'All', number: 0 })
+  const { newUserData } = useSelector((state) => state.user)
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
 
 
   // ** Get data on mount
   useEffect(() => {
+    let timerId; // To debounce the API call
     let obj = {
       page: currentPage,
       plan: currentPlan.value,
@@ -186,8 +188,31 @@ const UsersList = ({ allUserData, total }) => {
       limit: rowsPerPage,
       keyword: searchTerm
     }
-    dispatch(allUserAction(obj))
-  }, [dispatch, currentPage, currentPlan, currentRole, rowsPerPage, searchTerm, currentStatus])
+
+    if (searchTerm) {
+      timerId = setTimeout(() => {
+        dispatch(allUserAction(obj))
+      }, 3000)
+    } else {
+      timerId = setTimeout(() => {
+        dispatch(allUserAction(obj))
+      }, 100)
+    }
+    if (newUserData) {
+      toggleSidebar()
+      timerId = setTimeout(() => {
+        dispatch(allUserAction(obj))
+      }, 1000)
+    }
+    // Cleanup function to clear the debounce timer and prevent memory leaks
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [dispatch, currentPage, currentPlan, currentRole, rowsPerPage, searchTerm, currentStatus, newUserData])
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [currentPlan, currentRole, currentStatus])
 
   // ** User filter options
   const roleOptions = [
@@ -275,7 +300,7 @@ const UsersList = ({ allUserData, total }) => {
 
   const handleSort = (column, sortDirection) => {
     setSort(sortDirection)
-    // setSortColumn(column.sortField)
+    setSortColumn(column.sortField)
   }
 
   const handleCurrentRole = (value) => {

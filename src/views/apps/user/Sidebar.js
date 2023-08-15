@@ -1,5 +1,5 @@
 // ** React Import
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // ** Custom Components
 import Sidebar from '@components/sidebar'
@@ -13,7 +13,7 @@ import classnames from 'classnames'
 import { useForm, Controller } from 'react-hook-form'
 
 // ** Reactstrap Imports
-import { Button, Label, FormText, Form, Input } from 'reactstrap'
+import { Button, Label, FormText, Form, Input, FormFeedback } from 'reactstrap'
 
 // ** Store & Actions
 import { useDispatch } from 'react-redux'
@@ -28,14 +28,33 @@ const defaultValues = {
   phoneNumber: ''
 }
 
-const checkIsValid = data => {
-  return Object.values(data).every(field => (typeof field === 'object' ? field !== null : field.length > 0))
-}
+const checkIsValid = (data, passwordRegex, emailRegex) => {
+  for (const key in data) {
+    if (typeof data[key] === 'object') {
+      if (data[key] === null) {
+        return false;
+      }
+    } else if (typeof data[key] === 'string') {
+      if (data[key].length === 0) {
+        return false;
+      }
+
+      if (key === 'password' && (!passwordRegex.test(data[key]) || data[key].length < 8)) {
+        return false;
+      }
+      if (key === 'phoneNumber' && (data[key].length < 10 || data[key].length > 16)) {
+        return false;
+      }
+      if (key === 'email' && !emailRegex.test(data[key])) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+};
 
 const SidebarNewUsers = ({ open, toggleSidebar }) => {
-  // ** States
-  const [data, setData] = useState(null)
-
   // ** Store Vars
   const dispatch = useDispatch()
 
@@ -50,25 +69,46 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
 
   // ** Function to handle form submit
   const onSubmit = data => {
-    setData(data)
-    if (checkIsValid(data)) {
-      toggleSidebar(false)
-      dispatch(addNewUserAction(data))
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/;
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+    if (checkIsValid(data, passwordRegex, emailRegex)) {
+      dispatch(addNewUserAction(data));
     } else {
       for (const key in data) {
         if (data[key] === null) {
-          setError('country', {
+          setError(key, {
             type: 'manual'
-          })
+          });
         }
         if (data[key] !== null && data[key].length === 0) {
           setError(key, {
             type: 'manual'
+          });
+        }
+        if (key === 'password' && (!passwordRegex.test(data[key]))) {
+          setError(key, {
+            type: 'Password must contain letters, numbers & periods'
+          });
+        }
+        if (key === 'password' && (data[key].length < 8)) {
+          setError(key, {
+            type: 'Password should be 8 characters or more'
           })
+        }
+        if (key === 'phoneNumber' && (data[key].length < 10 || data[key].length > 16)) {
+          setError(key, {
+            type: 'Please check your contact number'
+          });
+        }
+        if (key === 'email' && !emailRegex.test(data[key])) {
+          setError(key, {
+            type: 'manual'
+          });
         }
       }
     }
-  }
+  };
 
   const handleSidebarClosed = () => {
     for (const key in defaultValues) {
@@ -141,6 +181,9 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
               />
             )}
           />
+          {errors.email && (
+            <FormText color='danger'>{errors.email.type}</FormText>
+          )}
         </div>
         <div className='mb-1'>
           <Label className='form-label' for='password'>
@@ -154,12 +197,16 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
                 type='password'
                 id='password'
                 placeholder='********'
-                invalid={errors.email && true}
+                invalid={errors.password && true}
                 {...field}
               />
             )}
           />
-          <FormText color='muted'>You can use letters, numbers & periods</FormText>
+          {errors.password ? (
+            <FormText color='danger'>{errors.password.type}</FormText>
+          ) : (
+            <FormText color='muted'>You can use letters, numbers & periods</FormText>
+          )}
         </div>
 
         <div className='mb-1'>
@@ -173,14 +220,20 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
               <Input id='phoneNumber' placeholder='(397) 294-5153' invalid={errors.phoneNumber && true} {...field} />
             )}
           />
+          {errors.phoneNumber && (
+            <FormText color='danger'>{errors.phoneNumber.type}</FormText>
+          )}
         </div>
+
         <Button type='submit' className='me-1' color='primary'>
           ADD
         </Button>
         <Button type='reset' color='secondary' outline onClick={toggleSidebar}>
           Cancel
         </Button>
+
       </Form>
+
     </Sidebar>
   )
 }

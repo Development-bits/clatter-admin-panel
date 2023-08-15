@@ -18,13 +18,16 @@ import '@styles/react/apps/app-users.scss'
 import { singleUserAction } from '../../../../redux/user/userAction'
 
 const UserView = () => {
+  const [active, setActive] = useState('1')
+  // ** Hooks
+  const { id } = useParams()
   // ** Store Vars
   const { singleUserData, singleUserLoading, singleUserError } = useSelector(state => state.user)
+  const { cancelSubData, subscriptionData } = useSelector((state) => state.subscription)
   const dispatch = useDispatch()
   const [toggleStateOfModal, setToggleStateOfModal] = useState(false)
 
-  // ** Hooks
-  const { id } = useParams()
+
 
   // ** Get suer on mount
   useEffect(() => {
@@ -39,10 +42,7 @@ const UserView = () => {
       }
 
     }
-  }, [dispatch, id])
-
-
-  const [active, setActive] = useState('1')
+  }, [dispatch, id, cancelSubData, subscriptionData])
 
   const toggleTab = tab => {
     if (active !== tab) {

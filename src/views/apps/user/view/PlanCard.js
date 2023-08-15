@@ -53,7 +53,7 @@ const PlanCard = ({ selectedUser }) => {
         MySwal.fire({
           icon: 'success',
           title: 'Unsubscribed!',
-          text: 'Your subscription cancelled successfully.',
+          text: 'Subscription cancelled successfully.',
           customClass: {
             confirmButton: 'btn btn-success'
           }
@@ -118,24 +118,75 @@ const PlanCard = ({ selectedUser }) => {
             {selectedUser?.planName ? (
               <CardBody>
                 <div className='d-flex justify-content-between align-items-start'>
-                  <Badge color='light-primary'>{selectedUser?.planName}</Badge>
+                  <div className='d-flex gap-1'>
+                    <Badge color='light-primary'>{selectedUser?.planName}</Badge>
+                    {selectedUser?.remainingDays?.toString().includes('-') ? <Badge color='danger'>Expire</Badge> : null}
+                  </div>
+
                   <div className='d-flex justify-content-center'>
                     <sup className='h5 pricing-currency text-primary mt-1 mb-0'>$</sup>
                     <span className='fw-bolder display-5 mb-0 text-primary'>{selectedUser?.planAmount}</span>
                     <sub className='pricing-duration font-small-4 ms-25 mt-auto mb-2'>/month</sub>
                   </div>
                 </div>
-                <ul className='ps-1 mb-2'>
-                  <li className='mb-50'>10 Users</li>
-                  <li className='mb-50'>Up to 10 GB storage</li>
-                  <li>Basic Support</li>
-                </ul>
-                <div className='d-flex justify-content-between align-items-center fw-bolder mb-50'>
-                  <span>Days</span>
-                  <span>{selectedUser?.remainingDays} of 30 Days</span>
-                </div>
-                <Progress className='mb-50' value={selectedUser?.planName === "Free Trial" ? (((30 - 29) / 30) * 100) : (((30 - selectedUser?.remainingDays) / 30) * 100)} style={{ height: '8px' }} />
-                <span>{selectedUser?.remainingDays} days remaining</span>
+                {selectedUser?.planName === 'Free Trial' && (
+                  <ul className='ps-1 mb-2 mt-50'>
+                    <li className='mb-50'>500 credits</li>
+                  </ul>
+                )}
+                {selectedUser?.planName === 'Creator Monthly Plan' && (
+                  <ul className='ps-1 mb-2 mt-50'>
+                    <li className='mb-50'>Fast queue: Jump ahead of free-trial users</li>
+                    <li className='mb-50'>Full Access to Creation-Hub Text</li>
+                    <li className='mb-50'>Full Access to Creation-Hub Video</li>
+                    <li className='mb-50'>Over 38.000 words/month</li>
+                    <li className='mb-50'>Long-form content</li>
+                    <li className='mb-50'>2 users</li>
+                    <li className='mb-50'>Full Clatter Tutorial</li>
+                    <li >AI Curation with Virality Score</li>
+                  </ul>
+                )}
+                {selectedUser?.planName === 'Agency Monthly Plan' && (
+                  <ul className='ps-1 mb-2 mt-50'>
+                    <li className='mb-50'>Fast queue: Jump ahead of free-trial users</li>
+                    <li className='mb-50'>Full Access to Creation-Hub Text</li>
+                    <li className='mb-50'>Full Access to Creation-Hub Video</li>
+                    <li className='mb-50'>Over 75.000 words/month</li>
+                    <li className='mb-50'>Long-form content</li>
+                    <li className='mb-50'>More then 3 user</li>
+                    <li className='mb-50'>Full Clatter Tutorial</li>
+                    <li className='mb-50'>AI Curation with Virality Score</li>
+                    <li className='mb-50'>Animation (start with a prompt) Transform (video-to-video) Image-to-Video (start with an image)</li>
+                    <li>24/7 instant support</li>
+                  </ul>
+                )}
+                {selectedUser?.planName === 'Company Monthly Plan' && (
+                  <ul className='ps-1 mb-2 mt-50'>
+                    <li className='mb-50'>Fast queue: Jump ahead of free-trial users</li>
+                    <li className='mb-50'>Full Access to Creation-Hub Text</li>
+                    <li className='mb-50'>Full Access to Creation-Hub Video</li>
+                    <li className='mb-50'>Over 380.000 words/month</li>
+                    <li className='mb-50'>Long-form content</li>
+                    <li className='mb-50'>More then 10 user</li>
+                    <li className='mb-50'>Full Clatter Tutorial</li>
+                    <li className='mb-50'>AI Curation with Virality Score</li>
+                    <li className='mb-50'>Animation (start with a prompt) Transform (video-to-video) Image-to-Video (start with an image)</li>
+                    <li className='mb-50'>24/7 instant support</li>
+                    <li>Account Manager</li>
+                  </ul>
+                )}
+                {selectedUser?.remainingDays?.toString().includes('-') ? null : (
+                  <div className='d-flex justify-content-between align-items-center fw-bolder mb-50'>
+                    <span>Days</span>
+                    <span>{selectedUser?.remainingDays} of 30 Days</span>
+                  </div>
+                )}
+                {selectedUser?.remainingDays?.toString().includes('-') ? null : (
+                  <>
+                    <Progress className='mb-50' value={selectedUser?.planName === "Free Trial" ? (((30 - 29) / 30) * 100) : (((30 - selectedUser?.remainingDays) / 30) * 100)} style={{ height: '8px' }} />
+                    <span>{selectedUser?.remainingDays} days remaining</span>
+                  </>
+                )}
                 <div className='d-grid w-100 mt-2'>
                   <Button color='primary' onClick={() => setShow(true)}>
                     Upgrade Plan
@@ -191,9 +242,12 @@ const PlanCard = ({ selectedUser }) => {
         {selectedUser?.planName && (<hr />)}
         {subscriptionLoading !== 'idle' ? (
           <ModalBody>
-            <Spinner
-              style={{ width: "2rem", height: "2rem" }}
-            />
+            <div className='w-100 h-100 mx-auto d-flex justify-content-center align-content-center'>
+              <Spinner
+                width="2rem"
+                height="2rem"
+              />
+            </div>
           </ModalBody>
         ) : (
           <>

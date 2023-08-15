@@ -2,6 +2,7 @@
 import axios from "axios"
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { Domain } from "../../utility/Domain"
+import Toasts from "../../@core/components/react-toast"
 
 
 export const subAction = createAsyncThunk('users/buy-subscription-for-user', async (arg, { rejectWithValue }) => {
@@ -17,8 +18,10 @@ export const subAction = createAsyncThunk('users/buy-subscription-for-user', asy
         return response.data
     } catch (error) {
         if (error.message && error.response.data.message) {
+            Toasts({ error: error.response.data.message })
             return rejectWithValue(error.response.data.message)
         } else {
+            Toasts({ error: error.message })
             return rejectWithValue(error.message)
         }
     }
@@ -37,8 +40,10 @@ export const cancelSubAction = createAsyncThunk('users/cancel-user-subscription'
         return response.data
     } catch (error) {
         if (error.message && error.response.data.message) {
+            Toasts({ error: error.response.data.message })
             return rejectWithValue(error.response.data.message)
         } else {
+            Toasts({ error: error.message })
             return rejectWithValue(error.message)
         }
     }

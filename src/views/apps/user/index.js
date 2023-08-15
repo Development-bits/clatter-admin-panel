@@ -23,6 +23,8 @@ import ActiveUser from "../../../@core/assets/svgs/ActiveUser"
 const UsersList = () => {
   const dispatch = useDispatch()
   const { allUserData, allUserDataLoading, allUserDataError } = useSelector(state => state.user)
+
+
   useEffect(() => {
     dispatch(allUserAction())
   }, [])

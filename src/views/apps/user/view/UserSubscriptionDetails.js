@@ -41,45 +41,6 @@ export const columns = [
     }
   },
   {
-    name: 'Plan Credit',
-    selector: row => {
-      return (
-        <div>
-          ${row.planCredit}
-        </div>
-      )
-    }
-  },
-  {
-    name: 'Purchase At',
-    selector: row => {
-      return (
-        <div className='d-flex justify-content-left align-items-center'>
-          <div className='d-flex flex-column'>
-            <span className='text-truncate fw-bolder'>{moment(row.subscriptionEndingAt).format("MM-DD-YYYY")}</span>
-            <small>{moment(row.subscriptionEndingAt).format("hh:mm A")}</small>
-          </div>
-        </div>
-
-      )
-    }
-  },
-  {
-    name: 'Expire At',
-    selector: row => {
-      return (
-        <div className='d-flex justify-content-left align-items-center'>
-          <div className='d-flex flex-column'>
-            <span className='text-truncate fw-bolder'>{moment(row.subscriptioncreatedAt).format("MM-DD-YYYY")}</span>
-            <small>{moment(row.subscriptioncreatedAt).format("hh:mm A")}</small>
-          </div>
-        </div>
-
-      )
-    }
-
-  },
-  {
     name: 'Price',
     selector: row => {
       return (
@@ -94,11 +55,50 @@ export const columns = [
     selector: row => {
       return (
         <div>
-          ${row.subscriptionCredit}
+          {row.subscriptionCredit}
         </div>
       )
     }
   },
+  {
+    name: 'Plan Credit',
+    selector: row => {
+      return (
+        <div>
+          {row.planCredit}
+        </div>
+      )
+    }
+  },
+  {
+    name: 'Purchase At',
+    selector: row => {
+      return (
+        <div className='d-flex justify-content-left align-items-center'>
+          <div className='d-flex flex-column'>
+            <span className='text-truncate fw-bolder'>{moment(row.subscriptioncreatedAt).format("DD-MM-YYYY")}</span>
+            <small>{moment(row.subscriptioncreatedAt).format("hh:mm A")}</small>
+          </div>
+        </div>
+
+      )
+    }
+  },
+  {
+    name: 'Expire At',
+    selector: row => {
+      return (
+        <div className='d-flex justify-content-left align-items-center'>
+          <div className='d-flex flex-column'>
+            <span className='text-truncate fw-bolder'>{moment(row.subscriptionEndingAt).format("DD-MM-YYYY")}</span>
+            <small>{moment(row.subscriptionEndingAt).format("hh:mm A")}</small>
+          </div>
+        </div>
+
+      )
+    }
+  },
+
 
 ]
 

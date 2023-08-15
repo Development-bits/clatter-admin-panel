@@ -29,12 +29,13 @@ import moment from 'moment'
 
 const AnalyticsDashboard = () => {
   const dispatch = useDispatch()
-  const [currentFilter, setCurrentFilter] = useState({ value: 'packagesSoldAll', label: 'Select' })
+  const [currentFilter, setCurrentFilter] = useState({ value: 'packagesSoldAll', label: 'All' })
   const { dashboardData, dashboardLoading, dashBoardError } = useSelector(state => state.dashboard)
 
   useEffect(() => {
     dispatch(dashAction())
   }, [])
+
 
   const filterOptions = [
     { value: 'packagesSoldAll', label: 'All' },
@@ -55,7 +56,7 @@ const AnalyticsDashboard = () => {
 
   return (
     <div id='dashboard-analytics'>
-      <Card style={{ background: "#f8f8f8db" }}>
+      <Card>
         <CardHeader>
 
           <div className='d-flex justify-content-between w-100'>
@@ -83,10 +84,10 @@ const AnalyticsDashboard = () => {
                 return (
                   <Col lg='3' sm='6' key={item.title}>
                     <StatsHorizontal
-                      className="shadow-sm"
+                      className="shadow-lg"
                       statTitle={item?.title}
                       icon={icon}
-                      renderStats={<h3 className='fw-bolder mb-75'>{item?.count}</h3>}
+                      renderStats={<h3 className='fw-bolder mb-75'>{item?.title === "Sales" ? `$${item?.count}` : item?.count}</h3>}
                     />
                   </Col>
                 )
@@ -125,7 +126,7 @@ const AnalyticsDashboard = () => {
                       className="shadow-lg"
                       statTitle={item?.title}
                       icon={icon}
-                      renderStats={<h3 className='fw-bolder mb-75'>{item?.count}</h3>}
+                      renderStats={<h3 className='fw-bolder mb-75'>{item?.title === "Sales" ? `$${item?.count}` : item?.count}</h3>}
                     />
                   </Col>
                 )

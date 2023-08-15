@@ -84,17 +84,17 @@ const UserInfoCard = ({ selectedUser, loading, error, toggleStateOfModal, setTog
     formState: { errors }
   } = useForm({
     defaultValues: {
-      firstName: selectedUser?.firstName,
-      lastName: selectedUser?.lastName,
-      userName: selectedUser?.userName,
-      email: selectedUser?.email,
-      zipCode: selectedUser?.zipCode,
-      address: selectedUser?.address,
-      profileImage: selectedUser?.profileImage,
-      phoneNumber: selectedUser?.phoneNumber,
-      status: [{ value: selectedUser?.userStatus, label: selectedUser?.userStatus }],
-      country: [{ value: selectedUser?.country, label: selectedUser?.country }],
-      language: [{ value: selectedUser?.language, label: selectedUser?.language }]
+      firstName: selectedUser?.firstName !== null ? selectedUser?.firstName : '',
+      lastName: selectedUser?.lastName !== null ? selectedUser?.lastName : '',
+      userName: selectedUser?.userName !== null ? selectedUser?.userName : '',
+      email: selectedUser?.email !== null ? selectedUser?.email : '',
+      zipCode: selectedUser?.zipCode !== null ? selectedUser?.zipCode : '',
+      address: selectedUser?.address !== null ? selectedUser?.address : '',
+      profileImage: selectedUser?.profileImage !== null ? selectedUser?.profileImage : '',
+      phoneNumber: selectedUser?.phoneNumber !== null ? selectedUser?.phoneNumber : '',
+      status: selectedUser?.userStatus !== null ? [{ value: selectedUser?.userStatus, label: selectedUser?.userStatus }] : '',
+      country: selectedUser?.country !== null ? [{ value: selectedUser?.country, label: selectedUser?.country }] : '',
+      language: selectedUser?.language !== null ? [{ value: selectedUser?.language, label: selectedUser?.language }] : ''
     }
   })
 
@@ -163,17 +163,17 @@ const UserInfoCard = ({ selectedUser, loading, error, toggleStateOfModal, setTog
 
   const handleReset = () => {
     reset({
-      firstName: selectedUser?.firstName,
-      lastName: selectedUser?.lastName,
-      userName: selectedUser?.userName,
-      phoneNumber: selectedUser?.phoneNumber,
-      email: selectedUser?.email,
-      profileImage: selectedUser?.profileImage,
-      zipCode: selectedUser?.zipCode,
-      address: selectedUser?.address,
-      status: [{ value: selectedUser?.userStatus, label: selectedUser?.userStatus }],
-      language: [{ value: selectedUser?.language, label: selectedUser?.language }],
-      country: [{ value: selectedUser?.country, label: selectedUser?.country }]
+      firstName: selectedUser?.firstName !== null ? selectedUser?.firstName : '',
+      lastName: selectedUser?.lastName !== null ? selectedUser?.lastName : '',
+      userName: selectedUser?.userName !== null ? selectedUser?.userName : '',
+      email: selectedUser?.email !== null ? selectedUser?.email : '',
+      zipCode: selectedUser?.zipCode !== null ? selectedUser?.zipCode : '',
+      address: selectedUser?.address !== null ? selectedUser?.address : '',
+      profileImage: selectedUser?.profileImage !== null ? selectedUser?.profileImage : '',
+      phoneNumber: selectedUser?.phoneNumber !== null ? selectedUser?.phoneNumber : '',
+      status: selectedUser?.userStatus !== null ? [{ value: selectedUser?.userStatus, label: selectedUser?.userStatus }] : '',
+      country: selectedUser?.country !== null ? [{ value: selectedUser?.country, label: selectedUser?.country }] : '',
+      language: selectedUser?.language !== null ? [{ value: selectedUser?.language, label: selectedUser?.language }] : ''
     })
   }
 
@@ -284,7 +284,7 @@ const UserInfoCard = ({ selectedUser, loading, error, toggleStateOfModal, setTog
     if (selectedUser?.profileImage) {
       setProfileImageObj({ link: selectedUser?.profileImage, obj: null })
     } else {
-      setProfileImageObj("")
+      setProfileImageObj({ link: null, obj: null })
     }
   }
 
@@ -297,7 +297,7 @@ const UserInfoCard = ({ selectedUser, loading, error, toggleStateOfModal, setTog
               {renderUserImg()}
               <div className='d-flex flex-column align-items-center text-center'>
                 <div className='user-info'>
-                  <h4>{selectedUser?.firstName ?? ''}</h4>
+                  <h4>{(selectedUser?.firstName + " " + selectedUser?.lastName) ?? ''}</h4>
                 </div>
               </div>
             </div>
@@ -359,10 +359,9 @@ const UserInfoCard = ({ selectedUser, loading, error, toggleStateOfModal, setTog
       </Card>
       <Modal isOpen={show} toggle={() => setShow(!show)} className='modal-dialog-centered modal-lg'>
         <ModalHeader className='bg-transparent' toggle={() => setShow(!show)}></ModalHeader>
-        <ModalBody className='px-sm-5 pt-50 pb-5'>
+        <ModalBody className='px-sm-5 pb-5'>
           <div className='text-center mb-2'>
             <h1 className='mb-1'>Edit User Information</h1>
-            <p>Updating user details will receive a privacy audit.</p>
           </div>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <div className='d-flex align-items-center flex-column'>
@@ -548,7 +547,7 @@ const UserInfoCard = ({ selectedUser, loading, error, toggleStateOfModal, setTog
                   defaultValue={countryOptions[countryOptions?.findIndex(i => i.value === selectedUser?.country)] ?? null}
                 />
               </Col>
-              <Col xs={12}>
+              {/* <Col xs={12}>
                 <div className='d-flex align-items-center mt-1'>
                   <div className='form-switch'>
                     <Input type='switch' defaultChecked id='billing-switch' name='billing-switch' />
@@ -565,7 +564,7 @@ const UserInfoCard = ({ selectedUser, loading, error, toggleStateOfModal, setTog
                     Use as a billing address?
                   </Label>
                 </div>
-              </Col>
+              </Col> */}
               <Col xs={12} className='text-center mt-2 pt-50'>
                 <Button type='submit' className='me-1' color='primary'>
                   Submit

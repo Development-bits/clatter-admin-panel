@@ -28,45 +28,11 @@ const renderClient = row => {
   }
 }
 
-// ** Renders Role Columns
-const renderRole = row => {
-  const roleObj = {
-    subscriber: {
-      class: 'text-primary',
-      icon: User
-    },
-    maintainer: {
-      class: 'text-success',
-      icon: Database
-    },
-    editor: {
-      class: 'text-info',
-      icon: Edit2
-    },
-    author: {
-      class: 'text-warning',
-      icon: Settings
-    },
-    admin: {
-      class: 'text-danger',
-      icon: Slack
-    }
-  }
-
-  // const Icon = roleObj[row.role] ? roleObj[row.role].icon : Edit2
-
-  return (
-    <span className='text-truncate text-capitalize align-middle'>
-      {/* <Icon size={18} className={`${roleObj[row.role] ? roleObj[row.role].class : ''} me-50`} /> */}
-      {row.role}
-    </span>
-  )
-}
-
 const statusObj = {
-  pending: 'light-warning',
   active: 'light-success',
-  inactive: 'light-secondary'
+  deactivated: 'light-warning',
+  inactive: 'light-secondary',
+  banned: 'light-danger',
 }
 
 export const columns = [
@@ -97,9 +63,8 @@ export const columns = [
     minWidth: '130px',
     sortField: 'userStatus',
     selector: row => row.userStatus,
-    // cell: row => renderRole(row)
     cell: row => (
-      <Badge className='text-capitalize d-flex flex-column' color={statusObj[row.createdAt]} pill>
+      <Badge className='text-capitalize d-flex flex-column' color={statusObj[row.userStatus]} pill>
         <span className='text-capitalize'>{row.userStatus}</span>
       </Badge>
     )
@@ -120,7 +85,7 @@ export const columns = [
     sortField: 'subscription',
     selector: row => row.subscriptionStatus,
     cell: row => (
-      <Badge className='text-capitalize d-flex flex-column' color={statusObj[row.createdAt]} pill>
+      <Badge className='text-capitalize d-flex flex-column' color={statusObj[row.subscriptionStatus]} pill>
         <span className='text-capitalize'>{row.subscriptionStatus}</span>
       </Badge>
     )
@@ -162,7 +127,7 @@ export const columns = [
               <Archive size={14} className='me-50' />
               <span className='align-middle'>Edit</span>
             </DropdownItem>
-            <DropdownItem
+            {/* <DropdownItem
               tag='button'
               className='w-100'
               onClick={e => {
@@ -171,7 +136,7 @@ export const columns = [
             >
               <Trash2 size={14} className='me-50' />
               <span className='align-middle'>Delete</span>
-            </DropdownItem>
+            </DropdownItem> */}
           </DropdownMenu>
         </UncontrolledDropdown>
       </div>

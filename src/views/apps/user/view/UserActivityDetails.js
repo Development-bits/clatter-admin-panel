@@ -66,7 +66,7 @@ export const columns = [
       return (
         <div className='d-flex justify-content-left align-items-center' >
           <div className='d-flex flex-column'>
-            <span className='text-truncate fw-bolder'>{moment(row.createdAt).format("MM-DD-YYYY")}</span>
+            <span className='text-truncate fw-bolder'>{moment(row.createdAt).format("DD-MM-YYYY")}</span>
             <small>{moment(row.createdAt).format("hh:mm A")}</small>
           </div>
         </div >
@@ -93,7 +93,6 @@ const UserActivityDetails = () => {
 
   // ** Custom Pagination
   const CustomPagination = () => {
-    debugger
     const count = Number(Math.ceil(userActDetailsData?.totalNotifications / 10))
 
     return (

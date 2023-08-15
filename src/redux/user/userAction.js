@@ -2,6 +2,7 @@
 import axios from "axios"
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { Domain } from "../../utility/Domain"
+import Toasts from "../../@core/components/react-toast"
 
 
 export const allUserAction = createAsyncThunk('users/all-users', async (arg, { rejectWithValue }) => {
@@ -13,11 +14,14 @@ export const allUserAction = createAsyncThunk('users/all-users', async (arg, { r
             }
         }
         const response = await axios.get(`${Domain}/get-users?plan=${arg.plan}&status=${arg.status}&page=${arg.page}&limit=${arg.limit}&keyword=${arg.keyword}&subscriptionStatus=${arg.subStatus}`, config)
+
         return response.data
     } catch (error) {
         if (error.message && error.response.data.message) {
+            Toasts({ error: error.response.data.message })
             return rejectWithValue(error.response.data.message)
         } else {
+            Toasts({ error: error.message })
             return rejectWithValue(error.message)
         }
     }
@@ -35,8 +39,10 @@ export const singleUserAction = createAsyncThunk('users/single-user', async (arg
         return response.data
     } catch (error) {
         if (error.message && error.response.data.message) {
+            Toasts({ error: error.response.data.message })
             return rejectWithValue(error.response.data.message)
         } else {
+            Toasts({ error: error.message })
             return rejectWithValue(error.message)
         }
     }
@@ -54,8 +60,10 @@ export const updateProfileAction = createAsyncThunk('users/update-user-profile',
         return response.data
     } catch (error) {
         if (error.message && error.response.data.message) {
+            Toasts({ error: error.response.data.message })
             return rejectWithValue(error.response.data.message)
         } else {
+            Toasts({ error: error.message })
             return rejectWithValue(error.message)
         }
     }
@@ -73,8 +81,10 @@ export const userSubscriptionDetailAction = createAsyncThunk('users/user-subscri
         return response.data
     } catch (error) {
         if (error.message && error.response.data.message) {
+            Toasts({ error: error.response.data.message })
             return rejectWithValue(error.response.data.message)
         } else {
+            Toasts({ error: error.message })
             return rejectWithValue(error.message)
         }
     }
@@ -92,8 +102,10 @@ export const userActivityDetailAction = createAsyncThunk('users/user-activity/:i
         return response.data
     } catch (error) {
         if (error.message && error.response.data.message) {
+            Toasts({ error: error.response.data.message })
             return rejectWithValue(error.response.data.message)
         } else {
+            Toasts({ error: error.message })
             return rejectWithValue(error.message)
         }
     }
@@ -107,13 +119,14 @@ export const addNewUserAction = createAsyncThunk('users/add-user', async (arg, {
                 'authorization': `Bearer ${accessToken}`
             }
         }
-        debugger
         const response = await axios.post(`${Domain}/add-user`, arg, config)
         return response.data
     } catch (error) {
         if (error.message && error.response.data.message) {
+            Toasts({ error: error.response.data.message })
             return rejectWithValue(error.response.data.message)
         } else {
+            Toasts({ error: error.message })
             return rejectWithValue(error.message)
         }
     }
