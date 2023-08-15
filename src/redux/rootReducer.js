@@ -5,6 +5,7 @@ import auth from './auth/authSlice'
 import dashboard from "./dashboard/dashboardSlice"
 import user from "./user/userSlice"
 import subscription from "./subscription/subscriptionSlice"
+import admin from "./createAdmin/adminSlice"
 
 const rootReducer = {
   auth,
@@ -12,7 +13,8 @@ const rootReducer = {
   layout,
   dashboard,
   user,
-  subscription
+  subscription,
+  admin
 }
 
 export default rootReducer

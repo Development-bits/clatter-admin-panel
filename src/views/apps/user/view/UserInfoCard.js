@@ -331,7 +331,7 @@ const UserInfoCard = ({ selectedUser, loading, error, toggleStateOfModal, setTog
                   <span>{selectedUser?.userName ?? ''}</span>
                 </li>
                 <li className='mb-75'>
-                  <span className='fw-bolder me-25'>Billing Email:</span>
+                  <span className='fw-bolder me-25'>Email:</span>
                   <span> {selectedUser?.email ?? ''}</span>
                 </li>
                 <li className='mb-75'>

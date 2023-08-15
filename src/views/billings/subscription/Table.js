@@ -206,7 +206,7 @@ const Table = ({ allUserData, total }) => {
 
     useEffect(() => {
         setCurrentPage(1)
-    }, [currentPage, currentRole, currentStatus])
+    }, [currentPlan, currentRole, currentStatus])
 
     // ** User filter options
     const roleOptions = [
