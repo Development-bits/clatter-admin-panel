@@ -124,6 +124,7 @@ const Table = () => {
             page: currentPage,
             plan: currentPlan.value,
             status: currentRole.value,
+            keyword: searchTerm,
             limit: rowsPerPage,
         }
 
@@ -145,17 +146,18 @@ const Table = () => {
         return () => {
             clearTimeout(timerId);
         };
-    }, [dispatch, currentPage, currentPlan, currentRole, rowsPerPage])
+    }, [dispatch, currentPage, currentPlan, currentRole, rowsPerPage, searchTerm])
 
     useEffect(() => {
         setCurrentPage(1)
-    }, [currentPlan, currentRole])
+    }, [currentPlan, currentRole, searchTerm])
 
     // ** User filter options
     const roleOptions = [
         { value: '', label: 'All' },
         { value: 'active', label: 'Active' },
         { value: 'cancel', label: 'Cancelled' },
+        { value: 'expire', label: 'Expire' },
     ]
 
     const planOptions = [

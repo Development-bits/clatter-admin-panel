@@ -129,50 +129,10 @@ const PlanCard = ({ selectedUser }) => {
                     <sub className='pricing-duration font-small-4 ms-25 mt-auto mb-2'>/month</sub>
                   </div>
                 </div>
-                {selectedUser?.planName === 'Free Trial' && (
+                {selectedUser?.planName && (
                   <ul className='ps-1 mb-2 mt-50'>
-                    <li className='mb-50'>500 credits</li>
-                  </ul>
-                )}
-                {selectedUser?.planName === 'Creator Monthly Plan' && (
-                  <ul className='ps-1 mb-2 mt-50'>
-                    <li className='mb-50'>Fast queue: Jump ahead of free-trial users</li>
-                    <li className='mb-50'>Full Access to Creation-Hub Text</li>
-                    <li className='mb-50'>Full Access to Creation-Hub Video</li>
-                    <li className='mb-50'>Over 38.000 words/month</li>
-                    <li className='mb-50'>Long-form content</li>
-                    <li className='mb-50'>2 users</li>
-                    <li className='mb-50'>Full Clatter Tutorial</li>
-                    <li >AI Curation with Virality Score</li>
-                  </ul>
-                )}
-                {selectedUser?.planName === 'Agency Monthly Plan' && (
-                  <ul className='ps-1 mb-2 mt-50'>
-                    <li className='mb-50'>Fast queue: Jump ahead of free-trial users</li>
-                    <li className='mb-50'>Full Access to Creation-Hub Text</li>
-                    <li className='mb-50'>Full Access to Creation-Hub Video</li>
-                    <li className='mb-50'>Over 75.000 words/month</li>
-                    <li className='mb-50'>Long-form content</li>
-                    <li className='mb-50'>More then 3 user</li>
-                    <li className='mb-50'>Full Clatter Tutorial</li>
-                    <li className='mb-50'>AI Curation with Virality Score</li>
-                    <li className='mb-50'>Animation (start with a prompt) Transform (video-to-video) Image-to-Video (start with an image)</li>
-                    <li>24/7 instant support</li>
-                  </ul>
-                )}
-                {selectedUser?.planName === 'Company Monthly Plan' && (
-                  <ul className='ps-1 mb-2 mt-50'>
-                    <li className='mb-50'>Fast queue: Jump ahead of free-trial users</li>
-                    <li className='mb-50'>Full Access to Creation-Hub Text</li>
-                    <li className='mb-50'>Full Access to Creation-Hub Video</li>
-                    <li className='mb-50'>Over 380.000 words/month</li>
-                    <li className='mb-50'>Long-form content</li>
-                    <li className='mb-50'>More then 10 user</li>
-                    <li className='mb-50'>Full Clatter Tutorial</li>
-                    <li className='mb-50'>AI Curation with Virality Score</li>
-                    <li className='mb-50'>Animation (start with a prompt) Transform (video-to-video) Image-to-Video (start with an image)</li>
-                    <li className='mb-50'>24/7 instant support</li>
-                    <li>Account Manager</li>
+                    <li className='mb-50'>Total Credit: {selectedUser?.credit}</li>
+                    <li className='mb-50'>Total Credit: {selectedUser?.usedCredit}</li>
                   </ul>
                 )}
                 {selectedUser?.remainingDays?.toString().includes('-') ? null : (

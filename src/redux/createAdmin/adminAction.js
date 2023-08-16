@@ -15,7 +15,6 @@ export const getAdminAction = createAsyncThunk('users/all-admin', async (arg, { 
                 'authorization': `Bearer ${accessToken}`
             }
         }
-        debugger
         const response = await axios.get(`${Domain}/all-admins?page=${arg.page}&limit=${arg.limit}&keyword=${arg.keyword}&status=${arg.status}`, config)
         return response.data
     } catch (error) {
@@ -111,7 +110,7 @@ export const deactivateAdminAction = createAsyncThunk('users/admin-deactivate', 
                 'authorization': `Bearer ${accessToken}`
             }
         }
-
+        debugger
         const response = await axios.delete(`${Domain}/admin-deactivate`, arg, config)
         Toasts({ message: response.data.message })
         return response.data

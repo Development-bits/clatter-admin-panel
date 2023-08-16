@@ -70,7 +70,7 @@ export const updateProfileAction = createAsyncThunk('users/update-user-profile',
     }
 })
 
-export const userSubscriptionDetailAction = createAsyncThunk('users/user-subscriptions/:id?page=1&limit=2', async ({ id, page, limit }, { rejectWithValue }) => {
+export const userSubscriptionDetailAction = createAsyncThunk('users/user-subscriptions', async ({ id, page, limit }, { rejectWithValue }) => {
     try {
         let accessToken = JSON.parse(localStorage.getItem("accessToken"))
         let config = {
@@ -92,7 +92,7 @@ export const userSubscriptionDetailAction = createAsyncThunk('users/user-subscri
     }
 })
 
-export const userActivityDetailAction = createAsyncThunk('users/user-activity/:id?page=1&limit=2', async ({ id, page, limit }, { rejectWithValue }) => {
+export const userActivityDetailAction = createAsyncThunk('users/user-activity', async ({ id, page, limit }, { rejectWithValue }) => {
     try {
         let accessToken = JSON.parse(localStorage.getItem("accessToken"))
         let config = {
@@ -122,6 +122,28 @@ export const addNewUserAction = createAsyncThunk('users/add-user', async (arg, {
             }
         }
         const response = await axios.post(`${Domain}/add-user`, arg, config)
+        Toasts({ message: response.data.message })
+        return response.data
+    } catch (error) {
+        if (error.message && error.response.data.message) {
+            Toasts({ error: error.response.data.message })
+            return rejectWithValue(error.response.data.message)
+        } else {
+            Toasts({ error: error.message })
+            return rejectWithValue(error.message)
+        }
+    }
+})
+
+export const statusUserAction = createAsyncThunk('users/user-status', async (arg, { rejectWithValue }) => {
+    try {
+        let accessToken = JSON.parse(localStorage.getItem("accessToken"))
+        let config = {
+            headers: {
+                'authorization': `Bearer ${accessToken}`
+            }
+        }
+        const response = await axios.put(`${Domain}/user-status/${arg.id}`, { status: arg.status }, config)
         Toasts({ message: response.data.message })
         return response.data
     } catch (error) {

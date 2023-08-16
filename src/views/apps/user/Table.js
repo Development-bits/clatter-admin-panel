@@ -192,7 +192,7 @@ const UsersList = ({ allUserData, total }) => {
     if (searchTerm) {
       timerId = setTimeout(() => {
         dispatch(allUserAction(obj))
-      }, 1500)
+      }, 1000)
     } else {
       timerId = setTimeout(() => {
         dispatch(allUserAction(obj))
@@ -218,7 +218,8 @@ const UsersList = ({ allUserData, total }) => {
   const roleOptions = [
     { value: '', label: 'All' },
     { value: 'active', label: 'Active' },
-    { value: 'cancel', label: 'Cancelled' },
+    { value: 'cancel', label: 'Cancel' },
+    { value: 'expire', label: 'Expire' },
   ]
 
   const planOptions = [

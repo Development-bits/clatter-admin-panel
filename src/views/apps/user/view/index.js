@@ -23,6 +23,7 @@ const UserView = () => {
   const { id } = useParams()
   // ** Store Vars
   const { singleUserData, singleUserLoading, singleUserError } = useSelector(state => state.user)
+  const { statusUserData } = useSelector((state) => state.user)
   const { cancelSubData, subscriptionData } = useSelector((state) => state.subscription)
   const dispatch = useDispatch()
   const [toggleStateOfModal, setToggleStateOfModal] = useState(false)
@@ -42,7 +43,7 @@ const UserView = () => {
       }
 
     }
-  }, [dispatch, id, cancelSubData, subscriptionData])
+  }, [dispatch, id, cancelSubData, subscriptionData, statusUserData])
 
   const toggleTab = tab => {
     if (active !== tab) {

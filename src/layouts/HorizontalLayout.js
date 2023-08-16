@@ -7,20 +7,25 @@ import Layout from '@layouts/HorizontalLayout'
 
 // ** Menu Items Array
 import navigation from '@src/navigation/horizontal'
+import { getUserData } from '../utility/Utils'
 
 const HorizontalLayout = props => {
-  // const [menuData, setMenuData] = useState([])
+  const user = getUserData()
 
-  // ** For ServerSide navigation
-  // useEffect(() => {
-  //   axios.get(URL).then(response => setMenuData(response.data))
-  // }, [])
-
-  return (
-    <Layout menuData={navigation} {...props}>
-      <Outlet />
-    </Layout>
-  )
+  if (user.role === "superAdmin") {
+    return (
+      <Layout menuData={navigation} {...props}>
+        <Outlet />
+      </Layout>
+    )
+  } else {
+    const otherItems = navigation.filter(item => item.access !== 'superAdmin');
+    return (
+      <Layout menuData={otherItems} {...props}>
+        <Outlet />
+      </Layout>
+    )
+  }
 }
 
 export default HorizontalLayout

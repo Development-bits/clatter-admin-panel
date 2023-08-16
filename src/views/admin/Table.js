@@ -235,7 +235,6 @@ const Table = ({ toggleSidebar }) => {
 
     useEffect(() => {
         if (getAdminData) {
-            debugger
             setAllUserData(getAdminData?.admins)
             setTotal(getAdminData?.totalAdmins)
         }
@@ -261,7 +260,6 @@ const Table = ({ toggleSidebar }) => {
             }, 100)
         }
         if (allUserData) {
-            toggleSidebar()
             timerId = setTimeout(() => {
                 dispatch(getAdminAction(obj))
             }, 1000)
@@ -325,6 +323,7 @@ const Table = ({ toggleSidebar }) => {
     const dataToRender = () => {
         const filters = {
             status: currentStatus.value,
+            limit: rowsPerPage,
             q: searchTerm
         }
 

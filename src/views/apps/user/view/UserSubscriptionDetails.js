@@ -107,11 +107,12 @@ const UserSubscriptionDetails = () => {
   const dispatch = useDispatch()
   const [page, setPage] = useState(1)
   const { userSubDetailsData, userSubDetailsloading, userSubDetailsError } = useSelector((state) => state.user)
+  const { subscriptionData } = useSelector(state => state.subscription)
 
   useEffect(() => {
     let limit = 10
     dispatch(userSubscriptionDetailAction({ page, limit, id }))
-  }, [dispatch, page, id])
+  }, [dispatch, page, id, subscriptionData])
 
   // ** Function in get data on page change
   const handlePagination = page => {

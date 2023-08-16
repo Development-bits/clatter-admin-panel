@@ -15,21 +15,21 @@ export default [
         navLink: '/user'
     },
     {
-        id: 'billings',
-        title: 'Billing',
+        id: 'sales',
+        title: 'Sales',
         icon: <DollarSign size={20} />,
         children: [
             {
                 id: 'transaction',
                 title: 'Transaction',
                 icon: <Circle size={12} />,
-                navLink: '/billing/transaction'
+                navLink: '/sales/transaction'
             },
             {
                 id: 'subscription',
                 title: 'Subscription',
                 icon: <Circle size={12} />,
-                navLink: '/billing/subscription'
+                navLink: '/sales/subscription'
             }
         ]
     },

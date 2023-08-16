@@ -19,22 +19,22 @@ export default [
         access: 'admin'
     },
     {
-        id: 'billings',
-        title: 'Billing',
+        id: 'sales',
+        title: 'Sales',
         icon: <DollarSign size={20} />,
         children: [
             {
                 id: 'transaction',
                 title: 'Transaction',
                 icon: <Circle size={12} />,
-                navLink: '/billing/transaction',
+                navLink: '/sales/transaction',
                 access: 'admin'
             },
             {
                 id: 'subscription',
                 title: 'Subscription',
                 icon: <Circle size={12} />,
-                navLink: '/billing/subscription',
+                navLink: '/sales/subscription',
                 access: 'admin'
             }
         ]

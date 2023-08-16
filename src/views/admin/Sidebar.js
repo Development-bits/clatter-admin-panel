@@ -11,13 +11,14 @@ import { selectThemeColors } from '@utils'
 import { useForm, Controller } from 'react-hook-form'
 
 // ** Reactstrap Imports
-import { Button, Label, FormText, Form, Input, FormFeedback } from 'reactstrap'
+import { Button, Label, FormText, Form, Input } from 'reactstrap'
 
 // ** Store & Actions
 import { useDispatch } from 'react-redux'
 import { createAdminAction } from '../../redux/createAdmin/adminAction'
 
 const defaultValues = {
+    userName: '',
     firstName: '',
     lastName: '',
     email: '',
@@ -114,6 +115,27 @@ const SidebarNewAdmin = ({ open, toggleSidebar }) => {
             onClosed={handleSidebarClosed}
         >
             <Form onSubmit={handleSubmit(onSubmit)}>
+                <div className='mb-1'>
+                    <Label className='form-label' for='userName'>
+                        User Name <span className='text-danger'>*</span>
+                    </Label>
+                    <Controller
+                        name='userName'
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                id='userName'
+                                placeholder='john.doe'
+                                invalid={errors.userName && true}
+                                {...field}
+                            />
+                        )}
+                    />
+                    {errors.userName && (
+                        <FormText color='danger'>{errors.userName.type}</FormText>
+                    )}
+
+                </div>
                 <div className='mb-1'>
                     <Label className='form-label' for='firstName'>
                         First Name <span className='text-danger'>*</span>

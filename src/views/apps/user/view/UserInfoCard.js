@@ -20,7 +20,7 @@ import { selectThemeColors } from '@utils'
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
 import { useDispatch } from 'react-redux'
-import { updateProfileAction } from '../../../../redux/user/userAction'
+import { statusUserAction, updateProfileAction } from '../../../../redux/user/userAction'
 import { useParams } from 'react-router-dom'
 
 const roleColors = {
@@ -199,10 +199,55 @@ const UserInfoCard = ({ selectedUser, loading, error, toggleStateOfModal, setTog
             confirmButton: 'btn btn-success'
           }
         })
+        let obj = {
+          id: id,
+          status: "banned"
+        }
+        dispatch(statusUserAction(obj))
       } else if (result.dismiss === MySwal.DismissReason.cancel) {
         MySwal.fire({
           title: 'Cancelled',
           text: 'Cancelled Ban :)',
+          icon: 'error',
+          customClass: {
+            confirmButton: 'btn btn-success'
+          }
+        })
+      }
+    })
+  }
+
+  const handleUnSuspendedClick = async () => {
+    return await MySwal.fire({
+      title: 'Are you sure?',
+      text: "You want to revert user ban!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Unban user!',
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-outline-danger ms-1'
+      },
+      buttonsStyling: false
+    }).then(function (result) {
+      if (result.value) {
+        MySwal.fire({
+          icon: 'success',
+          title: 'Unbanned!',
+          text: 'User has been unbanned.',
+          customClass: {
+            confirmButton: 'btn btn-success'
+          }
+        })
+        let obj = {
+          id: id,
+          status: "active"
+        }
+        dispatch(statusUserAction(obj))
+      } else if (result.dismiss === MySwal.DismissReason.cancel) {
+        MySwal.fire({
+          title: 'Cancelled',
+          text: 'Cancelled unban :)',
           icon: 'error',
           customClass: {
             confirmButton: 'btn btn-success'
@@ -351,9 +396,16 @@ const UserInfoCard = ({ selectedUser, loading, error, toggleStateOfModal, setTog
             <Button color='primary' onClick={() => setShow(true)}>
               Edit
             </Button>
-            <Button className='ms-1' color='danger' outline onClick={handleSuspendedClick}>
-              Ban
-            </Button>
+            {selectedUser?.userStatus === "active" ? (
+              <Button className='ms-1' color='danger' outline onClick={handleSuspendedClick}>
+                Ban
+              </Button>
+            ) : (
+              <Button className='ms-1' color='danger' outline onClick={handleUnSuspendedClick}>
+                Unban
+              </Button>
+            )}
+
           </div>
         </CardBody>
       </Card>

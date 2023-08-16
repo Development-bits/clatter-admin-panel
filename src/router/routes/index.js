@@ -60,14 +60,14 @@ const Routes = [
   },
   {
     index: true,
-    path: '/billing/transaction',
+    path: '/sales/transaction',
     element: <Transaction />,
     protected: true,
     access: 'admin'
   },
   {
     index: true,
-    path: '/billing/subscription',
+    path: '/sales/subscription',
     element: <Subscription />,
     protected: true,
     access: 'admin'
