@@ -128,15 +128,15 @@ const Table = () => {
             limit: rowsPerPage,
         }
 
-        // if (searchTerm) {
-        //     timerId = setTimeout(() => {
-        //         dispatch(adminBillingAction(obj))
-        //     }, 1500)
-        // } else {
-        timerId = setTimeout(() => {
-            dispatch(adminBillingAction(obj))
-        }, 100)
-        // }
+        if (searchTerm) {
+            timerId = setTimeout(() => {
+                dispatch(adminBillingAction(obj))
+            }, 1500)
+        } else {
+            timerId = setTimeout(() => {
+                dispatch(adminBillingAction(obj))
+            }, 100)
+        }
         if (allUserData) {
             timerId = setTimeout(() => {
                 dispatch(adminBillingAction(obj))

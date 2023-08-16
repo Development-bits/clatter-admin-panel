@@ -132,7 +132,7 @@ const PlanCard = ({ selectedUser }) => {
                 {selectedUser?.planName && (
                   <ul className='ps-1 mb-2 mt-50'>
                     <li className='mb-50'>Total Credit: {selectedUser?.credit}</li>
-                    <li className='mb-50'>Total Credit: {selectedUser?.usedCredit}</li>
+                    <li className='mb-50'>Used Credit: {selectedUser?.usedCredit}</li>
                   </ul>
                 )}
                 {selectedUser?.remainingDays?.toString().includes('-') ? null : (

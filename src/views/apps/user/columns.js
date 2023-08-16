@@ -16,13 +16,15 @@ import moment from 'moment/moment'
 const renderClient = row => {
   if (row?.avatar?.length) {
     return <Avatar className='me-1' img={row.avatar} width='32' height='32' />
+
   } else {
+    let fullName = row.firstName + " " + row.lastName
     return (
       <Avatar
         initials
         className='me-1'
         color={row.avatarColor || 'light-primary'}
-        content={row.fullName || 'John Doe'}
+        content={fullName || 'John Doe'}
       />
     )
   }
@@ -50,7 +52,7 @@ export const columns = [
             to={`/user/view/${row.id}`}
             className='user_name text-truncate text-body'
           >
-            <span className='fw-bolder'>{row.firstName} {row.lastName}</span>
+            <span className='fw-bolder text-capitalize'>{row.firstName} {row.lastName}</span>
           </Link>
           <small className='text-truncate text-muted mb-0'>{row.email}</small>
         </div>
@@ -127,16 +129,6 @@ export const columns = [
               <Archive size={14} className='me-50' />
               <span className='align-middle'>Edit</span>
             </DropdownItem>
-            {/* <DropdownItem
-              tag='button'
-              className='w-100'
-              onClick={e => {
-                e.preventDefault()
-              }}
-            >
-              <Trash2 size={14} className='me-50' />
-              <span className='align-middle'>Delete</span>
-            </DropdownItem> */}
           </DropdownMenu>
         </UncontrolledDropdown>
       </div>
