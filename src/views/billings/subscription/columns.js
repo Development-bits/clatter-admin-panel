@@ -6,7 +6,7 @@ import Avatar from '@components/avatar'
 
 
 // ** Icons Imports
-import { Slack, User, Settings, Database, Edit2, MoreVertical, FileText, Trash2, Archive } from 'react-feather'
+import { MoreVertical, FileText } from 'react-feather'
 
 // ** Reactstrap Imports
 import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
@@ -48,6 +48,7 @@ export const columns = [
                 {renderClient(row)}
                 <div className='d-flex flex-column'>
                     <Link
+                        to={`/user/view/${row.userId}`}
                         className='user_name text-truncate text-body'
                     >
                         <span className='fw-bolder text-capitalize'>{row.firstName} {row.lastName}</span>
@@ -58,10 +59,10 @@ export const columns = [
         )
     },
     {
-        name: 'Subscription Status',
+        name: 'Status',
         sortable: true,
         minWidth: '130px',
-        sortField: 'subscriptionStatus',
+        sortField: 'Status',
         selector: row => row.subscriptionStatus,
         cell: row => (
             <Badge className='text-capitalize d-flex flex-column' color={statusObj[row.subscriptionStatus]} pill>
@@ -79,32 +80,25 @@ export const columns = [
         cell: row => <span className='text-capitalize'>{row.planName}</span>
     },
     {
-        name: 'Created At',
+        name: 'Plane Credit',
         minWidth: '140px',
         sortable: true,
         sortField: 'createdAt',
+        selector: row => row.planCredit,
+        cell: row => <span>{row.planCredit}</span>
+    },
+    {
+        name: 'Created At',
+        minWidth: '140px',
+        sortable: true,
+        sortField: 'createAt',
         selector: row => row.subscriptionCreationDate,
         cell: row => (
             <div className='text-capitalize d-flex flex-column'>
                 <span>
-                    {moment(row.subscriptionCreationDate).format("MM/DD/YY")}
+                    {moment(row.subscriptionCreationDate).format("DD/MM/YY")}
                 </span>
                 <smal>{moment(row.subscriptionCreationDate).format("hh:mm A")}</smal>
-            </div>
-        )
-    },
-    {
-        name: 'Expire At',
-        minWidth: '140px',
-        sortable: true,
-        sortField: 'endAt',
-        selector: row => row.subscriptionEndingDate,
-        cell: row => (
-            <div className='text-capitalize d-flex flex-column'>
-                <span>
-                    {moment(row.subscriptionEndingDate).format("MM/DD/YY")}
-                </span>
-                <smal>{moment(row.subscriptionEndingDate).format("hh:mm A")}</smal>
             </div>
         )
     },
@@ -121,7 +115,7 @@ export const columns = [
                         <DropdownItem
                             tag={Link}
                             className='w-100'
-                            to={`/user/view/${row.id}`}
+                            to={`/user/view/${row.userId}`}
                         >
                             <FileText size={14} className='me-50' />
                             <span className='align-middle'>Details</span>

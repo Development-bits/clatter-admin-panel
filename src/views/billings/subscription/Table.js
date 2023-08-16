@@ -114,7 +114,7 @@ const Table = () => {
     useEffect(() => {
         if (adminBillingData) {
             setAllUserData(adminBillingData?.data)
-            setTotal(adminBillingData?.totalUsers)
+            setTotal(adminBillingData?.totalSubscriptions)
         }
     }, [adminBillingData]);
     // ** Get data on mount

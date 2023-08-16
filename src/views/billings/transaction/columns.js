@@ -47,7 +47,7 @@ export const columns = [
                 {renderClient(row)}
                 <div className='d-flex flex-column'>
                     <Link
-                        to={`/user/view/${row.id}`}
+                        to={`/user/view/${row.userId}`}
                         className='user_name text-truncate text-body'
                     >
                         <span className='fw-bolder'>{row.firstName} {row.lastName}</span>
@@ -57,29 +57,25 @@ export const columns = [
             </div>
         )
     },
-    {
-        name: 'User Status',
-        sortable: true,
-        minWidth: '130px',
-        sortField: 'userStatus',
-        selector: row => row.userStatus,
-        cell: row => (
-            <Badge className='text-capitalize d-flex flex-column' color={statusObj[row.userStatus]} pill>
-                <span className='text-capitalize'>{row.userStatus}</span>
-            </Badge>
-        )
 
-    },
     {
         name: 'Plan',
         minWidth: '135px',
         sortable: true,
-        sortField: 'currentPlan',
-        selector: row => row.plan,
-        cell: row => <span className='text-capitalize'>{row.plan}</span>
+        sortField: 'planName',
+        selector: row => row.planName,
+        cell: row => <span className='text-capitalize'>{row.planName}</span>
     },
     {
-        name: 'Subscription Status',
+        name: 'Amount',
+        minWidth: '135px',
+        sortable: true,
+        sortField: 'planAmount',
+        selector: row => row.planAmount,
+        cell: row => <span className='text-capitalize'>${row.planAmount}</span>
+    },
+    {
+        name: 'Status',
         minWidth: '140px',
         sortable: true,
         sortField: 'subscription',
@@ -99,7 +95,7 @@ export const columns = [
         cell: row => (
             <div className='text-capitalize d-flex flex-column'>
                 <span>
-                    {moment(row.createdAt).format("MM/DD/YY")}
+                    {moment(row.createdAt).format("DD/MM/YY")}
                 </span>
                 <smal>{moment(row.createdAt).format("hh:mm A")}</smal>
             </div>
@@ -122,20 +118,6 @@ export const columns = [
                         >
                             <FileText size={14} className='me-50' />
                             <span className='align-middle'>Details</span>
-                        </DropdownItem>
-                        <DropdownItem tag={Link} to={`/user/view/${row.id}&edit=true`} className='w-100' >
-                            <Archive size={14} className='me-50' />
-                            <span className='align-middle'>Edit</span>
-                        </DropdownItem>
-                        <DropdownItem
-                            tag='button'
-                            className='w-100'
-                            onClick={e => {
-                                e.preventDefault()
-                            }}
-                        >
-                            <Trash2 size={14} className='me-50' />
-                            <span className='align-middle'>Delete</span>
                         </DropdownItem>
                     </DropdownMenu>
                 </UncontrolledDropdown>

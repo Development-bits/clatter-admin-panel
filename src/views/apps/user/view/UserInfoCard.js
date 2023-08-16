@@ -33,8 +33,9 @@ const roleColors = {
 
 const statusColors = {
   active: 'light-success',
-  pending: 'light-warning',
-  inactive: 'light-secondary'
+  deactivated: 'light-warning',
+  inactive: 'light-secondary',
+  banned: 'light-danger',
 }
 
 const statusOptions = [

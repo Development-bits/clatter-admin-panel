@@ -27,6 +27,11 @@ const initialState = {
 export const adminSlice = createSlice({
     name: 'admin',
     initialState,
+    reducers: {
+        clearGetAdminData: (state) => {
+            state.getAdminData = null
+        }
+    },
     extraReducers: (builder) => {
         builder.addCase(getAdminAction.pending, (state, action) => {
             if (state.getAdminLoading === 'idle') {
@@ -117,5 +122,5 @@ export const adminSlice = createSlice({
     }
 })
 
-
+export const { clearGetAdminData } = adminSlice.actions;
 export default adminSlice.reducer

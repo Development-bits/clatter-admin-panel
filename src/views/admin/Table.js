@@ -40,6 +40,7 @@ import '@styles/react/libs/tables/react-dataTable-component.scss'
 import moment from 'moment/moment'
 import { deactivateAdminAction, deleteAdminAction, getAdminAction, updateAdminAction } from '../../redux/createAdmin/adminAction'
 import { Link } from 'react-router-dom'
+import { clearGetAdminData } from '../../redux/createAdmin/adminSlice'
 
 // ** Renders Client Columns
 const renderClient = row => {
@@ -63,6 +64,82 @@ const statusObj = {
     deactivated: 'light-warning',
     inactive: 'light-secondary',
     banned: 'light-danger',
+}
+
+export const CustomDropDownUpdate = ({ row }) => {
+    const dispatch = useDispatch()
+
+    const handleUpdate = () => {
+        dispatch(clearGetAdminData)
+        setTimeout(() => {
+            dispatch(deleteAdminAction(row.id))
+        }, 200)
+    }
+    return (
+        <DropdownItem
+            tag='button'
+            className='w-100'
+            onClick={() => handleUpdate}
+        >
+            <Trash2 size={14} className='me-50' />
+            <span className='align-middle'>Update</span>
+        </DropdownItem>
+    )
+}
+
+export const CustomDropDownDelete = ({ row }) => {
+    const dispatch = useDispatch()
+
+    const handleDelete = () => {
+        dispatch(clearGetAdminData)
+        setTimeout(() => {
+            dispatch(deleteAdminAction(row.id))
+        }, 200)
+    }
+    return (
+        <DropdownItem
+            tag="button"
+            className='w-100'
+            onClick={() => handleDelete()} >
+            <Archive size={14} className='me-50' />
+            <span className='align-middle'>Delete</span>
+        </DropdownItem>
+    )
+}
+
+export const CustomDropDownDeactivate = ({ row }) => {
+    const dispatch = useDispatch()
+
+    const handleStatusUpdate = () => {
+        dispatch(clearGetAdminData)
+        if (row.status === "active") {
+            let obj = {
+                id: row.id,
+                status: "deactivated"
+            }
+            setTimeout(() => {
+                dispatch(deactivateAdminAction(obj))
+            }, 200)
+        } else {
+            let obj = {
+                id: row.id,
+                status: "active"
+            }
+            setTimeout(() => {
+                dispatch(deactivateAdminAction(obj))
+            }, 200)
+        }
+    }
+    return (
+        <DropdownItem
+            tag='button'
+            className='w-100'
+            onClick={() => handleStatusUpdate()}
+        >
+            <FileText size={14} className='me-50' />
+            <span className='align-middle'>{row.status === "active" ? "Deactivate" : "Activate"}</span>
+        </DropdownItem>
+    )
 }
 
 export const columns = [
@@ -134,35 +211,9 @@ export const columns = [
                         <MoreVertical size={14} className='cursor-pointer' />
                     </DropdownToggle>
                     <DropdownMenu>
-                        <DropdownItem
-                            tag='button'
-                            className='w-100'
-                            onClick={() =>
-                                dispatch(updateAdminAction())
-                            }
-                        >
-                            <Trash2 size={14} className='me-50' />
-                            <span className='align-middle'>Update</span>
-                        </DropdownItem>
-                        <DropdownItem
-                            tag='button'
-                            className='w-100'
-                            onClick={() =>
-                                dispatch(deactivateAdminAction(row.id))
-                            }
-                        >
-                            <FileText size={14} className='me-50' />
-                            <span className='align-middle'>Deactivate</span>
-                        </DropdownItem>
-                        <DropdownItem
-                            tag="button"
-                            className='w-100'
-                            onClick={() =>
-                                dispatch(deleteAdminAction(row.id))
-                            } >
-                            <Archive size={14} className='me-50' />
-                            <span className='align-middle'>Delete</span>
-                        </DropdownItem>
+                        <CustomDropDownUpdate row={row} />
+                        <CustomDropDownDeactivate row={row} />
+                        <CustomDropDownDelete row={row} />
                     </DropdownMenu>
                 </UncontrolledDropdown>
             </div >
@@ -231,14 +282,23 @@ const Table = ({ toggleSidebar }) => {
     const [total, setTotal] = useState(null)
     const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'All', number: 0 })
 
-    const { getAdminData } = useSelector((state) => state.admin)
+    const { getAdminData, deleteAdminData, deactivateAdminData, updateAdminData } = useSelector((state) => state.admin)
 
     useEffect(() => {
-        if (getAdminData) {
-            setAllUserData(getAdminData?.admins)
-            setTotal(getAdminData?.totalAdmins)
+        if (deleteAdminData || deactivateAdminData || updateAdminData) {
+            setAllUserData(null)
+            setTotal(null)
         }
-    }, [getAdminData]);
+    }, [deleteAdminData, deactivateAdminData, updateAdminData])
+
+    useEffect(() => {
+        setTimeout(() => {
+            if (getAdminData) {
+                setAllUserData(getAdminData?.admins)
+                setTotal(getAdminData?.totalAdmins)
+            }
+        }, 400)
+    }, [getAdminData, deleteAdminData, deactivateAdminData, updateAdminData]);
 
     // ** Get data on mount
     useEffect(() => {
