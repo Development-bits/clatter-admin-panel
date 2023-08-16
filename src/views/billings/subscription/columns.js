@@ -80,7 +80,7 @@ export const columns = [
         cell: row => <span className='text-capitalize'>{row.planName}</span>
     },
     {
-        name: 'Plane Credit',
+        name: 'Plan Credit',
         minWidth: '140px',
         sortable: true,
         sortField: 'createdAt',
