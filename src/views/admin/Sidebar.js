@@ -18,6 +18,8 @@ import { useDispatch } from 'react-redux'
 import { createAdminAction } from '../../redux/createAdmin/adminAction'
 
 const defaultValues = {
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
 }
@@ -32,7 +34,6 @@ const checkIsValid = (data, passwordRegex, emailRegex) => {
             if (data[key].length === 0) {
                 return false;
             }
-
             if (key === 'password' && (!passwordRegex.test(data[key]) || data[key].length < 8)) {
                 return false;
             }
@@ -114,6 +115,48 @@ const SidebarNewAdmin = ({ open, toggleSidebar }) => {
         >
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <div className='mb-1'>
+                    <Label className='form-label' for='firstName'>
+                        First Name <span className='text-danger'>*</span>
+                    </Label>
+                    <Controller
+                        name='firstName'
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                id='firstName'
+                                placeholder='john'
+                                invalid={errors.firstName && true}
+                                {...field}
+                            />
+                        )}
+                    />
+                    {errors.firstName && (
+                        <FormText color='danger'>{errors.firstName.type}</FormText>
+                    )}
+
+                </div>
+                <div className='mb-1'>
+                    <Label className='form-label' for='lastName'>
+                        Last Name <span className='text-danger'>*</span>
+                    </Label>
+                    <Controller
+                        name='lastName'
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                id='lastName'
+                                placeholder='doe'
+                                invalid={errors.lastName && true}
+                                {...field}
+                            />
+                        )}
+                    />
+                    {errors.lastName && (
+                        <FormText color='danger'>{errors.lastName.type}</FormText>
+                    )}
+                </div>
+                <div className='mb-1'>
+
                     <Label className='form-label' for='email'>
                         Email <span className='text-danger'>*</span>
                     </Label>

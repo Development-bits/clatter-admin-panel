@@ -32,54 +32,11 @@ import {
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
-import { allUserAction } from '../../../redux/user/userAction'
+import { adminBillingAction } from '../../../redux/subscription/subscriptionAction'
 import { columns } from './columns'
 
 // ** Table Header
 const CustomHeader = ({ store, handlePerPage, rowsPerPage, handleFilter, searchTerm }) => {
-    // ** Converts table to CSV
-    function convertArrayOfObjectsToCSV(array) {
-        let result
-
-        const columnDelimiter = ','
-        const lineDelimiter = '\n'
-        const keys = Object.keys(store[0])
-
-        result = ''
-        result += keys.join(columnDelimiter)
-        result += lineDelimiter
-
-        array.forEach(item => {
-            let ctr = 0
-            keys.forEach(key => {
-                if (ctr > 0) result += columnDelimiter
-
-                result += item[key]
-
-                ctr++
-            })
-            result += lineDelimiter
-        })
-
-        return result
-    }
-
-    // ** Downloads CSV
-    function downloadCSV(array) {
-        const link = document.createElement('a')
-        let csv = convertArrayOfObjectsToCSV(array)
-        if (csv === null) return
-
-        const filename = 'export.csv'
-
-        if (!csv.match(/^data:text\/csv/i)) {
-            csv = `data:text/csv;charset=utf-8,${csv}`
-        }
-
-        link.setAttribute('href', encodeURI(csv))
-        link.setAttribute('download', filename)
-        link.click()
-    }
     return (
         <div className='invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75'>
             <Row>
@@ -125,26 +82,10 @@ const CustomHeader = ({ store, handlePerPage, rowsPerPage, handleFilter, searchT
                                 <span className='align-middle'>Export</span>
                             </DropdownToggle>
                             <DropdownMenu>
-                                {/* <DropdownItem className='w-100'>
-                  <Printer className='font-small-4 me-50' />
-                  <span className='align-middle'>Print</span>
-                </DropdownItem> */}
                                 <DropdownItem className='w-100' onClick={() => downloadCSV(store)}>
                                     <FileText className='font-small-4 me-50' />
                                     <span className='align-middle'>CSV</span>
                                 </DropdownItem>
-                                {/* <DropdownItem className='w-100'>
-                  <Grid className='font-small-4 me-50' />
-                  <span className='align-middle'>Excel</span>
-                </DropdownItem>
-                <DropdownItem className='w-100'>
-                  <File className='font-small-4 me-50' />
-                  <span className='align-middle'>PDF</span>
-                </DropdownItem>
-                <DropdownItem className='w-100'>
-                  <Copy className='font-small-4 me-50' />
-                  <span className='align-middle'>Copy</span>
-                </DropdownItem> */}
                             </DropdownMenu>
                         </UncontrolledDropdown>
                     </div>
@@ -154,7 +95,7 @@ const CustomHeader = ({ store, handlePerPage, rowsPerPage, handleFilter, searchT
     )
 }
 
-const Table = ({ allUserData, total }) => {
+const Table = () => {
     const dispatch = useDispatch()
     // ** States
     const [sort, setSort] = useState('desc')
@@ -163,72 +104,66 @@ const Table = ({ allUserData, total }) => {
     const [sortColumn, setSortColumn] = useState('id')
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [rowsPerPage, setRowsPerPage] = useState(10)
-    const [currentRole, setCurrentRole] = useState({ value: '', label: 'Select ' })
-    const [currentPlan, setCurrentPlan] = useState({ value: '', label: 'Select' })
-    const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'Select ', number: 0 })
-    const { newUserData } = useSelector((state) => state.user)
+    const [allUserData, setAllUserData] = useState(null)
+    const [total, setTotal] = useState(null)
+    const [currentRole, setCurrentRole] = useState({ value: '', label: 'All' })
+    const [currentPlan, setCurrentPlan] = useState({ value: '', label: 'All' })
 
-    const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
+    const { adminBillingData } = useSelector(state => state.subscription)
 
-
+    useEffect(() => {
+        if (adminBillingData) {
+            setAllUserData(adminBillingData?.data)
+            setTotal(adminBillingData?.totalUsers)
+        }
+    }, [adminBillingData]);
     // ** Get data on mount
     useEffect(() => {
         let timerId; // To debounce the API call
         let obj = {
             page: currentPage,
             plan: currentPlan.value,
-            subStatus: currentRole.value,
-            status: currentStatus.value,
+            status: currentRole.value,
             limit: rowsPerPage,
-            keyword: searchTerm
         }
 
-        if (searchTerm) {
+        // if (searchTerm) {
+        //     timerId = setTimeout(() => {
+        //         dispatch(adminBillingAction(obj))
+        //     }, 1500)
+        // } else {
+        timerId = setTimeout(() => {
+            dispatch(adminBillingAction(obj))
+        }, 100)
+        // }
+        if (allUserData) {
             timerId = setTimeout(() => {
-                // dispatch(allUserAction(obj))
-            }, 3000)
-        } else {
-            timerId = setTimeout(() => {
-                // dispatch(allUserAction(obj))
-            }, 100)
-        }
-        if (newUserData) {
-            toggleSidebar()
-            timerId = setTimeout(() => {
-                // dispatch(allUserAction(obj))
+                dispatch(adminBillingAction(obj))
             }, 1000)
         }
         // Cleanup function to clear the debounce timer and prevent memory leaks
         return () => {
             clearTimeout(timerId);
         };
-    }, [dispatch, currentPage, currentPlan, currentRole, rowsPerPage, searchTerm, currentStatus, newUserData])
+    }, [dispatch, currentPage, currentPlan, currentRole, rowsPerPage])
 
     useEffect(() => {
         setCurrentPage(1)
-    }, [currentPlan, currentRole, currentStatus])
+    }, [currentPlan, currentRole])
 
     // ** User filter options
     const roleOptions = [
         { value: '', label: 'All' },
-        // { value: 'active', label: 'Active' },
-        // { value: 'cancel', label: 'Cancelled' },
+        { value: 'active', label: 'Active' },
+        { value: 'cancel', label: 'Cancelled' },
     ]
 
     const planOptions = [
         { value: '', label: 'All' },
-        // { value: 'Creator Monthly Plan', label: 'Creator Monthly Plan' },
-        // { value: 'Agency Monthly Plan', label: 'Agency Monthly Plan' },
-        // { value: 'Company Monthly Plan', label: 'Company Monthly Plan' },
-        // { value: 'Free Trial', label: 'Free Trial' }
-    ]
-
-    const statusOptions = [
-        { value: '', label: 'All', number: 0 },
-        // { value: 'banned', label: 'Banned', number: 1 },
-        // { value: 'active', label: 'Active', number: 2 },
-        // { value: 'inactive', label: 'Inactive', number: 3 },
-        // { value: 'deactivated', label: 'Deactivated', number: 4 }
+        { value: 'Creator Monthly Plan', label: 'Creator Monthly Plan' },
+        { value: 'Agency Monthly Plan', label: 'Agency Monthly Plan' },
+        { value: 'Company Monthly Plan', label: 'Company Monthly Plan' },
+        { value: 'Free Trial', label: 'Free Trial' }
     ]
 
     // ** Function in get data on page change
@@ -275,8 +210,7 @@ const Table = ({ allUserData, total }) => {
         const filters = {
             role: currentRole.value,
             currentPlan: currentPlan.value,
-            status: currentStatus.value,
-            q: searchTerm
+            // q: searchTerm
         }
 
         const isFiltered = Object.keys(filters).some(function (k) {
@@ -320,18 +254,6 @@ const Table = ({ allUserData, total }) => {
 
     }
 
-    const handleCurrentStatus = (value) => {
-        if (!value) {
-            return
-        }
-        if (value.value !== '' && value.label) {
-            setCurrentStatus({ label: value.label, value: value.value })
-        } else {
-            setCurrentStatus({ label: value.label, value: value.value })
-        }
-
-    }
-
     return (
         <Fragment>
             <Card>
@@ -341,7 +263,7 @@ const Table = ({ allUserData, total }) => {
                 <CardBody>
                     <Row>
                         <Col md='4'>
-                            <Label for='role-select'>Filter 1</Label>
+                            <Label for='role-select'>Subscription Status</Label>
                             <Select
                                 isClearable={false}
                                 value={currentRole || ''}
@@ -353,7 +275,7 @@ const Table = ({ allUserData, total }) => {
                             />
                         </Col>
                         <Col className='my-md-0 my-1' md='4'>
-                            <Label for='plan-select'>Filter 2</Label>
+                            <Label for='plan-select'>Plan</Label>
                             <Select
                                 theme={selectThemeColors}
                                 isClearable={false}
@@ -362,18 +284,6 @@ const Table = ({ allUserData, total }) => {
                                 options={planOptions}
                                 value={currentPlan || ''}
                                 onChange={handleCurrentPlan}
-                            />
-                        </Col>
-                        <Col md='4'>
-                            <Label for='status-select'>Filter 3</Label>
-                            <Select
-                                theme={selectThemeColors}
-                                isClearable={false}
-                                className='react-select'
-                                classNamePrefix='select'
-                                options={statusOptions}
-                                value={currentStatus || ''}
-                                onChange={handleCurrentStatus}
                             />
                         </Col>
                     </Row>
@@ -389,22 +299,21 @@ const Table = ({ allUserData, total }) => {
                         pagination
                         responsive
                         paginationServer
-                        // columns={columns}
+                        columns={columns}
                         onSort={handleSort}
                         sortIcon={<ChevronDown />}
                         className='react-dataTable'
-                    // paginationComponent={CustomPagination}
-                    // data={dataToRender()}
-                    // subHeaderComponent={
-                    //     <CustomHeader
-                    //         store={allUserData}
-                    //         searchTerm={searchTerm}
-                    //         rowsPerPage={rowsPerPage}
-                    //         handleFilter={handleFilter}
-                    //         handlePerPage={handlePerPage}
-                    //         toggleSidebar={toggleSidebar}
-                    //     />
-                    // }
+                        paginationComponent={CustomPagination}
+                        data={dataToRender()}
+                        subHeaderComponent={
+                            <CustomHeader
+                                store={allUserData}
+                                searchTerm={searchTerm}
+                                rowsPerPage={rowsPerPage}
+                                handleFilter={handleFilter}
+                                handlePerPage={handlePerPage}
+                            />
+                        }
                     />
                 </div>
             </Card>

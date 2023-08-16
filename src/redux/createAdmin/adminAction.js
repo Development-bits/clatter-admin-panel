@@ -6,7 +6,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import { Domain } from "../../utility/Domain"
 import Toasts from "../../@core/components/react-toast"
 
-export const getAdminAction = createAsyncThunk('users/admin-profile', async (arg, { rejectWithValue }) => {
+export const getAdminAction = createAsyncThunk('users/all-admin', async (arg, { rejectWithValue }) => {
     try {
         let accessToken = JSON.parse(localStorage.getItem("accessToken"))
         let config = {
@@ -15,8 +15,8 @@ export const getAdminAction = createAsyncThunk('users/admin-profile', async (arg
                 'authorization': `Bearer ${accessToken}`
             }
         }
-        const response = await axios.get(`${Domain}/admin-profile`, arg, config)
-        Toasts({ message: response.data.message })
+        debugger
+        const response = await axios.get(`${Domain}/all-admins?page=${arg.page}&limit=${arg.limit}&keyword=${arg.keyword}&status=${arg.status}`, config)
         return response.data
     } catch (error) {
         if (error.message && error.response.data.message) {

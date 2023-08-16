@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
 // ** Custom Components
-import Avatar from '@components/avatar'
+// import Avatar from '@components/avatar'
 
 // ** Utils
 import { isUserLoggedIn } from '@utils'
@@ -42,7 +42,7 @@ const UserDropdown = () => {
     <UncontrolledDropdown tag='li' className='dropdown-user nav-item'>
       <DropdownToggle href='/' tag='a' className='nav-link dropdown-user-link' onClick={e => e.preventDefault()}>
         <div className='user-nav d-sm-flex d-none'>
-          {/* <span className='user-name fw-bold'>{(userData && userData?.userName) || 'John Doe'}</span> */}
+          {/* <span className='user-name fw-bold'>{(userData && userData?.firstName) ? (userData?.firstName + " " + userData?.lastName) : 'John Doe'}</span> */}
           <span className='user-status'>{(userData && userData?.role) === "superAdmin" ? "Super Admin" : 'Admin'}</span>
         </div>
         {/* <Avatar img={userAvatar} imgHeight='40' imgWidth='40' status='online' /> */}

@@ -55,7 +55,7 @@ export const columns = [
     selector: row => {
       return (
         <div>
-          ${row.creditsBurned}
+          {row.creditsBurned}
         </div>
       )
     }

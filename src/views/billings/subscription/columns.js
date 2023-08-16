@@ -17,12 +17,13 @@ const renderClient = row => {
     if (row?.avatar?.length) {
         return <Avatar className='me-1' img={row.avatar} width='32' height='32' />
     } else {
+        let fullName = row.firstName + " " + row.lastName
         return (
             <Avatar
                 initials
                 className='me-1'
                 color={row.avatarColor || 'light-primary'}
-                content={row.fullName || 'John Doe'}
+                content={fullName || 'John Doe'}
             />
         )
     }
@@ -47,10 +48,9 @@ export const columns = [
                 {renderClient(row)}
                 <div className='d-flex flex-column'>
                     <Link
-                        to={`/user/view/${row.id}`}
                         className='user_name text-truncate text-body'
                     >
-                        <span className='fw-bolder'>{row.firstName} {row.lastName}</span>
+                        <span className='fw-bolder text-capitalize'>{row.firstName} {row.lastName}</span>
                     </Link>
                     <small className='text-truncate text-muted mb-0'>{row.email}</small>
                 </div>
@@ -58,14 +58,14 @@ export const columns = [
         )
     },
     {
-        name: 'User Status',
+        name: 'Subscription Status',
         sortable: true,
         minWidth: '130px',
-        sortField: 'userStatus',
-        selector: row => row.userStatus,
+        sortField: 'subscriptionStatus',
+        selector: row => row.subscriptionStatus,
         cell: row => (
-            <Badge className='text-capitalize d-flex flex-column' color={statusObj[row.userStatus]} pill>
-                <span className='text-capitalize'>{row.userStatus}</span>
+            <Badge className='text-capitalize d-flex flex-column' color={statusObj[row.subscriptionStatus]} pill>
+                <span className='text-capitalize'>{row.subscriptionStatus}</span>
             </Badge>
         )
 
@@ -74,34 +74,37 @@ export const columns = [
         name: 'Plan',
         minWidth: '135px',
         sortable: true,
-        sortField: 'currentPlan',
-        selector: row => row.plan,
-        cell: row => <span className='text-capitalize'>{row.plan}</span>
-    },
-    {
-        name: 'Subscription Status',
-        minWidth: '140px',
-        sortable: true,
-        sortField: 'subscription',
-        selector: row => row.subscriptionStatus,
-        cell: row => (
-            <Badge className='text-capitalize d-flex flex-column' color={statusObj[row.subscriptionStatus]} pill>
-                <span className='text-capitalize'>{row.subscriptionStatus}</span>
-            </Badge>
-        )
+        sortField: 'planName',
+        selector: row => row.planName,
+        cell: row => <span className='text-capitalize'>{row.planName}</span>
     },
     {
         name: 'Created At',
         minWidth: '140px',
         sortable: true,
         sortField: 'createdAt',
-        selector: row => row.createdAt,
+        selector: row => row.subscriptionCreationDate,
         cell: row => (
             <div className='text-capitalize d-flex flex-column'>
                 <span>
-                    {moment(row.createdAt).format("MM/DD/YY")}
+                    {moment(row.subscriptionCreationDate).format("MM/DD/YY")}
                 </span>
-                <smal>{moment(row.createdAt).format("hh:mm A")}</smal>
+                <smal>{moment(row.subscriptionCreationDate).format("hh:mm A")}</smal>
+            </div>
+        )
+    },
+    {
+        name: 'Expire At',
+        minWidth: '140px',
+        sortable: true,
+        sortField: 'endAt',
+        selector: row => row.subscriptionEndingDate,
+        cell: row => (
+            <div className='text-capitalize d-flex flex-column'>
+                <span>
+                    {moment(row.subscriptionEndingDate).format("MM/DD/YY")}
+                </span>
+                <smal>{moment(row.subscriptionEndingDate).format("hh:mm A")}</smal>
             </div>
         )
     },
@@ -123,11 +126,7 @@ export const columns = [
                             <FileText size={14} className='me-50' />
                             <span className='align-middle'>Details</span>
                         </DropdownItem>
-                        <DropdownItem tag={Link} to={`/user/view/${row.id}&edit=true`} className='w-100' >
-                            <Archive size={14} className='me-50' />
-                            <span className='align-middle'>Edit</span>
-                        </DropdownItem>
-                        <DropdownItem
+                        {/* <DropdownItem
                             tag='button'
                             className='w-100'
                             onClick={e => {
@@ -136,7 +135,7 @@ export const columns = [
                         >
                             <Trash2 size={14} className='me-50' />
                             <span className='align-middle'>Delete</span>
-                        </DropdownItem>
+                        </DropdownItem> */}
                     </DropdownMenu>
                 </UncontrolledDropdown>
             </div>

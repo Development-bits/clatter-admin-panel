@@ -3,6 +3,9 @@ import { Fragment, useState, useEffect } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
 
+// ** Custom Components
+import Avatar from '@components/avatar'
+
 // ** Third Party Components
 import Select from 'react-select'
 import ReactPaginate from 'react-paginate'
@@ -35,7 +38,25 @@ import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 // import { getAdminAction } from '../../redux/createAdmin/adminAction'
 import moment from 'moment/moment'
-// import { deactivateAdminAction, deleteAdminAction, updateAdminAction } from '../../redux/createAdmin/adminAction'
+import { deactivateAdminAction, deleteAdminAction, getAdminAction, updateAdminAction } from '../../redux/createAdmin/adminAction'
+import { Link } from 'react-router-dom'
+
+// ** Renders Client Columns
+const renderClient = row => {
+    if (row?.avatar?.length) {
+        return <Avatar className='me-1' img={row.avatar} width='32' height='32' />
+    } else {
+        let fullName = row.firstName + " " + row.lastName
+        return (
+            <Avatar
+                initials
+                className='me-1'
+                color={row.avatarColor || 'light-primary'}
+                content={fullName || 'John Doe'}
+            />
+        )
+    }
+}
 
 const statusObj = {
     active: 'light-success',
@@ -46,13 +67,25 @@ const statusObj = {
 
 export const columns = [
     {
-        name: 'Admin Email',
+        name: 'Full Name',
         sortable: true,
-        minWidth: '130px',
-        sortField: 'email',
-        selector: row => row.email,
-        cell: row => <span className='text-capitalize'>{row.email}</span>
-
+        minWidth: '300px',
+        sortField: 'fullName',
+        selector: row => (row.firstName + row.lastName),
+        cell: row => (
+            <div className='d-flex justify-content-left align-items-center'>
+                {renderClient(row)}
+                <div className='d-flex flex-column'>
+                    <Link
+                        // to={`/user/view/${row.id}`}
+                        className='user_name text-truncate text-body'
+                    >
+                        <span className='fw-bolder text-capitalize'>{row.firstName} {row.lastName}</span>
+                    </Link>
+                    <small className='text-truncate text-muted mb-0'>{row.email}</small>
+                </div>
+            </div>
+        )
     },
     {
         name: 'Status',
@@ -65,6 +98,15 @@ export const columns = [
                 <span className='text-capitalize'>{row.status}</span>
             </Badge>
         )
+
+    },
+    {
+        name: 'Role',
+        sortable: true,
+        minWidth: '130px',
+        sortField: 'role',
+        selector: row => row.role,
+        cell: row => <span className='text-capitalize'>{row.role}</span>
 
     },
     {
@@ -95,10 +137,9 @@ export const columns = [
                         <DropdownItem
                             tag='button'
                             className='w-100'
-                            onClick={(e) => {
-                                e.preventDefault()
+                            onClick={() =>
                                 dispatch(updateAdminAction())
-                            }}
+                            }
                         >
                             <Trash2 size={14} className='me-50' />
                             <span className='align-middle'>Update</span>
@@ -106,10 +147,9 @@ export const columns = [
                         <DropdownItem
                             tag='button'
                             className='w-100'
-                            onClick={(e) => {
-                                e.preventDefault()
-                                dispatch(deactivateAdminAction())
-                            }}
+                            onClick={() =>
+                                dispatch(deactivateAdminAction(row.id))
+                            }
                         >
                             <FileText size={14} className='me-50' />
                             <span className='align-middle'>Deactivate</span>
@@ -117,23 +157,22 @@ export const columns = [
                         <DropdownItem
                             tag="button"
                             className='w-100'
-                            onClick={(e) => {
-                                e.preventDefault()
-                                dispatch(deleteAdminAction())
-                            }} >
+                            onClick={() =>
+                                dispatch(deleteAdminAction(row.id))
+                            } >
                             <Archive size={14} className='me-50' />
                             <span className='align-middle'>Delete</span>
                         </DropdownItem>
                     </DropdownMenu>
                 </UncontrolledDropdown>
-            </div>
+            </div >
         )
     }
 ]
 
 
 // ** Table Header
-const CustomHeader = ({ store, toggleSidebar, handlePerPage, rowsPerPage, handleFilter, searchTerm }) => {
+const CustomHeader = ({ toggleSidebar, handlePerPage, rowsPerPage, handleFilter, searchTerm }) => {
     return (
         <div className='invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75'>
             <Row>
@@ -180,7 +219,7 @@ const CustomHeader = ({ store, toggleSidebar, handlePerPage, rowsPerPage, handle
     )
 }
 
-const Table = ({ getAdminData, total, toggleSidebar }) => {
+const Table = ({ toggleSidebar }) => {
     const dispatch = useDispatch()
     // ** States
     const [sort, setSort] = useState('desc')
@@ -188,10 +227,19 @@ const Table = ({ getAdminData, total, toggleSidebar }) => {
     const [currentPage, setCurrentPage] = useState(1)
     const [sortColumn, setSortColumn] = useState('id')
     const [rowsPerPage, setRowsPerPage] = useState(10)
+    const [allUserData, setAllUserData] = useState(null)
+    const [total, setTotal] = useState(null)
     const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'All', number: 0 })
 
+    const { getAdminData } = useSelector((state) => state.admin)
 
-
+    useEffect(() => {
+        if (getAdminData) {
+            debugger
+            setAllUserData(getAdminData?.admins)
+            setTotal(getAdminData?.totalAdmins)
+        }
+    }, [getAdminData]);
 
     // ** Get data on mount
     useEffect(() => {
@@ -205,24 +253,24 @@ const Table = ({ getAdminData, total, toggleSidebar }) => {
 
         if (searchTerm) {
             timerId = setTimeout(() => {
-                // dispatch(getAdminAction(obj))
+                dispatch(getAdminAction(obj))
             }, 3000)
         } else {
             timerId = setTimeout(() => {
-                // dispatch(getAdminAction(obj))
+                dispatch(getAdminAction(obj))
             }, 100)
         }
-        if (getAdminData) {
+        if (allUserData) {
             toggleSidebar()
             timerId = setTimeout(() => {
-                // dispatch(getAdminAction(obj))
+                dispatch(getAdminAction(obj))
             }, 1000)
         }
         // Cleanup function to clear the debounce timer and prevent memory leaks
         return () => {
             clearTimeout(timerId);
         };
-    }, [dispatch, currentPage, rowsPerPage, searchTerm, currentStatus, getAdminData])
+    }, [dispatch, currentPage, rowsPerPage, searchTerm, currentStatus, searchTerm])
 
     useEffect(() => {
         setCurrentPage(1)
@@ -284,12 +332,12 @@ const Table = ({ getAdminData, total, toggleSidebar }) => {
             return filters[k]?.length > 0
         })
 
-        if (getAdminData?.length > 0 && !isFiltered) {
-            return getAdminData
-        } else if (getAdminData?.length === 0 && isFiltered) {
+        if (allUserData?.length > 0 && !isFiltered) {
+            return allUserData
+        } else if (allUserData?.length === 0 && isFiltered) {
             return []
         } else {
-            return getAdminData?.slice(0, rowsPerPage)
+            return allUserData?.slice(0, rowsPerPage)
         }
     }
 
@@ -351,7 +399,6 @@ const Table = ({ getAdminData, total, toggleSidebar }) => {
                         data={dataToRender()}
                         subHeaderComponent={
                             <CustomHeader
-                                store={getAdminData}
                                 searchTerm={searchTerm}
                                 rowsPerPage={rowsPerPage}
                                 handleFilter={handleFilter}

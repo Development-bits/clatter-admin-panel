@@ -192,7 +192,7 @@ const UsersList = ({ allUserData, total }) => {
     if (searchTerm) {
       timerId = setTimeout(() => {
         dispatch(allUserAction(obj))
-      }, 3000)
+      }, 1500)
     } else {
       timerId = setTimeout(() => {
         dispatch(allUserAction(obj))
