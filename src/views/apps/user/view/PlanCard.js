@@ -120,7 +120,7 @@ const PlanCard = ({ selectedUser }) => {
                 <div className='d-flex justify-content-between align-items-start'>
                   <div className='d-flex gap-1'>
                     <Badge color='light-primary'>{selectedUser?.planName}</Badge>
-                    {selectedUser?.remainingDays?.toString().includes('-') ? <Badge color='danger'>Expire</Badge> : null}
+                    {selectedUser?.remainingDays === 0 ? <Badge color='danger'>Expired</Badge> : null}
                   </div>
 
                   <div className='d-flex justify-content-center'>
@@ -135,13 +135,14 @@ const PlanCard = ({ selectedUser }) => {
                     <li className='mb-50'>Used Credit: {selectedUser?.usedCredit}</li>
                   </ul>
                 )}
-                {selectedUser?.remainingDays?.toString().includes('-') ? null : (
+                {console.log(selectedUser?.remainingDays)}
+                {selectedUser?.remainingDays === 0 ? null : (
                   <div className='d-flex justify-content-between align-items-center fw-bolder mb-50'>
                     <span>Days</span>
                     <span>{selectedUser?.remainingDays} of 30 Days</span>
                   </div>
                 )}
-                {selectedUser?.remainingDays?.toString().includes('-') ? null : (
+                {selectedUser?.remainingDays === 0 ? null : (
                   <>
                     <Progress className='mb-50' value={selectedUser?.planName === "Free Trial" ? (((30 - 29) / 30) * 100) : (((30 - selectedUser?.remainingDays) / 30) * 100)} style={{ height: '8px' }} />
                     <span>{selectedUser?.remainingDays} days remaining</span>

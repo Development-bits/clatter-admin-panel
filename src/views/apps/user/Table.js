@@ -160,7 +160,7 @@ const UsersList = ({ allUserData, total }) => {
     { value: '', label: 'All' },
     { value: 'active', label: 'Active' },
     { value: 'cancel', label: 'Cancel' },
-    { value: 'expire', label: 'Expire' },
+    { value: 'expired', label: 'Expired' },
   ]
 
   const planOptions = [

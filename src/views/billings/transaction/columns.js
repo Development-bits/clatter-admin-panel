@@ -22,7 +22,7 @@ const renderClient = row => {
                 initials
                 className='me-1'
                 color={row.avatarColor || 'light-primary'}
-                content={row.fullName || 'John Doe'}
+                content={row.userName || 'John Doe'}
             />
         )
     }
@@ -41,7 +41,7 @@ export const columns = [
         sortable: true,
         minWidth: '300px',
         sortField: 'fullName',
-        selector: row => (row.firstName + row.lastName),
+        selector: row => row.userName,
         cell: row => (
             <div className='d-flex justify-content-left align-items-center'>
                 {renderClient(row)}
@@ -50,7 +50,7 @@ export const columns = [
                         to={`/user/view/${row.userId}`}
                         className='user_name text-truncate text-body'
                     >
-                        <span className='fw-bolder'>{row.firstName} {row.lastName}</span>
+                        <span className='fw-bolder text-capitalize'>{row.userName}</span>
                     </Link>
                     <small className='text-truncate text-muted mb-0'>{row.email}</small>
                 </div>

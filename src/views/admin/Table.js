@@ -33,6 +33,9 @@ import {
     Badge
 } from 'reactstrap'
 
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
@@ -42,22 +45,25 @@ import { deactivateAdminAction, deleteAdminAction, getAdminAction, updateAdminAc
 import { Link } from 'react-router-dom'
 import { clearGetAdminData } from '../../redux/createAdmin/adminSlice'
 
+const MySwal = withReactContent(Swal)
+
 // ** Renders Client Columns
 const renderClient = row => {
     if (row?.avatar?.length) {
         return <Avatar className='me-1' img={row.avatar} width='32' height='32' />
     } else {
-        let fullName = row.firstName + " " + row.lastName
         return (
             <Avatar
                 initials
                 className='me-1'
                 color={row.avatarColor || 'light-primary'}
-                content={fullName || 'John Doe'}
+                content={row.userName || 'John Doe'}
             />
         )
     }
 }
+
+
 
 const statusObj = {
     active: 'light-success',
@@ -72,7 +78,7 @@ export const CustomDropDownUpdate = ({ row }) => {
     const handleUpdate = () => {
         dispatch(clearGetAdminData)
         setTimeout(() => {
-            dispatch(deleteAdminAction(row.id))
+            dispatch(deactivateAdminAction(row.id))
         }, 200)
     }
     return (
@@ -90,17 +96,47 @@ export const CustomDropDownUpdate = ({ row }) => {
 export const CustomDropDownDelete = ({ row }) => {
     const dispatch = useDispatch()
 
-    const handleDelete = () => {
+    const handleDeleteAdminClick = async () => {
         dispatch(clearGetAdminData)
-        setTimeout(() => {
-            dispatch(deleteAdminAction(row.id))
-        }, 200)
+        return await MySwal.fire({
+            title: 'Are you sure?',
+            text: "You will be deleting admin!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Delete admin!',
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-outline-danger ms-1'
+            },
+            buttonsStyling: false
+        }).then(function (result) {
+            if (result.value) {
+                MySwal.fire({
+                    icon: 'success',
+                    title: 'Deleted!',
+                    text: 'Admin has been Deleted.',
+                    customClass: {
+                        confirmButton: 'btn btn-success'
+                    }
+                })
+                dispatch(deleteAdminAction(row.id))
+            } else if (result.dismiss === MySwal.DismissReason.cancel) {
+                MySwal.fire({
+                    title: 'Cancelled',
+                    text: 'Cancelled Delete :)',
+                    icon: 'error',
+                    customClass: {
+                        confirmButton: 'btn btn-success'
+                    }
+                })
+            }
+        })
     }
     return (
         <DropdownItem
             tag="button"
             className='w-100'
-            onClick={() => handleDelete()} >
+            onClick={() => handleDeleteAdminClick()} >
             <Archive size={14} className='me-50' />
             <span className='align-middle'>Delete</span>
         </DropdownItem>
@@ -110,31 +146,59 @@ export const CustomDropDownDelete = ({ row }) => {
 export const CustomDropDownDeactivate = ({ row }) => {
     const dispatch = useDispatch()
 
-    const handleStatusUpdate = () => {
+    const handleDeactivateAdminClick = async () => {
+        let adminStatus = row.status === "active" ? "deactivate" : "active"
         dispatch(clearGetAdminData)
-        if (row.status === "active") {
-            let obj = {
-                id: row.id,
-                status: "deactivated"
-            }
-            setTimeout(() => {
+        return await MySwal.fire({
+            title: 'Are you sure?',
+            text: `You will ${adminStatus} admin!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: `Yes, ${adminStatus} admin!`,
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-outline-danger ms-1'
+            },
+            buttonsStyling: false
+        }).then(function (result) {
+            if (result.value) {
+                MySwal.fire({
+                    icon: 'success',
+                    title: `${adminStatus}d!`,
+                    text: `Admin has been ${adminStatus}d.`,
+                    customClass: {
+                        confirmButton: 'btn btn-success'
+                    }
+                })
+                let newStatus = null
+                if (adminStatus === "deactivate") {
+                    newStatus = "deactivated"
+                } else {
+                    newStatus = "active"
+                }
+                let obj = {
+                    id: row.id,
+                    status: newStatus
+                }
                 dispatch(deactivateAdminAction(obj))
-            }, 200)
-        } else {
-            let obj = {
-                id: row.id,
-                status: "active"
+            } else if (result.dismiss === MySwal.DismissReason.cancel) {
+                MySwal.fire({
+                    title: 'Cancelled',
+                    text: 'Cancelled De-activating :)',
+                    icon: 'error',
+                    customClass: {
+                        confirmButton: 'btn btn-success'
+                    }
+                })
             }
-            setTimeout(() => {
-                dispatch(deactivateAdminAction(obj))
-            }, 200)
-        }
+        })
     }
+
     return (
         <DropdownItem
             tag='button'
             className='w-100'
-            onClick={() => handleStatusUpdate()}
+            onClick={() => handleDeactivateAdminClick()}
         >
             <FileText size={14} className='me-50' />
             <span className='align-middle'>{row.status === "active" ? "Deactivate" : "Activate"}</span>
@@ -148,7 +212,7 @@ export const columns = [
         sortable: true,
         minWidth: '300px',
         sortField: 'fullName',
-        selector: row => (row.firstName + row.lastName),
+        selector: row => row.userName,
         cell: row => (
             <div className='d-flex justify-content-left align-items-center'>
                 {renderClient(row)}
@@ -157,7 +221,7 @@ export const columns = [
                         // to={`/user/view/${row.id}`}
                         className='user_name text-truncate text-body'
                     >
-                        <span className='fw-bolder text-capitalize'>{row.firstName} {row.lastName}</span>
+                        <span className='fw-bolder text-capitalize'>{row.userName}</span>
                     </Link>
                     <small className='text-truncate text-muted mb-0'>{row.email}</small>
                 </div>
@@ -286,19 +350,24 @@ const Table = ({ toggleSidebar }) => {
 
     useEffect(() => {
         if (deleteAdminData || deactivateAdminData || updateAdminData) {
-            setAllUserData(null)
-            setTotal(null)
+            dispatch(clearGetAdminData)
+            let obj = {
+                page: currentPage,
+                status: currentStatus.value,
+                limit: rowsPerPage,
+                keyword: searchTerm
+            }
+            dispatch(getAdminAction(obj))
         }
     }, [deleteAdminData, deactivateAdminData, updateAdminData])
 
     useEffect(() => {
-        setTimeout(() => {
-            if (getAdminData) {
-                setAllUserData(getAdminData?.admins)
-                setTotal(getAdminData?.totalAdmins)
-            }
-        }, 400)
-    }, [getAdminData, deleteAdminData, deactivateAdminData, updateAdminData]);
+        if (getAdminData) {
+            setAllUserData(getAdminData?.admins)
+            setTotal(getAdminData?.totalAdmins)
+        }
+
+    }, [getAdminData]);
 
     // ** Get data on mount
     useEffect(() => {
@@ -337,7 +406,8 @@ const Table = ({ toggleSidebar }) => {
     const statusOptions = [
         { value: '', label: 'All', number: 0 },
         { value: 'active', label: 'Active', number: 1 },
-        { value: 'deactivated', label: 'Deactivated', number: 2 }
+        { value: 'deactivated', label: 'Deactivated', number: 2 },
+        { value: 'deleted', label: 'Deleted', number: 3 }
     ]
 
     // ** Function in get data on page change

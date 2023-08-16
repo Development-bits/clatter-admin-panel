@@ -157,6 +157,7 @@ const Table = () => {
         { value: '', label: 'All' },
         { value: 'active', label: 'Active' },
         { value: 'cancel', label: 'Cancelled' },
+        { value: 'expired', label: 'Expired' },
     ]
 
     const planOptions = [

@@ -38,7 +38,6 @@ export const createAdminAction = createAsyncThunk('users/admin-create', async (a
                 'authorization': `Bearer ${accessToken}`
             }
         }
-        debugger
         const response = await axios.post(`${Domain}/admin-create`, arg, config)
         Toasts({ message: response.data.message })
         return response.data
@@ -85,7 +84,7 @@ export const deleteAdminAction = createAsyncThunk('users/admin-delete', async (a
                 'authorization': `Bearer ${accessToken}`
             }
         }
-        const response = await axios.delete(`${Domain}/admin-delete/${arg}`, arg, config)
+        const response = await axios.delete(`${Domain}/admin-delete/${arg}`, config)
         Toasts({ message: response.data.message })
         return response.data
     } catch (error) {
@@ -110,7 +109,6 @@ export const deactivateAdminAction = createAsyncThunk('users/update-admin-status
                 'authorization': `Bearer ${accessToken}`
             }
         }
-        debugger
         const response = await axios.put(`${Domain}/update-admin-status/${arg.id}`, { status: arg.status }, config)
         Toasts({ message: response.data.message })
         return response.data

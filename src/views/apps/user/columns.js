@@ -41,7 +41,7 @@ export const columns = [
   {
     name: 'User',
     sortable: true,
-    minWidth: '300px',
+    minWidth: '260px',
     sortField: 'fullName',
     selector: row => (row.firstName + row.lastName),
     cell: row => (
@@ -60,9 +60,9 @@ export const columns = [
     )
   },
   {
-    name: 'User Status',
+    name: 'Status',
     sortable: true,
-    minWidth: '130px',
+    minWidth: '100px',
     sortField: 'userStatus',
     selector: row => row.userStatus,
     cell: row => (
@@ -94,7 +94,7 @@ export const columns = [
   },
   {
     name: 'Created At',
-    minWidth: '140px',
+    minWidth: '100px',
     sortable: true,
     sortField: 'createdAt',
     selector: row => row.createdAt,

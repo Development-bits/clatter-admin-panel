@@ -38,12 +38,6 @@ const statusColors = {
   banned: 'light-danger',
 }
 
-const statusOptions = [
-  { value: 'active', label: 'Active' },
-  { value: 'inactive', label: 'Inactive' },
-  { value: 'banned', label: 'Banned' }
-]
-
 const countryOptions = [
   { value: 'uk', label: 'UK' },
   { value: 'usa', label: 'USA' },
@@ -62,7 +56,7 @@ const languageOptions = [
 
 const MySwal = withReactContent(Swal)
 
-const UserInfoCard = ({ selectedUser, loading, error, toggleStateOfModal, setToggleStateOfModal }) => {
+const UserInfoCard = ({ selectedUser, toggleStateOfModal }) => {
   const { id } = useParams()
   const dispatch = useDispatch()
   // ** State
@@ -90,10 +84,10 @@ const UserInfoCard = ({ selectedUser, loading, error, toggleStateOfModal, setTog
       userName: selectedUser?.userName !== null ? selectedUser?.userName : '',
       email: selectedUser?.email !== null ? selectedUser?.email : '',
       zipCode: selectedUser?.zipCode !== null ? selectedUser?.zipCode : '',
+      companyName: selectedUser?.companyName !== null ? selectedUser?.companyName : '',
       address: selectedUser?.address !== null ? selectedUser?.address : '',
       profileImage: selectedUser?.profileImage !== null ? selectedUser?.profileImage : '',
       phoneNumber: selectedUser?.phoneNumber !== null ? selectedUser?.phoneNumber : '',
-      status: selectedUser?.userStatus !== null ? [{ value: selectedUser?.userStatus, label: selectedUser?.userStatus }] : '',
       country: selectedUser?.country !== null ? [{ value: selectedUser?.country, label: selectedUser?.country }] : '',
       language: selectedUser?.language !== null ? [{ value: selectedUser?.language, label: selectedUser?.language }] : ''
     }
@@ -145,8 +139,8 @@ const UserInfoCard = ({ selectedUser, loading, error, toggleStateOfModal, setTog
       formData.append("lastName", data.lastName)
       formData.append("address", data.address)
       formData.append("zipCode", data.zipCode)
+      formData.appen("companyName", data.companyName)
       formData.append("phoneNumber", data.phoneNumber)
-      formData.append("status", data.status[0].value)
       formData.append("country", data.country[0].value)
       formData.append("language", data.language[0].value)
       setShow(false)
@@ -170,9 +164,9 @@ const UserInfoCard = ({ selectedUser, loading, error, toggleStateOfModal, setTog
       email: selectedUser?.email !== null ? selectedUser?.email : '',
       zipCode: selectedUser?.zipCode !== null ? selectedUser?.zipCode : '',
       address: selectedUser?.address !== null ? selectedUser?.address : '',
+      companyName: selectedUser?.companyName !== null ? selectedUser?.companyName : '',
       profileImage: selectedUser?.profileImage !== null ? selectedUser?.profileImage : '',
       phoneNumber: selectedUser?.phoneNumber !== null ? selectedUser?.phoneNumber : '',
-      status: selectedUser?.userStatus !== null ? [{ value: selectedUser?.userStatus, label: selectedUser?.userStatus }] : '',
       country: selectedUser?.country !== null ? [{ value: selectedUser?.country, label: selectedUser?.country }] : '',
       language: selectedUser?.language !== null ? [{ value: selectedUser?.language, label: selectedUser?.language }] : ''
     })
@@ -266,9 +260,9 @@ const UserInfoCard = ({ selectedUser, loading, error, toggleStateOfModal, setTog
       setValue("email", selectedUser?.email)
       setValue("zipCode", selectedUser?.zipCode)
       setValue('address', selectedUser?.address)
+      setValue("companyName", selectedUser?.companyName)
       setValue("phoneNumber", selectedUser?.phoneNumber)
       setValue("profileImage", selectedUser?.profileImage)
-      setValue("status", [{ value: selectedUser?.userStatus, label: selectedUser?.userStatus }])
       setValue("language", [{ value: selectedUser?.language, label: selectedUser?.language }])
       setValue("country", [{ value: selectedUser?.country, label: selectedUser?.country }])
       setProfileImageObj({ link: selectedUser?.profileImage, obj: '' })
@@ -294,17 +288,6 @@ const UserInfoCard = ({ selectedUser, loading, error, toggleStateOfModal, setTog
       setValue("country", [{ value: value.value, label: value.label }])
     } else {
       setValue("country", [{ value: value.value, label: value.value }])
-    }
-  }
-
-  const handleStatus = (value) => {
-    if (!value) {
-      return
-    }
-    if (value.value !== '' && value.label) {
-      setValue("status", [{ value: value.value, label: value.label }])
-    } else {
-      setValue("status", [{ value: value.value, label: value.value }])
     }
   }
 
@@ -550,19 +533,10 @@ const UserInfoCard = ({ selectedUser, loading, error, toggleStateOfModal, setTog
                 />
               </Col>
               <Col md={6} xs={12}>
-                <Label className='form-label' for='status'>
-                  Status:
+                <Label className='form-label' for='companyName'>
+                  Company Name
                 </Label>
-                <Select
-                  id='status'
-                  isClearable={false}
-                  className='react-select'
-                  classNamePrefix='select'
-                  options={statusOptions}
-                  onChange={handleStatus}
-                  theme={selectThemeColors}
-                  defaultValue={selectedUser ? statusOptions[statusOptions?.findIndex(i => i.value === selectedUser?.userStatus)] : null}
-                />
+                <Input id='companyName' defaultValue={selectedUser ? selectedUser?.companyName : null} placeholder='clatter' />
               </Col>
               <Col md={6} xs={12}>
                 <Label className='form-label' for='phoneNumber'>
