@@ -15,7 +15,7 @@ import { Button, Label, FormText, Form, Input } from 'reactstrap'
 
 // ** Store & Actions
 import { useDispatch } from 'react-redux'
-import { createAdminAction } from '../../redux/createAdmin/adminAction'
+import { createAdminAction, updateAdminAction } from '../../redux/createAdmin/adminAction'
 
 const defaultValues = {
     userName: '',
@@ -47,9 +47,18 @@ const checkIsValid = (data, passwordRegex, emailRegex) => {
     return true;
 };
 
-const SidebarNewAdmin = ({ open, toggleSidebar }) => {
+const SidebarNewAdmin = ({ open, toggleSidebar, editProfile }) => {
     // ** Store Vars
     const dispatch = useDispatch()
+
+    useEffect(() => {
+        if (editProfile) {
+            setValue("firstName", editProfile.firstName)
+            setValue("lastName", editProfile.lastName)
+            setValue("userName", editProfile.userName)
+            setValue("email", editProfile.email)
+        }
+    }, [editProfile])
 
     // ** Vars
     const {
@@ -66,7 +75,20 @@ const SidebarNewAdmin = ({ open, toggleSidebar }) => {
         const emailRegex = /^[a-zA-Z0-9._-]+@clatter\.com$/;
 
         if (checkIsValid(data, passwordRegex, emailRegex)) {
-            dispatch(createAdminAction(data));
+            if (editProfile) {
+                let id = editProfile.id
+                data.status = editProfile.status
+                const formData = new FormData()
+                formData.append("firstName", data.firstName)
+                formData.append("lastName", data.lastName)
+                formData.append("email", data.email)
+                formData.append("userName", data.userName)
+                formData.append("password", data.password)
+                formData.append("status", data.status)
+                dispatch(updateAdminAction({ formData, id }))
+            } else {
+                dispatch(createAdminAction(data));
+            }
         } else {
             for (const key in data) {
                 if (data[key] === null) {
@@ -124,6 +146,7 @@ const SidebarNewAdmin = ({ open, toggleSidebar }) => {
                         control={control}
                         render={({ field }) => (
                             <Input
+                                defaultValue={editProfile ? editProfile.userName : ''}
                                 id='userName'
                                 placeholder='john.doe'
                                 invalid={errors.userName && true}
@@ -146,6 +169,7 @@ const SidebarNewAdmin = ({ open, toggleSidebar }) => {
                         render={({ field }) => (
                             <Input
                                 id='firstName'
+                                defaultValue={editProfile ? editProfile.firstName : ''}
                                 placeholder='john'
                                 invalid={errors.firstName && true}
                                 {...field}
@@ -167,6 +191,7 @@ const SidebarNewAdmin = ({ open, toggleSidebar }) => {
                         render={({ field }) => (
                             <Input
                                 id='lastName'
+                                defaultValue={editProfile ? editProfile.lastName : ''}
                                 placeholder='doe'
                                 invalid={errors.lastName && true}
                                 {...field}
@@ -187,7 +212,9 @@ const SidebarNewAdmin = ({ open, toggleSidebar }) => {
                         control={control}
                         render={({ field }) => (
                             <Input
+                                disabled={editProfile ? true : false}
                                 id='email'
+                                defaultValue={editProfile ? editProfile.email : ''}
                                 placeholder='john.doe@clatter.com'
                                 invalid={errors.email && true}
                                 {...field}
@@ -222,7 +249,7 @@ const SidebarNewAdmin = ({ open, toggleSidebar }) => {
                     )}
                 </div>
                 <Button type='submit' className='me-1' color='primary'>
-                    ADD
+                    {editProfile ? "Update" : "ADD"}
                 </Button>
                 <Button type='reset' color='secondary' outline onClick={toggleSidebar}>
                     Cancel

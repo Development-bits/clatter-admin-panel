@@ -52,16 +52,15 @@ export const createAdminAction = createAsyncThunk('users/admin-create', async (a
     }
 })
 
-export const updateAdminAction = createAsyncThunk('users/admin-update', async (arg, { rejectWithValue }) => {
+export const updateAdminAction = createAsyncThunk('users/admin-update-by-id', async ({ formData, id }, { rejectWithValue }) => {
     try {
         let accessToken = JSON.parse(localStorage.getItem("accessToken"))
         let config = {
             headers: {
-                'Content-Type': 'application/json',
                 'authorization': `Bearer ${accessToken}`
             }
         }
-        const response = await axios.put(`${Domain}/admin-update`, arg, config)
+        const response = await axios.put(`${Domain}/admin-update-by-id/${id}`, formData, config)
         Toasts({ message: response.data.message })
         return response.data
     } catch (error) {

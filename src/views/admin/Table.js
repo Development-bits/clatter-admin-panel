@@ -42,7 +42,6 @@ import '@styles/react/libs/tables/react-dataTable-component.scss'
 // import { getAdminAction } from '../../redux/createAdmin/adminAction'
 import moment from 'moment/moment'
 import { deactivateAdminAction, deleteAdminAction, getAdminAction, updateAdminAction } from '../../redux/createAdmin/adminAction'
-import { Link } from 'react-router-dom'
 import { clearGetAdminData } from '../../redux/createAdmin/adminSlice'
 import { handlePopState, updateQueryParams } from '../components/useQueryParams'
 
@@ -65,8 +64,6 @@ const renderClient = row => {
     }
 }
 
-
-
 const statusObj = {
     active: 'light-success',
     deactivated: 'light-warning',
@@ -74,20 +71,18 @@ const statusObj = {
     banned: 'light-danger',
 }
 
-export const CustomDropDownUpdate = ({ row }) => {
+export const CustomDropDownUpdate = ({ row, toggleSidebar }) => {
     const dispatch = useDispatch()
 
     const handleUpdate = () => {
         dispatch(clearGetAdminData)
-        setTimeout(() => {
-            dispatch(deactivateAdminAction(row.id))
-        }, 200)
+        toggleSidebar(row)
     }
     return (
         <DropdownItem
             tag='button'
             className='w-100'
-            onClick={() => handleUpdate}
+            onClick={handleUpdate}
         >
             <Trash2 size={14} className='me-50' />
             <span className='align-middle'>Update</span>
@@ -138,7 +133,7 @@ export const CustomDropDownDelete = ({ row }) => {
         <DropdownItem
             tag="button"
             className='w-100'
-            onClick={() => handleDeleteAdminClick()} >
+            onClick={handleDeleteAdminClick} >
             <Archive size={14} className='me-50' />
             <span className='align-middle'>Delete</span>
         </DropdownItem>
@@ -200,7 +195,7 @@ export const CustomDropDownDeactivate = ({ row }) => {
         <DropdownItem
             tag='button'
             className='w-100'
-            onClick={() => handleDeactivateAdminClick()}
+            onClick={handleDeactivateAdminClick}
         >
             <FileText size={14} className='me-50' />
             <span className='align-middle'>{row.status === "active" ? "Deactivate" : "Activate"}</span>
@@ -208,84 +203,7 @@ export const CustomDropDownDeactivate = ({ row }) => {
     )
 }
 
-export const columns = [
-    {
-        name: 'Full Name',
-        sortable: true,
-        minWidth: '300px',
-        sortField: 'fullName',
-        selector: row => (row.firstName + row.lastName),
-        cell: row => (
-            <div className='d-flex justify-content-left align-items-center'>
-                {renderClient(row)}
-                <div className='d-flex flex-column'>
-                    <Link
-                        // to={`/user/view/${row.id}`}
-                        className='user_name text-truncate text-body'
-                    >
-                        <span className='fw-bolder text-capitalize'>{row.firstName} {row.lastName}</span>
-                    </Link>
-                    <small className='text-truncate text-muted mb-0'>{row.email}</small>
-                </div>
-            </div>
-        )
-    },
-    {
-        name: 'Status',
-        minWidth: '135px',
-        sortable: true,
-        sortField: 'adminStatus',
-        selector: row => row.status,
-        cell: row => (
-            <Badge className='text-capitalize d-flex flex-column' color={statusObj[row.status]} pill>
-                <span className='text-capitalize'>{row.status}</span>
-            </Badge>
-        )
 
-    },
-    {
-        name: 'Role',
-        sortable: true,
-        minWidth: '130px',
-        sortField: 'role',
-        selector: row => row.role,
-        cell: row => <span className='text-capitalize'>{row.role}</span>
-
-    },
-    {
-        name: 'Created At',
-        minWidth: '140px',
-        sortable: true,
-        sortField: 'createdAt',
-        selector: row => row.createdAt,
-        cell: row => (
-            <div className='text-capitalize d-flex flex-column'>
-                <span>
-                    {moment(row.createdAt).format("MM/DD/YY")}
-                </span>
-                <smal>{moment(row.createdAt).format("hh:mm A")}</smal>
-            </div>
-        )
-    },
-    {
-        name: 'Actions',
-        minWidth: '100px',
-        cell: row => (
-            <div className='column-action'>
-                <UncontrolledDropdown>
-                    <DropdownToggle tag='div' className='btn btn-sm'>
-                        <MoreVertical size={14} className='cursor-pointer' />
-                    </DropdownToggle>
-                    <DropdownMenu>
-                        <CustomDropDownUpdate row={row} />
-                        <CustomDropDownDeactivate row={row} />
-                        <CustomDropDownDelete row={row} />
-                    </DropdownMenu>
-                </UncontrolledDropdown>
-            </div >
-        )
-    }
-]
 
 
 // ** Table Header
@@ -509,6 +427,81 @@ const Table = ({ toggleSidebar }) => {
 
     }
 
+    const columns = [
+        {
+            name: 'Full Name',
+            sortable: true,
+            minWidth: '300px',
+            sortField: 'fullName',
+            selector: row => (row.firstName + row.lastName),
+            cell: row => (
+                <div className='d-flex justify-content-left align-items-center'>
+                    {renderClient(row)}
+                    <div className='d-flex flex-column'>
+                        <div className='user_name text-truncate text-body'>
+                            <span className='fw-bolder text-capitalize'>{row.firstName} {row.lastName}</span>
+                        </div>
+                        <small className='text-truncate text-muted mb-0'>{row.email}</small>
+                    </div>
+                </div>
+            )
+        },
+        {
+            name: 'Status',
+            minWidth: '135px',
+            sortable: true,
+            sortField: 'adminStatus',
+            selector: row => row.status,
+            cell: row => (
+                <Badge className='text-capitalize d-flex flex-column' color={statusObj[row.status]} pill>
+                    <span className='text-capitalize'>{row.status}</span>
+                </Badge>
+            )
+
+        },
+        {
+            name: 'Role',
+            sortable: true,
+            minWidth: '130px',
+            sortField: 'role',
+            selector: row => row.role,
+            cell: row => <span className='text-capitalize'>{row.role}</span>
+
+        },
+        {
+            name: 'Created At',
+            minWidth: '140px',
+            sortable: true,
+            sortField: 'createdAt',
+            selector: row => row.createdAt,
+            cell: row => (
+                <div className='text-capitalize d-flex flex-column'>
+                    <span>
+                        {moment(row.createdAt).format("MM/DD/YY")}
+                    </span>
+                    <smal>{moment(row.createdAt).format("hh:mm A")}</smal>
+                </div>
+            )
+        },
+        {
+            name: 'Actions',
+            minWidth: '100px',
+            cell: row => (
+                <div className='column-action'>
+                    <UncontrolledDropdown>
+                        <DropdownToggle tag='div' className='btn btn-sm'>
+                            <MoreVertical size={14} className='cursor-pointer' />
+                        </DropdownToggle>
+                        <DropdownMenu>
+                            <CustomDropDownUpdate toggleSidebar={toggleSidebar} row={row} />
+                            <CustomDropDownDeactivate row={row} />
+                            <CustomDropDownDelete row={row} />
+                        </DropdownMenu>
+                    </UncontrolledDropdown>
+                </div >
+            )
+        }
+    ]
     return (
         <Fragment>
             <Card>
