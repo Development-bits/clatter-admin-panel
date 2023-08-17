@@ -34,9 +34,11 @@ import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import { adminBillingAction } from '../../../redux/subscription/subscriptionAction'
 import { columns } from './columns'
+import { handlePopState, updateQueryParams } from '../../components/useQueryParams'
+import startCsvDownload from '../../components/startCsvDownload'
 
 // ** Table Header
-const CustomHeader = ({ store, handlePerPage, rowsPerPage, handleFilter, searchTerm }) => {
+const CustomHeader = ({ store, handlePerPage, rowsPerPage, handleFilter, searchTerm, handleDownloadCSV }) => {
     return (
         <div className='invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75'>
             <Row>
@@ -82,7 +84,7 @@ const CustomHeader = ({ store, handlePerPage, rowsPerPage, handleFilter, searchT
                                 <span className='align-middle'>Export</span>
                             </DropdownToggle>
                             <DropdownMenu>
-                                <DropdownItem className='w-100' onClick={() => downloadCSV(store)}>
+                                <DropdownItem className='w-100' onClick={() => handleDownloadCSV()}>
                                     <FileText className='font-small-4 me-50' />
                                     <span className='align-middle'>CSV</span>
                                 </DropdownItem>
@@ -98,6 +100,7 @@ const CustomHeader = ({ store, handlePerPage, rowsPerPage, handleFilter, searchT
 const Table = () => {
     const dispatch = useDispatch()
     // ** States
+    const [queryObj, setQueryObj] = useState();
     const [sort, setSort] = useState('desc')
     const [searchTerm, setSearchTerm] = useState('')
     const [currentPage, setCurrentPage] = useState(1)
@@ -117,6 +120,55 @@ const Table = () => {
             setTotal(adminBillingData?.totalSubscriptions)
         }
     }, [adminBillingData]);
+
+    const handleDownloadCSV = () => {
+        let obj = {
+            page: currentPage,
+            plan: currentPlan.value,
+            status: currentRole.value,
+            keyword: searchTerm,
+            limit: rowsPerPage,
+            flag: "getCSVOfSubscriptions"
+        }
+        let csvObj = {};
+        Object.keys(obj).forEach((key) => {
+            if (obj[key] !== undefined && obj[key] !== null) {
+                csvObj[key] = obj[key]
+            }
+        });
+        dispatch(adminBillingAction(csvObj))
+    }
+
+    //** Download CSV if we have button click function called and have URL of CSV */
+    useEffect(() => {
+        if (adminBillingData?.url !== null && adminBillingData?.url !== undefined) {
+            startCsvDownload(adminBillingData?.url)
+        }
+    }, [adminBillingData])
+
+
+    //** For Search , filter , query params */
+    useEffect(() => {
+        let queryObj = {
+            page: currentPage,
+            plan: currentPlan.value,
+            status: currentRole.value,
+            keyword: searchTerm,
+            limit: rowsPerPage,
+        }
+        const queryObjWithUpdate = { ...queryObj };
+        updateQueryParams(queryObjWithUpdate)
+
+        // Attach the popstate listener when the component mounts
+        const popstateCallback = handlePopState(queryObjWithUpdate);
+        window.addEventListener('popstate', popstateCallback);
+        // Clean up the popstate listener when the component unmounts
+        return () => {
+            window.removeEventListener('popstate', popstateCallback);
+        };
+    }, [currentPage, currentPlan, currentRole, searchTerm, rowsPerPage]);
+
+
     // ** Get data on mount
     useEffect(() => {
         let timerId; // To debounce the API call
@@ -127,7 +179,6 @@ const Table = () => {
             keyword: searchTerm,
             limit: rowsPerPage,
         }
-
         if (searchTerm) {
             timerId = setTimeout(() => {
                 dispatch(adminBillingAction(obj))
@@ -171,6 +222,7 @@ const Table = () => {
     // ** Function in get data on page change
     const handlePagination = page => {
         setCurrentPage(page.selected + 1)
+
     }
 
     // ** Function in get data on rows per page
@@ -309,6 +361,7 @@ const Table = () => {
                         data={dataToRender()}
                         subHeaderComponent={
                             <CustomHeader
+                                handleDownloadCSV={handleDownloadCSV}
                                 store={allUserData}
                                 searchTerm={searchTerm}
                                 rowsPerPage={rowsPerPage}

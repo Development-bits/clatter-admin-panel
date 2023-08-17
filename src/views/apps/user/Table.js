@@ -37,9 +37,11 @@ import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import { allUserAction } from '../../../redux/user/userAction'
 import { columns } from './columns'
+import { handlePopState, updateQueryParams } from '../../components/useQueryParams'
+import startCsvDownload from '../../components/startCsvDownload'
 
 // ** Table Header
-const CustomHeader = ({ store, toggleSidebar, handlePerPage, rowsPerPage, handleFilter, searchTerm }) => {
+const CustomHeader = ({ store, toggleSidebar, handlePerPage, rowsPerPage, handleFilter, handleDownloadCSV, searchTerm }) => {
   return (
     <div className='invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75'>
       <Row>
@@ -85,7 +87,7 @@ const CustomHeader = ({ store, toggleSidebar, handlePerPage, rowsPerPage, handle
                 <span className='align-middle'>Export</span>
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem className='w-100' onClick={() => downloadCSV(store)}>
+                <DropdownItem className='w-100' onClick={() => handleDownloadCSV()}>
                   <FileText className='font-small-4 me-50' />
                   <span className='align-middle'>CSV</span>
                 </DropdownItem>
@@ -101,7 +103,7 @@ const CustomHeader = ({ store, toggleSidebar, handlePerPage, rowsPerPage, handle
   )
 }
 
-const UsersList = ({ allUserData, total }) => {
+const UsersList = ({ allUserData, total, url }) => {
   const dispatch = useDispatch()
   // ** States
   const [sort, setSort] = useState('desc')
@@ -110,12 +112,61 @@ const UsersList = ({ allUserData, total }) => {
   const [sortColumn, setSortColumn] = useState('id')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [currentRole, setCurrentRole] = useState({ value: '', label: 'All' })
+  const [currentSubStatus, setCurrentSubStatus] = useState({ value: '', label: 'All' })
   const [currentPlan, setCurrentPlan] = useState({ value: '', label: 'All' })
   const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'All', number: 0 })
   const { newUserData } = useSelector((state) => state.user)
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
+
+  const handleDownloadCSV = () => {
+    let obj = {
+      page: currentPage,
+      plan: currentPlan.value,
+      status: currentStatus.value,
+      subStatus: currentSubStatus.value,
+      keyword: searchTerm,
+      limit: rowsPerPage,
+      flag: "getCSV"
+    }
+    let csvObj = {};
+    Object.keys(obj).forEach((key) => {
+      if (obj[key] !== undefined && obj[key] !== null) {
+        csvObj[key] = obj[key]
+      }
+    });
+    dispatch(allUserAction(csvObj))
+  }
+
+  //** Download CSV if we have button click function called and have URL of CSV */
+  useEffect(() => {
+    if (url !== null && url !== undefined) {
+      debugger
+      startCsvDownload(url)
+    }
+  }, [url])
+
+  //** For Search , filter , query params */
+  useEffect(() => {
+    let queryObj = {
+      page: currentPage,
+      plan: currentPlan.value,
+      status: currentStatus.value,
+      subStatus: currentSubStatus.value,
+      keyword: searchTerm,
+      limit: rowsPerPage,
+    }
+    const queryObjWithUpdate = { ...queryObj };
+    updateQueryParams(queryObjWithUpdate)
+
+    // Attach the popstate listener when the component mounts
+    const popstateCallback = handlePopState(queryObjWithUpdate);
+    window.addEventListener('popstate', popstateCallback);
+    // Clean up the popstate listener when the component unmounts
+    return () => {
+      window.removeEventListener('popstate', popstateCallback);
+    };
+  }, [currentPage, currentPlan, currentSubStatus, searchTerm, rowsPerPage]);
 
 
   // ** Get data on mount
@@ -124,10 +175,10 @@ const UsersList = ({ allUserData, total }) => {
     let obj = {
       page: currentPage,
       plan: currentPlan.value,
-      subStatus: currentRole.value,
       status: currentStatus.value,
-      limit: rowsPerPage,
-      keyword: searchTerm
+      subStatus: currentSubStatus.value,
+      keyword: searchTerm,
+      limit: rowsPerPage
     }
 
     if (searchTerm) {
@@ -149,14 +200,14 @@ const UsersList = ({ allUserData, total }) => {
     return () => {
       clearTimeout(timerId);
     };
-  }, [dispatch, currentPage, currentPlan, currentRole, rowsPerPage, searchTerm, currentStatus, newUserData])
+  }, [dispatch, currentPage, currentPlan, currentSubStatus, rowsPerPage, searchTerm, currentStatus, newUserData])
 
   useEffect(() => {
     setCurrentPage(1)
-  }, [currentPlan, currentRole, currentStatus])
+  }, [currentPlan, currentSubStatus, currentStatus])
 
   // ** User filter options
-  const roleOptions = [
+  const subStatusOptions = [
     { value: '', label: 'All' },
     { value: 'active', label: 'Active' },
     { value: 'cancel', label: 'Cancel' },
@@ -171,7 +222,7 @@ const UsersList = ({ allUserData, total }) => {
     { value: 'Free Trial', label: 'Free Trial' }
   ]
 
-  const statusOptions = [
+  const userStatusOptions = [
     { value: '', label: 'All', number: 0 },
     { value: 'banned', label: 'Banned', number: 1 },
     { value: 'active', label: 'Active', number: 2 },
@@ -221,7 +272,7 @@ const UsersList = ({ allUserData, total }) => {
   // ** Table data to render
   const dataToRender = () => {
     const filters = {
-      role: currentRole.value,
+      role: currentSubStatus.value,
       currentPlan: currentPlan.value,
       status: currentStatus.value,
       q: searchTerm
@@ -245,14 +296,14 @@ const UsersList = ({ allUserData, total }) => {
     setSortColumn(column.sortField)
   }
 
-  const handleCurrentRole = (value) => {
+  const handleSubStatus = (value) => {
     if (!value) {
       return
     }
     if (value.value !== '' && value.label) {
-      setCurrentRole({ label: value.label, value: value.value })
+      setCurrentSubStatus({ label: value.label, value: value.value })
     } else {
-      setCurrentRole({ label: value.label, value: value.value })
+      setCurrentSubStatus({ label: value.label, value: value.value })
     }
   }
 
@@ -268,7 +319,7 @@ const UsersList = ({ allUserData, total }) => {
 
   }
 
-  const handleCurrentStatus = (value) => {
+  const handleUserStatus = (value) => {
     if (!value) {
       return
     }
@@ -292,12 +343,12 @@ const UsersList = ({ allUserData, total }) => {
               <Label for='role-select'>Subscription Status</Label>
               <Select
                 isClearable={false}
-                value={currentRole || ''}
-                options={roleOptions}
+                value={currentSubStatus || ''}
+                options={subStatusOptions}
                 className='react-select'
                 classNamePrefix='select'
                 theme={selectThemeColors}
-                onChange={handleCurrentRole}
+                onChange={handleSubStatus}
               />
             </Col>
             <Col className='my-md-0 my-1' md='4'>
@@ -319,9 +370,9 @@ const UsersList = ({ allUserData, total }) => {
                 isClearable={false}
                 className='react-select'
                 classNamePrefix='select'
-                options={statusOptions}
+                options={userStatusOptions}
                 value={currentStatus || ''}
-                onChange={handleCurrentStatus}
+                onChange={handleUserStatus}
               />
             </Col>
           </Row>
@@ -345,6 +396,7 @@ const UsersList = ({ allUserData, total }) => {
             data={dataToRender()}
             subHeaderComponent={
               <CustomHeader
+                handleDownloadCSV={handleDownloadCSV}
                 store={allUserData}
                 searchTerm={searchTerm}
                 rowsPerPage={rowsPerPage}

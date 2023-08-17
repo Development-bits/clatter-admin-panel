@@ -13,7 +13,7 @@ export const allUserAction = createAsyncThunk('users/all-users', async (arg, { r
                 'authorization': `Bearer ${accessToken}`
             }
         }
-        const response = await axios.get(`${Domain}/get-users?plan=${arg.plan}&status=${arg.status}&page=${arg.page}&limit=${arg.limit}&keyword=${arg.keyword}&subscriptionStatus=${arg.subStatus}`, config)
+        const response = await axios.get(`${Domain}/get-users?plan=${arg.plan}&status=${arg.status}&page=${arg.page}&limit=${arg.limit}&keyword=${arg.keyword}&subscriptionStatus=${arg.subStatus}&flag=${arg.flag}`, config)
 
         return response.data
     } catch (error) {

@@ -25,6 +25,7 @@ const InvoiceList = ({ tableData }) => {
                                     <th>Plan</th>
                                     <th>Amount</th>
                                     <th>Created At</th>
+                                    {/* <th>Expired At</th> */}
                                 </tr>
                             </thead>
                             {tableData.map((item, index) => {
@@ -39,9 +40,13 @@ const InvoiceList = ({ tableData }) => {
                                             <td className='text-break'>{item?.planName}</td>
                                             <td>${item?.amount}</td>
                                             <td className='d-flex flex-column'>
-                                                <span>{moment(item?.issuedDate).format('MM/DD/YYYY')}</span>
+                                                <span>{moment(item?.issuedDate).format('DD/MM/YYYY')}</span>
                                                 <small>{moment(item?.issuedDate).format('hh:mm A')}</small>
                                             </td>
+                                            {/* <td className='d-flex flex-column'>
+                                                <span>{moment(item?.endingDate).format('DD/MM/YYYY')}</span>
+                                                <small>{moment(item?.endingDate).format('hh:mm A')}</small>
+                                            </td> */}
                                         </tr>
                                     </tbody>
                                 )

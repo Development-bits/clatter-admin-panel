@@ -44,6 +44,7 @@ import moment from 'moment/moment'
 import { deactivateAdminAction, deleteAdminAction, getAdminAction, updateAdminAction } from '../../redux/createAdmin/adminAction'
 import { Link } from 'react-router-dom'
 import { clearGetAdminData } from '../../redux/createAdmin/adminSlice'
+import { handlePopState, updateQueryParams } from '../components/useQueryParams'
 
 const MySwal = withReactContent(Swal)
 
@@ -52,12 +53,13 @@ const renderClient = row => {
     if (row?.avatar?.length) {
         return <Avatar className='me-1' img={row.avatar} width='32' height='32' />
     } else {
+        let fullName = row.firstName + " " + row.lastName
         return (
             <Avatar
                 initials
                 className='me-1'
                 color={row.avatarColor || 'light-primary'}
-                content={row.userName || 'John Doe'}
+                content={fullName || 'John Doe'}
             />
         )
     }
@@ -212,7 +214,7 @@ export const columns = [
         sortable: true,
         minWidth: '300px',
         sortField: 'fullName',
-        selector: row => row.userName,
+        selector: row => (row.firstName + row.lastName),
         cell: row => (
             <div className='d-flex justify-content-left align-items-center'>
                 {renderClient(row)}
@@ -221,7 +223,7 @@ export const columns = [
                         // to={`/user/view/${row.id}`}
                         className='user_name text-truncate text-body'
                     >
-                        <span className='fw-bolder text-capitalize'>{row.userName}</span>
+                        <span className='fw-bolder text-capitalize'>{row.firstName} {row.lastName}</span>
                     </Link>
                     <small className='text-truncate text-muted mb-0'>{row.email}</small>
                 </div>
@@ -349,6 +351,26 @@ const Table = ({ toggleSidebar }) => {
     const { getAdminData, deleteAdminData, deactivateAdminData, updateAdminData } = useSelector((state) => state.admin)
 
     useEffect(() => {
+        let queryObj = {
+            page: currentPage,
+            status: currentStatus.value,
+            limit: rowsPerPage,
+            keyword: searchTerm
+        }
+        const queryObjWithUpdate = { ...queryObj };
+        updateQueryParams(queryObjWithUpdate)
+
+        // Attach the popstate listener when the component mounts
+        const popstateCallback = handlePopState(queryObjWithUpdate);
+        window.addEventListener('popstate', popstateCallback);
+        // Clean up the popstate listener when the component unmounts
+        return () => {
+            window.removeEventListener('popstate', popstateCallback);
+        };
+    }, [currentPage, rowsPerPage, searchTerm, currentStatus, searchTerm]);
+
+    useEffect(() => {
+
         if (deleteAdminData || deactivateAdminData || updateAdminData) {
             dispatch(clearGetAdminData)
             let obj = {

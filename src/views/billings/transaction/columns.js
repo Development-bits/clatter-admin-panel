@@ -17,12 +17,13 @@ const renderClient = row => {
     if (row?.avatar?.length) {
         return <Avatar className='me-1' img={row.avatar} width='32' height='32' />
     } else {
+        let fullName = row.firstName + " " + row.lastName
         return (
             <Avatar
                 initials
                 className='me-1'
                 color={row.avatarColor || 'light-primary'}
-                content={row.userName || 'John Doe'}
+                content={fullName || 'John Doe'}
             />
         )
     }
@@ -41,7 +42,7 @@ export const columns = [
         sortable: true,
         minWidth: '300px',
         sortField: 'fullName',
-        selector: row => row.userName,
+        selector: row => (row.firstName + row.lastName),
         cell: row => (
             <div className='d-flex justify-content-left align-items-center'>
                 {renderClient(row)}
@@ -50,7 +51,7 @@ export const columns = [
                         to={`/user/view/${row.userId}`}
                         className='user_name text-truncate text-body'
                     >
-                        <span className='fw-bolder text-capitalize'>{row.userName}</span>
+                        <span className='fw-bolder text-capitalize'>{row.firstName} {row.lastName}</span>
                     </Link>
                     <small className='text-truncate text-muted mb-0'>{row.email}</small>
                 </div>

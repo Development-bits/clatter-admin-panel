@@ -8,13 +8,6 @@ import DataTable from 'react-data-table-component'
 // ** Custom Components
 import Avatar from '@components/avatar'
 
-// ** Label Images
-import xdLabel from '@src/assets/images/icons/brands/xd-label.png'
-import vueLabel from '@src/assets/images/icons/brands/vue-label.png'
-import htmlLabel from '@src/assets/images/icons/brands/html-label.png'
-import reactLabel from '@src/assets/images/icons/brands/react-label.png'
-import sketchLabel from '@src/assets/images/icons/brands/sketch-label.png'
-
 // ** Styles
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import { useDispatch, useSelector } from 'react-redux'
@@ -82,7 +75,7 @@ const UserActivityDetails = () => {
   const { userActDetailsData, userActDetailsLoading, userActDetailsError } = useSelector((state) => state.user)
 
   useEffect(() => {
-    let limit = 10
+    let limit = 4
     dispatch(userActivityDetailAction({ page, limit, id }))
   }, [dispatch, page, id])
 

@@ -62,7 +62,7 @@ const UsersList = () => {
         </CardBody>
       </Card>
 
-      <Table allUserData={allUserData?.data} total={allUserData?.total} />
+      <Table allUserData={allUserData?.data} total={allUserData?.total} url={allUserData?.url} />
 
     </div>
   )

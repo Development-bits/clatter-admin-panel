@@ -110,7 +110,7 @@ const UserSubscriptionDetails = () => {
   const { subscriptionData } = useSelector(state => state.subscription)
 
   useEffect(() => {
-    let limit = 10
+    let limit = 4
     dispatch(userSubscriptionDetailAction({ page, limit, id }))
   }, [dispatch, page, id, subscriptionData])
 

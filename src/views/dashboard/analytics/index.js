@@ -255,7 +255,7 @@ const AnalyticsDashboard = () => {
         </CardBody>
       </Card>
 
-      <Row className='match-height'>
+      <Row>
         <Col xxl='10' xl='12' lg='12' sm='12'>
           <InvoiceList tableData={dashboardData?.data.latestSubs} />
         </Col>

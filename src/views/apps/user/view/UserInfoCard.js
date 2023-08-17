@@ -522,12 +522,12 @@ const UserInfoCard = ({ selectedUser, toggleStateOfModal }) => {
               </Col>
               <Col md={6} xs={12}>
                 <Label className='form-label' for='email'>
-                  Billing Email
+                  Email
                 </Label>
                 <Input
                   disabled
                   type='email'
-                  id='billing-email'
+                  id='email'
                   defaultValue={selectedUser?.email ?? ''}
                   placeholder='example@domain.com'
                 />
@@ -546,7 +546,7 @@ const UserInfoCard = ({ selectedUser, toggleStateOfModal }) => {
               </Col>
               <Col md={6} xs={12}>
                 <Label className='form-label' for='language'>
-                  language
+                  Language
                 </Label>
                 <Select
                   id='language'

@@ -15,7 +15,7 @@ export const adminBillingAction = createAsyncThunk('/admin-billing', async (arg,
                 'authorization': `Bearer ${accessToken}`
             }
         }
-        const response = await axios.get(`${Domain}/admin-billing?plan=${arg.plan}&status=${arg.status}&keyword=${arg.keyword}&page=${arg.page}&limit=${arg.limit}`, config)
+        const response = await axios.get(`${Domain}/admin-billing?plan=${arg.plan}&status=${arg.status}&keyword=${arg.keyword}&page=${arg.page}&limit=${arg.limit}&flag=${arg.flag}`, config)
         return response.data
     } catch (error) {
         if (error.message && error.response.data.message) {
