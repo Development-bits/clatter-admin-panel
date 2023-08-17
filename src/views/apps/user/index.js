@@ -33,7 +33,7 @@ const UsersList = () => {
     <div className='app-user-list'>
       <Card >
         <CardHeader>
-          <h5>User Stats</h5>
+          <h4 className='card-title'>User Stats</h4>
         </CardHeader>
         <CardBody>
           <Row>

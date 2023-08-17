@@ -60,10 +60,10 @@ const AnalyticsDashboard = () => {
         <CardHeader>
 
           <div className='d-flex justify-content-between w-100'>
-            <h5>Daily Stats</h5>
-            <h5>
+            <h4 className='card-title'>Daily Stats</h4>
+            <h4 className='card-title'>
               {moment().format("DD-MMMM-YYYY")}
-            </h5>
+            </h4>
           </div>
         </CardHeader>
 
@@ -99,10 +99,10 @@ const AnalyticsDashboard = () => {
       <Card>
         <CardHeader>
           <div className='d-flex justify-content-between w-100'>
-            <h5>Monthly Stats</h5>
-            <h5>
+            <h4 className='card-title'>Monthly Stats</h4>
+            <h4>
               {moment().format("MMMM-YYYY")}
-            </h5>
+            </h4>
           </div>
         </CardHeader>
 
@@ -138,7 +138,7 @@ const AnalyticsDashboard = () => {
       <Card>
         <CardHeader>
           <div className='d-flex justify-content-between w-100'>
-            <h5>Plans Sold</h5>
+            <h4 className='card-title'>Plans Sold</h4>
             <div className='d-flex gap-1'>
               <Select
                 isClearable={false}

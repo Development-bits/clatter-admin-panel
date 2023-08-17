@@ -11,7 +11,7 @@ const InvoiceList = ({ tableData }) => {
         return (
             <Card>
                 <CardHeader>
-                    <h5>Recent Transactions</h5>
+                    <h4 className='card-title'>Recent Transactions</h4>
                 </CardHeader>
                 <div style={{
                     overflow: "hidden", width: "100%"
