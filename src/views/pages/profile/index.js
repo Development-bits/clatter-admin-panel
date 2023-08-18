@@ -36,9 +36,6 @@ const Profile = () => {
     }, 2000)
   }
 
-  useEffect(() => {
-    axios.get('/profile/data').then(response => setData(response.data))
-  }, [])
   return (
     <Fragment>
       <Breadcrumbs title='Profile' data={[{ title: 'Pages' }, { title: 'Profile' }]} />
@@ -46,23 +43,26 @@ const Profile = () => {
         <div id='user-profile'>
           <Row>
             <Col sm='12'>
-              <ProfileHeader data={data.header} />
+              profile header
+              {/* <ProfileHeader data={data.header} /> */}
             </Col>
           </Row>
           <section id='profile-info'>
             <Row>
               <Col lg={{ size: 3, order: 1 }} sm={{ size: 12 }} xs={{ order: 2 }}>
-                <ProfileAbout data={data.userAbout} />
+                {/* <ProfileAbout data={data.userAbout} />
                 <ProfileSuggestedPages data={data.suggestedPages} />
-                <ProfileTwitterFeeds data={data.twitterFeeds} />
+                <ProfileTwitterFeeds data={data.twitterFeeds} /> */}
+                profile
               </Col>
               <Col lg={{ size: 6, order: 2 }} sm={{ size: 12 }} xs={{ order: 1 }}>
                 <ProfilePosts data={data.post} />
               </Col>
               <Col lg={{ size: 3, order: 3 }} sm={{ size: 12 }} xs={{ order: 3 }}>
-                <ProfileLatestPhotos data={data.latestPhotos} />
+                {/* <ProfileLatestPhotos data={data.latestPhotos} />
                 <ProfileFriendsSuggestions data={data.suggestions} />
-                <ProfilePoll data={data.polls} />
+                <ProfilePoll data={data.polls} /> */}
+                data
               </Col>
             </Row>
             <Row>

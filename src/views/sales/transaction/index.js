@@ -38,7 +38,7 @@ import { handlePopState, updateQueryParams } from '../../components/useQueryPara
 import startCsvDownload from '../../components/startCsvDownload'
 
 // ** Table Header
-const CustomHeader = ({ store, handlePerPage, rowsPerPage, handleFilter, searchTerm, handleDownloadCSV }) => {
+const CustomHeader = ({ handlePerPage, rowsPerPage, handleFilter, searchTerm, handleDownloadCSV }) => {
     return (
         <div className='invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75'>
             <Row>
@@ -97,10 +97,9 @@ const CustomHeader = ({ store, handlePerPage, rowsPerPage, handleFilter, searchT
     )
 }
 
-const Table = () => {
+const TransactionTable = () => {
     const dispatch = useDispatch()
     // ** States
-    const [queryObj, setQueryObj] = useState();
     const [sort, setSort] = useState('desc')
     const [searchTerm, setSearchTerm] = useState('')
     const [currentPage, setCurrentPage] = useState(1)
@@ -128,7 +127,7 @@ const Table = () => {
             status: currentRole.value,
             keyword: searchTerm,
             limit: rowsPerPage,
-            flag: "getCSVOfSubscriptions"
+            flag: "getCSVOfTransactions"
         }
         let csvObj = {};
         Object.keys(obj).forEach((key) => {
@@ -145,7 +144,6 @@ const Table = () => {
             startCsvDownload(adminBillingData?.url)
         }
     }, [adminBillingData])
-
 
     //** For Search , filter , query params */
     useEffect(() => {
@@ -167,8 +165,6 @@ const Table = () => {
             window.removeEventListener('popstate', popstateCallback);
         };
     }, [currentPage, currentPlan, currentRole, searchTerm, rowsPerPage]);
-
-
     // ** Get data on mount
     useEffect(() => {
         let timerId; // To debounce the API call
@@ -179,6 +175,7 @@ const Table = () => {
             keyword: searchTerm,
             limit: rowsPerPage,
         }
+
         if (searchTerm) {
             timerId = setTimeout(() => {
                 dispatch(adminBillingAction(obj))
@@ -222,7 +219,6 @@ const Table = () => {
     // ** Function in get data on page change
     const handlePagination = page => {
         setCurrentPage(page.selected + 1)
-
     }
 
     // ** Function in get data on rows per page
@@ -309,7 +305,7 @@ const Table = () => {
     }
 
     return (
-        <Fragment>
+        <div className='app-user-list'>
             <Card>
                 <CardHeader>
                     <CardTitle tag='h4'>Filters</CardTitle>
@@ -372,8 +368,8 @@ const Table = () => {
                     />
                 </div>
             </Card>
-        </Fragment>
+        </div>
     )
 }
 
-export default Table
+export default TransactionTable

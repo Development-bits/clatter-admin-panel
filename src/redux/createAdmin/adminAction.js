@@ -28,7 +28,6 @@ export const getAdminAction = createAsyncThunk('users/all-admin', async (arg, { 
     }
 })
 
-
 export const createAdminAction = createAsyncThunk('users/admin-create', async (arg, { rejectWithValue }) => {
     try {
         let accessToken = JSON.parse(localStorage.getItem("accessToken"))
@@ -96,8 +95,6 @@ export const deleteAdminAction = createAsyncThunk('users/admin-delete', async (a
         }
     }
 })
-
-
 
 export const deactivateAdminAction = createAsyncThunk('users/update-admin-status', async (arg, { rejectWithValue }) => {
     try {

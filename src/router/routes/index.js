@@ -15,9 +15,6 @@ import PrivateRoute from '@components/routes/PrivateRoute'
 import { isObjEmpty } from '@utils'
 import { Navigate } from 'react-router-dom'
 import { lazy } from 'react'
-import Admin from '../../views/admin/Admin'
-import Subscription from '../../views/billings/subscription/Subscription'
-import Transaction from '../../views/billings/transaction/Transaction'
 import { getUserData } from '../../utility/Utils'
 
 const getLayout = {
@@ -34,9 +31,11 @@ const DefaultRoute = '/dashboard'
 
 // ** Import lazy route
 const DashboardAnalytics = lazy(() => import('../../views/dashboard/analytics'))
-const UserBillings = lazy(() => import('../../views/billings'))
 const UsersList = lazy(() => import('../../views/apps/user'))
 const UserView = lazy(() => import('../../views/apps/user/view'))
+const SubscriptionTable = lazy(() => import("../../views/sales/subscription"))
+const TransactionTable = lazy(() => import("../../views/sales/transaction"))
+const Admin = lazy(() => import("../../views/admin"))
 
 // ** Merge Routes
 const Routes = [
@@ -61,14 +60,14 @@ const Routes = [
   {
     index: true,
     path: '/sales/transaction',
-    element: <Transaction />,
+    element: <TransactionTable />,
     protected: true,
     access: 'admin'
   },
   {
     index: true,
     path: '/sales/subscription',
-    element: <Subscription />,
+    element: <SubscriptionTable />,
     protected: true,
     access: 'admin'
   },

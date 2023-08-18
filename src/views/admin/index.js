@@ -13,10 +13,10 @@ const Admin = () => {
     }
 
     return (
-        <>
+        <div className='app-user-list'>
             <Table toggleSidebar={toggleSidebar} />
             <SidebarNewAdmin open={show} toggleSidebar={toggleSidebar} editProfile={editAdminProfile} />
-        </>
+        </div>
     )
 }
 
