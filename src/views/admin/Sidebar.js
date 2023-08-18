@@ -47,18 +47,18 @@ const checkIsValid = (data, passwordRegex, emailRegex) => {
     return true;
 };
 
-const SidebarNewAdmin = ({ open, toggleSidebar, editProfile }) => {
+const SidebarNewAdmin = ({ open, toggleSidebar, editAdminProfile, setEditAdminProfile, adminProfileData }) => {
     // ** Store Vars
     const dispatch = useDispatch()
 
     useEffect(() => {
-        if (editProfile) {
-            setValue("firstName", editProfile.firstName)
-            setValue("lastName", editProfile.lastName)
-            setValue("userName", editProfile.userName)
-            setValue("email", editProfile.email)
+        if (adminProfileData) {
+            setValue("firstName", adminProfileData.firstName)
+            setValue("lastName", adminProfileData.lastName)
+            setValue("userName", adminProfileData.userName)
+            setValue("email", adminProfileData.email)
         }
-    }, [editProfile])
+    }, [adminProfileData])
 
     // ** Vars
     const {
@@ -75,16 +75,15 @@ const SidebarNewAdmin = ({ open, toggleSidebar, editProfile }) => {
         const emailRegex = /^[a-zA-Z0-9._-]+@clatter\.com$/;
 
         if (checkIsValid(data, passwordRegex, emailRegex)) {
-            if (editProfile) {
-                let id = editProfile.id
-                data.status = editProfile.status
-                const formData = new FormData()
-                formData.append("firstName", data.firstName)
-                formData.append("lastName", data.lastName)
-                formData.append("email", data.email)
-                formData.append("userName", data.userName)
-                formData.append("password", data.password)
-                formData.append("status", data.status)
+            debugger
+            const formData = new FormData()
+            formData.append("firstName", data.firstName)
+            formData.append("lastName", data.lastName)
+            formData.append("email", data.email)
+            formData.append("userName", data.userName)
+            formData.append("password", data.password)
+            if (adminProfileData.id) {
+                let id = adminProfileData.id
                 dispatch(updateAdminAction({ formData, id }))
             } else {
                 dispatch(createAdminAction(data));
@@ -121,6 +120,7 @@ const SidebarNewAdmin = ({ open, toggleSidebar, editProfile }) => {
     };
 
     const handleSidebarClosed = () => {
+        setEditAdminProfile(!editAdminProfile)
         for (const key in defaultValues) {
             setValue(key, '')
         }
@@ -146,7 +146,7 @@ const SidebarNewAdmin = ({ open, toggleSidebar, editProfile }) => {
                         control={control}
                         render={({ field }) => (
                             <Input
-                                defaultValue={editProfile ? editProfile.userName : ''}
+                                defaultValue={editAdminProfile}
                                 id='userName'
                                 placeholder='john.doe'
                                 invalid={errors.userName && true}
@@ -169,7 +169,7 @@ const SidebarNewAdmin = ({ open, toggleSidebar, editProfile }) => {
                         render={({ field }) => (
                             <Input
                                 id='firstName'
-                                defaultValue={editProfile ? editProfile.firstName : ''}
+                                defaultValue={adminProfileData ? adminProfileData.firstName : ''}
                                 placeholder='john'
                                 invalid={errors.firstName && true}
                                 {...field}
@@ -191,7 +191,7 @@ const SidebarNewAdmin = ({ open, toggleSidebar, editProfile }) => {
                         render={({ field }) => (
                             <Input
                                 id='lastName'
-                                defaultValue={editProfile ? editProfile.lastName : ''}
+                                defaultValue={adminProfileData ? adminProfileData.lastName : ''}
                                 placeholder='doe'
                                 invalid={errors.lastName && true}
                                 {...field}
@@ -212,9 +212,9 @@ const SidebarNewAdmin = ({ open, toggleSidebar, editProfile }) => {
                         control={control}
                         render={({ field }) => (
                             <Input
-                                disabled={editProfile ? true : false}
+                                disabled={adminProfileData?.email ? true : false}
                                 id='email'
-                                defaultValue={editProfile ? editProfile.email : ''}
+                                defaultValue={adminProfileData ? adminProfileData.email : ''}
                                 placeholder='john.doe@clatter.com'
                                 invalid={errors.email && true}
                                 {...field}
@@ -249,9 +249,9 @@ const SidebarNewAdmin = ({ open, toggleSidebar, editProfile }) => {
                     )}
                 </div>
                 <Button type='submit' className='me-1' color='primary'>
-                    {editProfile ? "Update" : "ADD"}
+                    Submit
                 </Button>
-                <Button type='reset' color='secondary' outline onClick={toggleSidebar}>
+                <Button type='button' color='secondary' outline onClick={toggleSidebar}>
                     Cancel
                 </Button>
             </Form>

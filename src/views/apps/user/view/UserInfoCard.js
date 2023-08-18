@@ -39,11 +39,56 @@ const statusColors = {
 }
 
 const countryOptions = [
-  { value: 'uk', label: 'UK' },
-  { value: 'usa', label: 'USA' },
+  { value: 'unitedKingdom', label: 'United Kingdom' },
+  { value: 'unitedStates', label: 'United States' },
   { value: 'france', label: 'France' },
   { value: 'russia', label: 'Russia' },
-  { value: 'canada', label: 'Canada' }
+  { value: 'canada', label: 'Canada' },
+  { value: 'japan', label: 'Japan' },
+  { value: 'yemen', label: 'Yemen' },
+  { value: 'vanuatu', label: 'Vanuatu' },
+  { value: 'zimbabwe', label: 'Zimbabwe' },
+  { value: 'qatar', label: 'Qatar' },
+  { value: 'hungary', label: 'Hungary' },
+  { value: 'oman', label: 'Oman' },
+  { value: 'algeria', label: 'Algeria' },
+  { value: 'andorra', label: 'Andorra' },
+  { value: 'portugal', label: 'Portugal' },
+  { value: 'denmark', label: 'Denmark' },
+  { value: 'rwanda', label: 'Rwanda' },
+  { value: 'lithuania', label: 'Lithuania' },
+  { value: 'timor-leste', label: 'Timor-Leste' },
+  { value: 'finland', label: 'Finland' },
+  { value: 'germany', label: 'Germany' },
+  { value: 'djibouti', label: 'Djibouti' },
+  { value: 'china', label: 'China' },
+  { value: 'estonia', label: 'Estonia' },
+  { value: 'luxembourg', label: 'Luxembourg' },
+  { value: 'moldova', label: 'Moldova' },
+  { value: 'singapore', label: 'Singapore' },
+  { value: 'jamaica', label: 'Jamaica' },
+  { value: 'kenya', label: 'Kenya' },
+  { value: 'jordan', label: 'Jordan' },
+  { value: 'botswana', label: 'Botswana' },
+  { value: 'egypt', label: 'Egypt' },
+  { value: 'brazil', label: 'Brazil' },
+  { value: 'india', label: 'India' },
+  { value: 'sanMarino', label: 'San Marino' },
+  { value: 'cameroom', label: 'Cameroom' },
+  { value: 'ghana', label: 'Ghana' },
+  { value: 'madagascar', label: 'Madagascar' },
+  { value: 'libya', label: 'Libya' },
+  { value: 'australia', label: 'Australia' },
+  { value: 'chad', label: 'Chad' },
+  { value: 'benin', label: 'Benin' },
+  { value: 'chile', label: 'Chile' },
+  { value: 'burkinaFaso', label: 'Burkina Faso' },
+  { value: 'caboVerde', label: 'Cabo Verde' },
+  { value: 'burundi', label: 'Burundi' },
+  { value: 'belgium', label: 'Belgium' },
+  { value: 'colombia', label: 'Colombia' },
+  { value: 'bosniaAndHerzegovina', label: 'Bosnia And Herzegovina' },
+  { value: 'theBahamas', label: 'The Bahamas' },
 ]
 
 const languageOptions = [
@@ -51,7 +96,13 @@ const languageOptions = [
   { value: 'spanish', label: 'Spanish' },
   { value: 'french', label: 'French' },
   { value: 'german', label: 'German' },
-  { value: 'dutch', label: 'Dutch' }
+  { value: 'dutch', label: 'Dutch' },
+  { value: 'arabic', label: 'Arabic' },
+  { value: 'italian', label: 'Italian' },
+  { value: 'portuguese', label: 'Portuguese' },
+  { value: 'hindi', label: 'Hindi' },
+  { value: 'bengali', label: 'Bengali' },
+  { value: 'chinese', label: 'Chinese' },
 ]
 
 const MySwal = withReactContent(Swal)
@@ -134,12 +185,14 @@ const UserInfoCard = ({ selectedUser, toggleStateOfModal }) => {
       const formData = new FormData()
       if ((typeof profileImageObj.obj) === 'object') {
         formData.append("profileImage", profileImageObj.obj)
+      } else {
+        formData.append('profileImage', profileImageObj.link)
       }
       formData.append("firstName", data.firstName);
       formData.append("lastName", data.lastName)
       formData.append("address", data.address)
       formData.append("zipCode", data.zipCode)
-      formData.appen("companyName", data.companyName)
+      formData.append("companyName", data.companyName)
       formData.append("phoneNumber", data.phoneNumber)
       formData.append("country", data.country[0].value)
       formData.append("language", data.language[0].value)
@@ -149,7 +202,8 @@ const UserInfoCard = ({ selectedUser, toggleStateOfModal }) => {
       for (const key in data) {
         if (data[key].length === 0) {
           setError(key, {
-            type: 'manual'
+            type: 'manual',
+            message: `${key} is required`
           })
         }
       }
@@ -254,17 +308,17 @@ const UserInfoCard = ({ selectedUser, toggleStateOfModal }) => {
 
   useEffect(() => {
     if (selectedUser) {
-      setValue("firstName", selectedUser?.firstName)
-      setValue("lastName", selectedUser?.lastName)
-      setValue("userName", selectedUser?.userName)
-      setValue("email", selectedUser?.email)
-      setValue("zipCode", selectedUser?.zipCode)
-      setValue('address', selectedUser?.address)
-      setValue("companyName", selectedUser?.companyName)
-      setValue("phoneNumber", selectedUser?.phoneNumber)
-      setValue("profileImage", selectedUser?.profileImage)
-      setValue("language", [{ value: selectedUser?.language, label: selectedUser?.language }])
-      setValue("country", [{ value: selectedUser?.country, label: selectedUser?.country }])
+      setValue("firstName", selectedUser?.firstName ?? '')
+      setValue("lastName", selectedUser?.lastName ?? '')
+      setValue("userName", selectedUser?.userName ?? '')
+      setValue("email", selectedUser?.email ?? '')
+      setValue("zipCode", selectedUser?.zipCode ?? '')
+      setValue('address', selectedUser?.address ?? '')
+      setValue("companyName", selectedUser?.companyName ?? '')
+      setValue("phoneNumber", selectedUser?.phoneNumber ?? '')
+      setValue("profileImage", selectedUser?.profileImage ?? '')
+      setValue("language", selectedUser?.language ? [{ value: selectedUser?.language, label: selectedUser?.language }] : '')
+      setValue("country", selectedUser?.country ? [{ value: selectedUser?.country, label: selectedUser?.country }] : '')
       setProfileImageObj({ link: selectedUser?.profileImage, obj: '' })
     }
   }, [selectedUser])
@@ -377,15 +431,15 @@ const UserInfoCard = ({ selectedUser, toggleStateOfModal }) => {
             ) : null}
           </div>
           <div className='d-flex justify-content-center pt-2'>
-            <Button color='primary' onClick={() => setShow(true)}>
+            <Button type='button' color='primary' onClick={() => setShow(true)}>
               Edit
             </Button>
             {selectedUser?.userStatus === "active" ? (
-              <Button className='ms-1' color='danger' outline onClick={handleSuspendedClick}>
+              <Button type='button' className='ms-1' color='danger' outline onClick={handleSuspendedClick}>
                 Ban
               </Button>
             ) : (
-              <Button className='ms-1' color='danger' outline onClick={handleUnSuspendedClick}>
+              <Button type='button' className='ms-1' color='danger' outline onClick={handleUnSuspendedClick}>
                 Unban
               </Button>
             )}
@@ -597,7 +651,7 @@ const UserInfoCard = ({ selectedUser, toggleStateOfModal }) => {
                   Submit
                 </Button>
                 <Button
-                  type='reset'
+                  type='button'
                   color='secondary'
                   outline
                   onClick={() => {

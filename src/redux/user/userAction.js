@@ -79,7 +79,6 @@ export const userSubscriptionDetailAction = createAsyncThunk('users/user-subscri
             }
         }
         const response = await axios.get(`${Domain}/user-subscriptions/${id}?page=${page}&limit=${limit}`, config)
-        Toasts({ message: response.data.message })
         return response.data
     } catch (error) {
         if (error.message && error.response.data.message) {

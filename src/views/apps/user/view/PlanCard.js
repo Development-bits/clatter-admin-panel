@@ -135,14 +135,20 @@ const PlanCard = ({ selectedUser }) => {
                     <li className='mb-50'>Used Credit: {selectedUser?.usedCredit}</li>
                   </ul>
                 )}
-                {console.log(selectedUser?.remainingDays)}
-                {selectedUser?.remainingDays === 0 ? null : (
-                  <div className='d-flex justify-content-between align-items-center fw-bolder mb-50'>
-                    <span>Days</span>
-                    <span>{selectedUser?.remainingDays} of 30 Days</span>
-                  </div>
+                {selectedUser?.remainingDays < 0 ? (
+                  <Badge color='danger'>Expired</Badge>
+                ) : (
+                  <>
+                    {selectedUser?.remainingDays === 0 ? null : (
+                      <div className='d-flex justify-content-between align-items-center fw-bolder mb-50'>
+                        <span>{selectedUser?.remainingDays <= 1 ? "Day" : "Days"}</span>
+                        <span>{selectedUser?.remainingDays} {selectedUser?.planName === "Free trial" ? "of 3 Days" : "of 30 Days"}</span>
+                      </div>
+                    )}
+                  </>
                 )}
-                {selectedUser?.remainingDays === 0 ? null : (
+
+                {selectedUser?.planName !== "Free Trial" && (
                   <>
                     <Progress className='mb-50' value={selectedUser?.planName === "Free Trial" ? (((30 - 29) / 30) * 100) : (((30 - selectedUser?.remainingDays) / 30) * 100)} style={{ height: '8px' }} />
                     <span>{selectedUser?.remainingDays} days remaining</span>
@@ -212,20 +218,28 @@ const PlanCard = ({ selectedUser }) => {
           </ModalBody>
         ) : (
           <>
-            {selectedUser?.planName && (
-              <ModalBody className='px-5 pb-3'>
-                <h6>User current plan is {selectedUser?.planName}</h6>
-                <div className='d-flex justify-content-between align-items-center flex-wrap'>
-                  <div className='d-flex justify-content-center me-1 mb-1'>
-                    <sup className='h5 pricing-currency pt-1 text-primary'>$</sup>
-                    <h1 className='fw-bolder display-4 mb-0 text-primary me-25'>{selectedUser?.planAmount}</h1>
-                    <sub className='pricing-duration font-small-4 mt-auto mb-2'>/month</sub>
-                  </div>
-                  <Button disabled={selectedUser?.planName === "Free Trial" ? true : false} outline color='danger' className='mb-1' onClick={handleConfirmCancel}>
-                    Cancel Subscription
-                  </Button>
-                </div>
-              </ModalBody>
+            {selectedUser?.planName !== "Free Trial" && (
+              <>
+                {selectedUser?.remainingDays !== 0 && (
+                  <>
+                    {selectedUser?.remainingDays > 1 && (
+                      <ModalBody className='px-5 pb-3'>
+                        <h6>User current plan is {selectedUser?.planName}</h6>
+                        <div className='d-flex justify-content-between align-items-center flex-wrap'>
+                          <div className='d-flex justify-content-center me-1 mb-1'>
+                            <sup className='h5 pricing-currency pt-1 text-primary'>$</sup>
+                            <h1 className='fw-bolder display-4 mb-0 text-primary me-25'>{selectedUser?.planAmount}</h1>
+                            <sub className='pricing-duration font-small-4 mt-auto mb-2'>/month</sub>
+                          </div>
+                          <Button disabled={selectedUser?.planName === "Free Trial" ? true : false} outline color='danger' className='mb-1' onClick={handleConfirmCancel}>
+                            Cancel Subscription
+                          </Button>
+                        </div>
+                      </ModalBody>
+                    )}
+                  </>
+                )}
+              </>
             )}
           </>
         )}

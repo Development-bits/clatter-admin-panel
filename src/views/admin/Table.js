@@ -71,137 +71,7 @@ const statusObj = {
     banned: 'light-danger',
 }
 
-export const CustomDropDownUpdate = ({ row, toggleSidebar }) => {
-    const dispatch = useDispatch()
 
-    const handleUpdate = () => {
-        dispatch(clearGetAdminData)
-        toggleSidebar(row)
-    }
-    return (
-        <DropdownItem
-            tag='button'
-            className='w-100'
-            onClick={handleUpdate}
-        >
-            <Trash2 size={14} className='me-50' />
-            <span className='align-middle'>Update</span>
-        </DropdownItem>
-    )
-}
-
-export const CustomDropDownDelete = ({ row }) => {
-    const dispatch = useDispatch()
-
-    const handleDeleteAdminClick = async () => {
-        dispatch(clearGetAdminData)
-        return await MySwal.fire({
-            title: 'Are you sure?',
-            text: "You will be deleting admin!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, Delete admin!',
-            customClass: {
-                confirmButton: 'btn btn-primary',
-                cancelButton: 'btn btn-outline-danger ms-1'
-            },
-            buttonsStyling: false
-        }).then(function (result) {
-            if (result.value) {
-                MySwal.fire({
-                    icon: 'success',
-                    title: 'Deleted!',
-                    text: 'Admin has been Deleted.',
-                    customClass: {
-                        confirmButton: 'btn btn-success'
-                    }
-                })
-                dispatch(deleteAdminAction(row.id))
-            } else if (result.dismiss === MySwal.DismissReason.cancel) {
-                MySwal.fire({
-                    title: 'Cancelled',
-                    text: 'Cancelled Delete :)',
-                    icon: 'error',
-                    customClass: {
-                        confirmButton: 'btn btn-success'
-                    }
-                })
-            }
-        })
-    }
-    return (
-        <DropdownItem
-            tag="button"
-            className='w-100'
-            onClick={handleDeleteAdminClick} >
-            <Archive size={14} className='me-50' />
-            <span className='align-middle'>Delete</span>
-        </DropdownItem>
-    )
-}
-
-export const CustomDropDownDeactivate = ({ row }) => {
-    const dispatch = useDispatch()
-
-    const handleDeactivateAdminClick = async () => {
-        let adminStatus = row.status === "active" ? "deactivate" : "active"
-        dispatch(clearGetAdminData)
-        return await MySwal.fire({
-            title: 'Are you sure?',
-            text: `You will ${adminStatus} admin!`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: `Yes, ${adminStatus} admin!`,
-            customClass: {
-                confirmButton: 'btn btn-primary',
-                cancelButton: 'btn btn-outline-danger ms-1'
-            },
-            buttonsStyling: false
-        }).then(function (result) {
-            if (result.value) {
-                MySwal.fire({
-                    icon: 'success',
-                    title: `${adminStatus}d!`,
-                    text: `Admin has been ${adminStatus}d.`,
-                    customClass: {
-                        confirmButton: 'btn btn-success'
-                    }
-                })
-                let newStatus = null
-                if (adminStatus === "deactivate") {
-                    newStatus = "deactivated"
-                } else {
-                    newStatus = "active"
-                }
-                let obj = {
-                    id: row.id,
-                    status: newStatus
-                }
-                dispatch(deactivateAdminAction(obj))
-            } else if (result.dismiss === MySwal.DismissReason.cancel) {
-                MySwal.fire({
-                    title: 'Cancelled',
-                    text: 'Cancelled De-activating :)',
-                    icon: 'error',
-                    customClass: {
-                        confirmButton: 'btn btn-success'
-                    }
-                })
-            }
-        })
-    }
-
-    return (
-        <DropdownItem
-            tag='button'
-            className='w-100'
-            onClick={handleDeactivateAdminClick}
-        >
-            <FileText size={14} className='me-50' />
-            <span className='align-middle'>{row.status === "active" ? "Deactivate" : "Activate"}</span>
-        </DropdownItem>
-    )
-}
 
 
 
@@ -254,7 +124,7 @@ const CustomHeader = ({ toggleSidebar, handlePerPage, rowsPerPage, handleFilter,
     )
 }
 
-const Table = ({ toggleSidebar }) => {
+const Table = ({ toggleSidebar, editAdminProfile, setEditAdminProfile, userID, setUserID }) => {
     const dispatch = useDispatch()
     // ** States
     const [sort, setSort] = useState('desc')
@@ -266,16 +136,19 @@ const Table = ({ toggleSidebar }) => {
     const [total, setTotal] = useState(null)
     const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'All', number: 0 })
 
-    const { getAdminData, deleteAdminData, deactivateAdminData, updateAdminData } = useSelector((state) => state.admin)
+    const { getAdminData, deleteAdminData, deactivateAdminData, updateAdminData, createAdminData } = useSelector((state) => state.admin)
 
     useEffect(() => {
         let queryObj = {
             page: currentPage,
             status: currentStatus.value,
             limit: rowsPerPage,
-            keyword: searchTerm
+            keyword: searchTerm,
         }
         const queryObjWithUpdate = { ...queryObj };
+        if (userID) {
+            queryObjWithUpdate.id = userID
+        }
         updateQueryParams(queryObjWithUpdate)
 
         // Attach the popstate listener when the component mounts
@@ -285,11 +158,11 @@ const Table = ({ toggleSidebar }) => {
         return () => {
             window.removeEventListener('popstate', popstateCallback);
         };
-    }, [currentPage, rowsPerPage, searchTerm, currentStatus, searchTerm]);
+    }, [currentPage, rowsPerPage, searchTerm, currentStatus, searchTerm, userID]);
 
     useEffect(() => {
 
-        if (deleteAdminData || deactivateAdminData || updateAdminData) {
+        if (deleteAdminData || deactivateAdminData || updateAdminData || createAdminData) {
             dispatch(clearGetAdminData)
             let obj = {
                 page: currentPage,
@@ -299,7 +172,7 @@ const Table = ({ toggleSidebar }) => {
             }
             dispatch(getAdminAction(obj))
         }
-    }, [deleteAdminData, deactivateAdminData, updateAdminData])
+    }, [deleteAdminData, deactivateAdminData, updateAdminData, createAdminData])
 
     useEffect(() => {
         if (getAdminData) {
@@ -502,6 +375,141 @@ const Table = ({ toggleSidebar }) => {
             )
         }
     ]
+
+    const CustomDropDownUpdate = ({ row, toggleSidebar }) => {
+        const dispatch = useDispatch()
+
+        const handleUpdate = () => {
+            setEditAdminProfile(!editAdminProfile)
+            debugger
+            setUserID(row.id)
+            dispatch(clearGetAdminData)
+            toggleSidebar(row)
+        }
+        return (
+            <DropdownItem
+                tag='button'
+                className='w-100'
+                onClick={handleUpdate}
+            >
+                <Trash2 size={14} className='me-50' />
+                <span className='align-middle'>Update</span>
+            </DropdownItem>
+        )
+    }
+
+    const CustomDropDownDelete = ({ row }) => {
+        const dispatch = useDispatch()
+
+        const handleDeleteAdminClick = async () => {
+            dispatch(clearGetAdminData)
+            return await MySwal.fire({
+                title: 'Are you sure?',
+                text: "You will be deleting admin!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Delete admin!',
+                customClass: {
+                    confirmButton: 'btn btn-primary',
+                    cancelButton: 'btn btn-outline-danger ms-1'
+                },
+                buttonsStyling: false
+            }).then(function (result) {
+                if (result.value) {
+                    MySwal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: 'Admin has been Deleted.',
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        }
+                    })
+                    dispatch(deleteAdminAction(row.id))
+                } else if (result.dismiss === MySwal.DismissReason.cancel) {
+                    MySwal.fire({
+                        title: 'Cancelled',
+                        text: 'Cancelled Delete :)',
+                        icon: 'error',
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        }
+                    })
+                }
+            })
+        }
+        return (
+            <DropdownItem
+                tag="button"
+                className='w-100'
+                onClick={handleDeleteAdminClick} >
+                <Archive size={14} className='me-50' />
+                <span className='align-middle'>Delete</span>
+            </DropdownItem>
+        )
+    }
+
+    const CustomDropDownDeactivate = ({ row }) => {
+        const dispatch = useDispatch()
+
+        const handleDeactivateAdminClick = async () => {
+            let adminStatus = row.status === "active" ? "deactivate" : "active"
+            dispatch(clearGetAdminData)
+            return await MySwal.fire({
+                title: 'Are you sure?',
+                text: `You will ${adminStatus} admin!`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: `Yes, ${adminStatus} admin!`,
+                customClass: {
+                    confirmButton: 'btn btn-primary',
+                    cancelButton: 'btn btn-outline-danger ms-1'
+                },
+                buttonsStyling: false
+            }).then(function (result) {
+                if (result.value) {
+                    MySwal.fire({
+                        icon: 'success',
+                        title: `${adminStatus}d!`,
+                        text: `Admin has been ${adminStatus}d.`,
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        }
+                    })
+                    let newStatus = null
+                    if (adminStatus === "deactivate") {
+                        newStatus = "deactivated"
+                    } else {
+                        newStatus = "active"
+                    }
+                    let obj = {
+                        id: row.id,
+                        status: newStatus
+                    }
+                    dispatch(deactivateAdminAction(obj))
+                } else if (result.dismiss === MySwal.DismissReason.cancel) {
+                    MySwal.fire({
+                        title: 'Cancelled',
+                        text: 'Cancelled De-activating :)',
+                        icon: 'error',
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        }
+                    })
+                }
+            })
+        }
+
+        return (
+            <DropdownItem
+                tag='button'
+                className='w-100'
+                onClick={handleDeactivateAdminClick}
+            >
+                <FileText size={14} className='me-50' />
+                <span className='align-middle'>{row.status === "active" ? "Deactivate" : "Activate"}</span>
+            </DropdownItem>
+        )
+    }
     return (
         <Fragment>
             <Card>

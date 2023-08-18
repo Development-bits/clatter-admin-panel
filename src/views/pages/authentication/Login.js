@@ -1,5 +1,5 @@
 // ** React Imports
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 // ** Custom Hooks
@@ -35,6 +35,7 @@ import illustrationsDark from '@src/assets/images/pages/login-v2-dark.svg'
 // ** Styles
 import '@styles/react/pages/page-authentication.scss'
 import { authAction } from '../../../redux/auth/authAction'
+import { getUserData } from '../../../utility/Utils'
 
 const ToastContent = ({ t, name, role }) => {
   return (
@@ -86,6 +87,15 @@ const Login = () => {
     //   <ToastContent t={t} role={data.role || 'admin'} name={data.fullName || data.username || ''} />
     // ))
   }
+
+  useEffect(() => {
+    const user = getUserData()
+    if (user) {
+      navigate("/")
+    } else {
+      return
+    }
+  }, [])
 
   return (
     <div className='auth-wrapper auth-cover'>

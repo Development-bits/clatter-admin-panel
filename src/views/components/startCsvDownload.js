@@ -15,6 +15,7 @@ async function startCsvDownload(csvUrl) {
 
     document.body.removeChild(link);
     URL.revokeObjectURL(csvUrl);
+    Toasts({ message: "Document successfully Downloaded" })
   } catch (error) {
     Toasts({ error: error.message })
   }

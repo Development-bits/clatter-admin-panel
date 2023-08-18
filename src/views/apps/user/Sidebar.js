@@ -78,12 +78,12 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
       for (const key in data) {
         if (data[key] === null) {
           setError(key, {
-            type: 'manual'
+            type: `${key} is required`
           });
         }
         if (data[key] !== null && data[key].length === 0) {
           setError(key, {
-            type: 'manual'
+            type: `${key} is required`
           });
         }
         if (key === 'password' && (!passwordRegex.test(data[key]))) {
@@ -103,7 +103,7 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
         }
         if (key === 'email' && !emailRegex.test(data[key])) {
           setError(key, {
-            type: 'manual'
+            type: `Email doesn't not qualify standard`
           });
         }
       }
@@ -138,6 +138,9 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
               <Input id='userName' placeholder='johnDoe99' invalid={errors.userName && true} {...field} />
             )}
           />
+          {errors.userName && (
+            <FormText color='danger'>{errors.userName.type}</FormText>
+          )}
         </div>
         <div className='mb-1'>
           <Label className='form-label' for='firstName'>
@@ -150,6 +153,9 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
               <Input id='firstName' placeholder='John' invalid={errors.firstName && true} {...field} />
             )}
           />
+          {errors.firstName && (
+            <FormText color='danger'>{errors.firstName.type}</FormText>
+          )}
         </div>
         <div className='mb-1'>
           <Label className='form-label' for='lastName'>
@@ -162,6 +168,9 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
               <Input id='lastName' placeholder='Doe' invalid={errors.lastName && true} {...field} />
             )}
           />
+          {errors.lastName && (
+            <FormText color='danger'>{errors.lastName.type}</FormText>
+          )}
         </div>
 
         <div className='mb-1'>
