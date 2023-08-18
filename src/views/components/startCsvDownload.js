@@ -1,15 +1,12 @@
 import axios from 'axios';
+import Toasts from '../../@core/components/react-toast';
 
 async function startCsvDownload(csvUrl) {
 
   try {
-    const response = await axios.get(csvUrl, { responseType: 'blob' });
-
-    const blob = new Blob([response.data], { type: 'text/csv' });
-    const blobUrl = URL.createObjectURL(blob);
 
     const link = document.createElement('a');
-    link.href = blobUrl;
+    link.href = csvUrl;
     link.download = 'users.csv';
 
     document.body.appendChild(link);
@@ -17,9 +14,9 @@ async function startCsvDownload(csvUrl) {
     link.click();
 
     document.body.removeChild(link);
-    URL.revokeObjectURL(blobUrl);
+    URL.revokeObjectURL(csvUrl);
   } catch (error) {
-    console.error('Error downloading CSV:', error);
+    Toasts({ error: error.message })
   }
 }
 
