@@ -136,6 +136,7 @@ const UserInfoCard = ({ selectedUser, toggleStateOfModal }) => {
       email: selectedUser?.email !== null ? selectedUser?.email : '',
       zipCode: selectedUser?.zipCode !== null ? selectedUser?.zipCode : '',
       companyName: selectedUser?.companyName !== null ? selectedUser?.companyName : '',
+      state: selectedUser?.state !== null ? selectedUser?.state : '',
       address: selectedUser?.address !== null ? selectedUser?.address : '',
       profileImage: selectedUser?.profileImage !== null ? selectedUser?.profileImage : '',
       phoneNumber: selectedUser?.phoneNumber !== null ? selectedUser?.phoneNumber : '',
@@ -193,6 +194,7 @@ const UserInfoCard = ({ selectedUser, toggleStateOfModal }) => {
       formData.append("address", data.address)
       formData.append("zipCode", data.zipCode)
       formData.append("companyName", data.companyName)
+      formData.append("state", data.state)
       formData.append("phoneNumber", data.phoneNumber)
       formData.append("country", data.country[0].value)
       formData.append("language", data.language[0].value)
@@ -219,6 +221,7 @@ const UserInfoCard = ({ selectedUser, toggleStateOfModal }) => {
       zipCode: selectedUser?.zipCode !== null ? selectedUser?.zipCode : '',
       address: selectedUser?.address !== null ? selectedUser?.address : '',
       companyName: selectedUser?.companyName !== null ? selectedUser?.companyName : '',
+      state: selectedUser?.state !== null ? selectedUser?.state : '',
       profileImage: selectedUser?.profileImage !== null ? selectedUser?.profileImage : '',
       phoneNumber: selectedUser?.phoneNumber !== null ? selectedUser?.phoneNumber : '',
       country: selectedUser?.country !== null ? [{ value: selectedUser?.country, label: selectedUser?.country }] : '',
@@ -315,6 +318,7 @@ const UserInfoCard = ({ selectedUser, toggleStateOfModal }) => {
       setValue("zipCode", selectedUser?.zipCode ?? '')
       setValue('address', selectedUser?.address ?? '')
       setValue("companyName", selectedUser?.companyName ?? '')
+      setValue("state", selectedUser?.state ?? '')
       setValue("phoneNumber", selectedUser?.phoneNumber ?? '')
       setValue("profileImage", selectedUser?.profileImage ?? '')
       setValue("language", selectedUser?.language ? [{ value: selectedUser?.language, label: selectedUser?.language }] : '')
@@ -535,26 +539,6 @@ const UserInfoCard = ({ selectedUser, toggleStateOfModal }) => {
                 />
               </Col>
               <Col md={6} xs={12}>
-                <Label className='form-label' for='address'>
-                  Address
-                </Label>
-                <Controller
-                  control={control}
-                  id='address'
-                  name='address'
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      id='address'
-                      name='address'
-                      type="text"
-                      placeholder='North Finchley'
-                      invalid={errors.address && true}
-                    />
-                  )}
-                />
-              </Col>
-              <Col md={6} xs={12}>
                 <Label className='form-label' for='zipCode'>
                   Zip Code
                 </Label>
@@ -590,7 +574,40 @@ const UserInfoCard = ({ selectedUser, toggleStateOfModal }) => {
                 <Label className='form-label' for='companyName'>
                   Company Name
                 </Label>
-                <Input id='companyName' defaultValue={selectedUser ? selectedUser?.companyName : null} placeholder='clatter' />
+                <Controller
+                  control={control}
+                  id='companyName'
+                  name='companyName'
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id='companyName'
+                      defaultValue={selectedUser ? selectedUser?.companyName : null}
+                      placeholder='clatter'
+                      invalid={errors.companyName && true}
+                    />
+                  )}
+                />
+
+              </Col>
+              <Col md={6} xs={12}>
+                <Label className='form-label' for='state'>
+                  State
+                </Label>
+                <Controller
+                  control={control}
+                  id='state'
+                  name='state'
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id='state'
+                      defaultValue={selectedUser ? selectedUser?.state : null}
+                      placeholder='Downtown'
+                      invalid={errors.state && true}
+                    />
+                  )}
+                />
               </Col>
               <Col md={6} xs={12}>
                 <Label className='form-label' for='phoneNumber'>
@@ -598,6 +615,29 @@ const UserInfoCard = ({ selectedUser, toggleStateOfModal }) => {
                 </Label>
                 <Input id='phoneNumber' defaultValue={selectedUser ? selectedUser?.phoneNumber : null} placeholder='+1 609 933 4422' />
               </Col>
+              <Col>
+                <Label className='form-label' for='address'>
+                  Address
+                </Label>
+                <Controller
+                  control={control}
+                  id='address'
+                  name='address'
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id='address'
+                      name='address'
+                      type="text"
+                      placeholder='North Finchley'
+                      invalid={errors.address && true}
+                    />
+                  )}
+                />
+              </Col>
+
+            </Row>
+            <Row className='mt-1'>
               <Col md={6} xs={12}>
                 <Label className='form-label' for='language'>
                   Language
@@ -628,24 +668,6 @@ const UserInfoCard = ({ selectedUser, toggleStateOfModal }) => {
                   defaultValue={countryOptions[countryOptions?.findIndex(i => i.value === selectedUser?.country)] ?? null}
                 />
               </Col>
-              {/* <Col xs={12}>
-                <div className='d-flex align-items-center mt-1'>
-                  <div className='form-switch'>
-                    <Input type='switch' defaultChecked id='billing-switch' name='billing-switch' />
-                    <Label className='form-check-label' htmlFor='billing-switch'>
-                      <span className='switch-icon-left'>
-                        <Check size={14} />
-                      </span>
-                      <span className='switch-icon-right'>
-                        <X size={14} />
-                      </span>
-                    </Label>
-                  </div>
-                  <Label className='form-check-label fw-bolder' for='billing-switch'>
-                    Use as a billing address?
-                  </Label>
-                </div>
-              </Col> */}
               <Col xs={12} className='text-center mt-2 pt-50'>
                 <Button type='submit' className='me-1' color='primary'>
                   Submit
