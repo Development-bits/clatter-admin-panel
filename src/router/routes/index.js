@@ -133,7 +133,7 @@ const MergeLayoutRoutes = (layout, defaultLayout) => {
 
           if (route.protected) {
             route.element = (
-              <Wrapper {...(isBlank === false ? getRouteMeta(route) : {})}>
+              <Wrapper {...(isBlank === true ? getRouteMeta(route) : {})}>
                 <RouteTag route={route}>{route.element}</RouteTag>
               </Wrapper>
             );
